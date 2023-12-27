@@ -1,3 +1,7 @@
+# IntelliJ IDEA
+.idea
+
+
 target/
 pom.xml.tag
 pom.xml.releaseBackup

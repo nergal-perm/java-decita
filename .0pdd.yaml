@@ -1,0 +1,8 @@
+errors:
+  - nergal@psu.ru
+model: true
+format:
+  - short-title
+  - title-length=100
+tags:
+  - pdd

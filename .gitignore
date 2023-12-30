@@ -1,6 +1,6 @@
 # IntelliJ IDEA
 .idea
-
+.attach*
 
 target/
 pom.xml.tag

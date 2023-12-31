@@ -21,38 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package ru.ewc.decita;
 
-import java.util.Map;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Main class for the outside users.
- *
+ * Tests for the ConstantLocator class.
  * @since 0.1
  */
-public final class DecitaFacade {
+class ConstantLocatorTest {
     /**
-     * Temporary field to make Qulice checks pass.
+     * Simple instantiation test.
      */
-    private final Map<String, String> content = Map.of("outcome", "true");
-
-    // @todo #1 Return something more real from the method. It seems that the evaluation
-    // method should use some kind of computation context to store all the intermediate
-    // results, links to objects that retrieve data and so on.
-    /**
-     * Main method for evaluating the Decision Table.
-     *
-     * @param table Name of the table to evaluate.
-     * @return A dictionary of all the outcomes and their values.
-     */
-    public Map<String, String> evaluateTable(final String table) {
-        return this.content;
+    @Test
+    void shouldInstantiate() {
+        final Locator target = new ConstantLocator();
+        MatcherAssert.assertThat(
+            target,
+            Matchers.not(Matchers.nullValue())
+        );
     }
-
-    // @todo #4 Create the ComputationContext class containing all the Locators.
-    // This will be the base for all the engine's computations
-
-    // @todo #4 Implement the lookup for the requested Fragment.
-    // This means getting the specific Locator from the ComputationContext and
-    // the use that Locator to get the requested Fragment.
 }

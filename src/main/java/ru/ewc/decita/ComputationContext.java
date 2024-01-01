@@ -24,29 +24,47 @@
 
 package ru.ewc.decita;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * I am the Locator service. My main responsibility is to find requested Fragment of the application
- * state.
+ * I am the container for all the things, required for TruthTable evaluation. My main responsibility
+ * is to provide the set of {@link Locator}s in order to find all the required
+ * {@link StateFragment}s.
  *
  * @since 0.1
  */
-public interface Locator {
-    // @todo #4 Create Locator interface and concrete ConstantLocator class.
-    // These are needed to find requested Fragments.
+public class ComputationContext {
+    /**
+     * The set of all the available {@link Locator}s.
+     */
+    private final Map<String, Locator> locators;
 
     /**
-     * Determines the system's state - the value of a single property, described by
-     * {@link Coordinate} - and returns that state as a {@link StateFragment}'s instance.
-     *
-     * @param coordinate The {@link Coordinate} describing the requested state's property.
-     * @return The value of the requested property as a {@link StateFragment}'s instance.
+     * Ctor.
      */
-    StateFragment fragmentBy(Coordinate coordinate);
+    public ComputationContext() {
+        this.locators = new HashMap<>();
+    }
 
     /**
-     * Registers the specified {@link Locator} in the given {@link ComputationContext}.
+     * Returns a concrete {@link Locator} if it's found in an instance storage.
      *
-     * @param context Context to register the {@link Locator} in.
+     * @param locator The String identifier of the required {@link Locator}.
+     * @return The instance of {@link Locator}.
      */
-    void registerWith(ComputationContext context);
+    public Locator locatorFor(final String locator) {
+        return this.locators.get(locator);
+    }
+
+    /**
+     * Registers a new {@link Locator} with this {@link ComputationContext}.
+     *
+     * @param id The {@link Locator}'s identifier.
+     * @param locator The {@link Locator}'s instance.
+     */
+    public void registerLocator(final String id, final Locator locator) {
+        this.locators.put(id, locator);
+    }
+    // @todo #7 Handle the absent Locator case
 }

@@ -28,11 +28,17 @@ package ru.ewc.decita;
  * I am a concrete {@link Locator} responsible for finding (creating instances of) Constant
  * Fragments. It is useful for all kinds of comparisons, especially for the calculation of the
  * Truth Table's Rules.
+ *
  * @since 0.1
  */
 public final class ConstantLocator implements Locator {
     @Override
     public StateFragment fragmentBy(final Coordinate coordinate) {
         return new StateFragment(coordinate.fragmentId());
+    }
+
+    @Override
+    public void registerWith(final ComputationContext context) {
+        context.registerLocator("constant", this);
     }
 }

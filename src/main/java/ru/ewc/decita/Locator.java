@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-2023 Eugene Terekhov
+ * Copyright (c) 2023-2024 Eugene Terekhov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package ru.ewc.decita;
 /**
  * I am the Locator service. My main responsibility is to find requested Fragment of the application
  * state.
+ *
  * @since 0.1
  */
 public interface Locator {

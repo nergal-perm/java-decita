@@ -48,10 +48,6 @@ public final class DecitaFacade {
     public Map<String, String> evaluateTable(final String table) {
         return this.content;
     }
-
-    // @todo #4 Create the ComputationContext class containing all the Locators.
-    // This will be the base for all the engine's computations
-
     // @todo #4 Implement the lookup for the requested Fragment.
     // This means getting the specific Locator from the ComputationContext and
     // the use that Locator to get the requested Fragment.

@@ -24,26 +24,24 @@
 
 package ru.ewc.decita;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 /**
- * I am the Locator service. My main responsibility is to find requested Fragment of the application
- * state.
+ * The tests for {@link ComputationContext}.
  *
  * @since 0.1
  */
-public interface Locator {
-    /**
-     * Determines the system's state - the value of a single property, described by
-     * {@link Coordinate} - and returns that state as a {@link StateFragment}'s instance.
-     *
-     * @param coordinate The {@link Coordinate} describing the requested state's property.
-     * @return The value of the requested property as a {@link StateFragment}'s instance.
-     */
-    StateFragment fragmentBy(Coordinate coordinate);
-
-    /**
-     * Registers the specified {@link Locator} in the given {@link ComputationContext}.
-     *
-     * @param context Context to register the {@link Locator} in.
-     */
-    void registerWith(ComputationContext context);
+class ComputationContextTest {
+    @Test
+    void shouldInstantiateWithLocators() {
+        final ComputationContext target = new ComputationContext();
+        new ConstantLocator().registerWith(target);
+        final Locator actual = target.locatorFor("constant");
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.isA(ConstantLocator.class)
+        );
+    }
 }

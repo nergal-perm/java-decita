@@ -67,4 +67,7 @@ public class ComputationContext {
         this.locators.put(id, locator);
     }
     // @todo #7 Handle the absent Locator case (decide what to return instead)
+
+    // @todo #4 Refactor the Locator registration process, probably it can be done with fluent API
+    // or something like that. Current mechanism is too cumbersome.
 }

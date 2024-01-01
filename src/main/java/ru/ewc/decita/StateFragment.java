@@ -25,21 +25,41 @@
 package ru.ewc.decita;
 
 /**
- * I am the Locator service. My main responsibility is to find requested Fragment of the application
- * state.
+ * I am a fragment of the system state. My responsibility is to hold a single primitive value of a
+ * single state property. That value will eventually be used in comparisons, i.e. Conditions
+ * computations.
  *
  * @since 0.1
  */
-public interface Locator {
-    // @todo #4 Create Locator interface and concrete ConstantLocator class.
-    // These are needed to find requested Fragments.
+public class StateFragment {
+    /**
+     * Inner representation of a given value.
+     */
+    private final String value;
 
     /**
-     * Determines the system's state - the value of a single property, described by
-     * {@link Coordinate} - and returns that state as a {@link StateFragment}'s instance.
+     * Ctor.
      *
-     * @param coordinate The {@link Coordinate} describing the requested state's property.
-     * @return The value of the requested property as a {@link StateFragment}'s instance.
+     * @param value String representation of requested value.
      */
-    StateFragment fragmentBy(Coordinate coordinate);
+    public StateFragment(final String value) {
+        this.value = value;
+    }
+
+    /**
+     * Determines whether the {@link StateFragment}'s value can be represented as {@code true}.
+     *
+     * @return True - if the {@link StateFragment}'s value is equal to "true".
+     */
+    public boolean asBoolean() {
+        return "true".equalsIgnoreCase(this.value);
+    }
+
+    /**
+     * Returns its value literally.
+     * @return The value of this {@link StateFragment}.
+     */
+    public String asString() {
+        return this.value;
+    }
 }

@@ -30,7 +30,9 @@ package ru.ewc.decita;
  * Truth Table's Rules.
  * @since 0.1
  */
-public class ConstantLocator implements Locator {
-    // @todo #4 Create Locator interface and concrete ConstantLocator class.
-    // These are needed to find requested Fragments.
+public final class ConstantLocator implements Locator {
+    @Override
+    public StateFragment fragmentBy(final Coordinate coordinate) {
+        return new StateFragment(coordinate.fragmentId());
+    }
 }

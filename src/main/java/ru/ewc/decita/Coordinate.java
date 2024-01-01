@@ -56,18 +56,19 @@ public final class Coordinate {
     }
 
     /**
-     * Returns the {@link Locator} identifier.
-     * @return The {@link Locator} identifier as a String.
-     */
-    public String locatorId() {
-        return this.locator;
-    }
-
-    /**
      * Returns the {@link StateFragment} identifier.
      * @return The {@link StateFragment} identifier as a String.
      */
     public String fragmentId() {
         return this.fragment;
+    }
+
+    /**
+     * Locates the required {@link StateFragment} in the provided {@link ComputationContext}.
+     * @param context Provided {@link ComputationContext}.
+     * @return Found {@link StateFragment}.
+     */
+    public StateFragment fragmentFrom(final ComputationContext context) {
+        return context.locatorFor(this.locator).fragmentBy(this);
     }
 }

@@ -29,7 +29,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the ConstantLocator class.
+ * Tests for the {@link ConstantLocator} class.
  * @since 0.1
  */
 class ConstantLocatorTest {
@@ -42,6 +42,26 @@ class ConstantLocatorTest {
         MatcherAssert.assertThat(
             target,
             Matchers.not(Matchers.nullValue())
+        );
+    }
+
+    @Test
+    void shouldLocateBooleanFragment() {
+        final Locator target = new ConstantLocator();
+        final StateFragment actual = target.fragmentBy(new Coordinate("Constant", "true"));
+        MatcherAssert.assertThat(
+            actual.asBoolean(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void shouldLocateStringFragment() {
+        final Locator target = new ConstantLocator();
+        final StateFragment actual = target.fragmentBy(new Coordinate("Constant", "test value"));
+        MatcherAssert.assertThat(
+            actual.asString(),
+            Matchers.is("test value")
         );
     }
 }

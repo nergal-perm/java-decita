@@ -24,6 +24,8 @@
 
 package ru.ewc.decita;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * I am a fragment of the system state. My responsibility is to hold a single primitive value of a
  * single state property. That value will eventually be used in comparisons, i.e. Conditions
@@ -31,6 +33,7 @@ package ru.ewc.decita;
  *
  * @since 0.1
  */
+@EqualsAndHashCode
 public class StateFragment {
     /**
      * Inner representation of a given value.
@@ -57,6 +60,7 @@ public class StateFragment {
 
     /**
      * Returns its value literally.
+     *
      * @return The value of this {@link StateFragment}.
      */
     public String asString() {

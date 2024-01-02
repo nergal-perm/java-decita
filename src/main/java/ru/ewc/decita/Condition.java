@@ -21,34 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package ru.ewc.decita;
 
-import java.util.Map;
-
 /**
- * Main class for the outside users.
- *
+ * I am an assertion made for two {@link StateFragment}s. My main responsibility is to compute
+ * the result of such an assertion and answer it to the computation engine.
  * @since 0.1
  */
-public final class DecitaFacade {
+public interface Condition {
     /**
-     * Temporary field to make Qulice checks pass.
+     * Evaluates all the parts of the {@link Condition} and provides the result of that evaluation.
+     * @param context The {@link ComputationContext} to evaluate {@link Condition} in.
+     * @return Whether the {@link Condition} stands true.
+     * @throws DecitaException If the evaluation cannot be performed.
      */
-    private final Map<String, String> content = Map.of("outcome", "true");
-
-    // @todo #1 Return something more real from the method. It seems that the evaluation
-    // method should use some kind of computation context to store all the intermediate
-    // results, links to objects that retrieve data and so on.
-
-    /**
-     * Main method for evaluating the Decision Table.
-     *
-     * @param table Name of the table to evaluate.
-     * @return A dictionary of all the outcomes and their values.
-     */
-    public Map<String, String> evaluateTable(final String table) {
-        return this.content;
-    }
-    // @todo #4 Implement the Rule object as a set of Conditions and Outcomes
-    // And let the Rule evaluate itself in a given context.
+    boolean evaluate(ComputationContext context) throws DecitaException;
 }

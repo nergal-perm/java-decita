@@ -55,8 +55,7 @@ class ComputationContextTest {
     }
 
     private static ComputationContext contextWithConstantLocator() {
-        final ComputationContext target = new ComputationContext();
-        new ConstantLocator().registerWith(target);
-        return target;
+        return TestObjects.computationContext();
     }
+
 }

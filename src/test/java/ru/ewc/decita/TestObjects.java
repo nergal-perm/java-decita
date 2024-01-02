@@ -21,34 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package ru.ewc.decita;
 
-import java.util.Map;
-
 /**
- * Main class for the outside users.
- *
+ * I hold different preconfigured objects for unit-tests.
  * @since 0.1
  */
-public final class DecitaFacade {
+public final class TestObjects {
     /**
-     * Temporary field to make Qulice checks pass.
+     * Ctor.
      */
-    private final Map<String, String> content = Map.of("outcome", "true");
-
-    // @todo #1 Return something more real from the method. It seems that the evaluation
-    // method should use some kind of computation context to store all the intermediate
-    // results, links to objects that retrieve data and so on.
-
-    /**
-     * Main method for evaluating the Decision Table.
-     *
-     * @param table Name of the table to evaluate.
-     * @return A dictionary of all the outcomes and their values.
-     */
-    public Map<String, String> evaluateTable(final String table) {
-        return this.content;
+    private TestObjects() {
+        // empty
     }
-    // @todo #4 Implement the Rule object as a set of Conditions and Outcomes
-    // And let the Rule evaluate itself in a given context.
+
+    /**
+     * The {@link ComputationContext} with some predefined {@link Locator}s.
+     * @return A prefilled {@link ComputationContext}.
+     */
+    static ComputationContext computationContext() {
+        final ComputationContext target = new ComputationContext();
+        new ConstantLocator().registerWith(target);
+        return target;
+    }
+
+    /**
+     * The {@link Condition} that compares a constant to itself.
+     * @return A simple and always true {@link Condition}.
+     */
+    static SingleCondition alwaysTrueConstantCondition() {
+        return new SingleCondition(
+            new Coordinate("constant", "true"),
+            "=",
+            new Coordinate("constant", "true")
+        );
+    }
 }

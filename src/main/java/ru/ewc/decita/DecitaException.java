@@ -24,24 +24,18 @@
 
 package ru.ewc.decita;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Tests for {@link Coordinate} class.
+ * I am the exceptin to use in all the failures inside the Decita library.
  * @since 0.1
  */
-class CoordinateTest {
-    @Test
-    void shouldFindAFragment() {
-        final Coordinate target = new Coordinate("constant", "true");
-        final ComputationContext context = new ComputationContext();
-        new ConstantLocator().registerWith(context);
-        final StateFragment actual = target.fragmentFrom(context);
-        MatcherAssert.assertThat(
-            actual.asBoolean(),
-            Matchers.is(true)
-        );
+public class DecitaException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Ctor.
+     * @param message A String containing some information about an exceptional situation.
+     */
+    public DecitaException(final String message) {
+        super(message);
     }
 }

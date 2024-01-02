@@ -26,6 +26,7 @@ package ru.ewc.decita;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,13 +36,34 @@ import org.junit.jupiter.api.Test;
  */
 class ComputationContextTest {
     @Test
-    void shouldInstantiateWithLocators() {
-        final ComputationContext target = new ComputationContext();
-        new ConstantLocator().registerWith(target);
+    void shouldInstantiateWithLocators() throws DecitaException {
+        final ComputationContext target = contextWithConstantLocator();
         final Locator actual = target.locatorFor("constant");
         MatcherAssert.assertThat(
             actual,
             Matchers.isA(ConstantLocator.class)
         );
+    }
+
+    @Test
+    void shouldFindAFragment() throws DecitaException {
+        final ComputationContext context = contextWithConstantLocator();
+        final StateFragment actual = new Coordinate("constant", "true").fragmentFrom(context);
+        MatcherAssert.assertThat(
+            actual.asBoolean(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void shouldThrowIfLocatorIsNotFound() {
+        final ComputationContext target = contextWithConstantLocator();
+        Assertions.assertThrows(DecitaException.class, () -> target.locatorFor("non-existing"));
+    }
+
+    private static ComputationContext contextWithConstantLocator() {
+        final ComputationContext target = new ComputationContext();
+        new ConstantLocator().registerWith(target);
+        return target;
     }
 }

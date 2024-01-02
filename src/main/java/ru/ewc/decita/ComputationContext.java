@@ -52,9 +52,15 @@ public class ComputationContext {
      *
      * @param locator The String identifier of the required {@link Locator}.
      * @return The instance of {@link Locator}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    public Locator locatorFor(final String locator) {
-        return this.locators.get(locator);
+    public Locator locatorFor(final String locator) throws DecitaException {
+        if (this.locators.containsKey(locator)) {
+            return this.locators.get(locator);
+        }
+        throw new DecitaException(
+            String.format("Locator '%s' not found in computation context", locator)
+        );
     }
 
     /**
@@ -66,8 +72,6 @@ public class ComputationContext {
     public void registerLocator(final String id, final Locator locator) {
         this.locators.put(id, locator);
     }
-    // @todo #7 Handle the absent Locator case (decide what to return instead)
-
     // @todo #4 Refactor the Locator registration process, probably it can be done with fluent API
     // or something like that. Current mechanism is too cumbersome.
 }

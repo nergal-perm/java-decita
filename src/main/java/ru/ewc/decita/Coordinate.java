@@ -67,8 +67,9 @@ public final class Coordinate {
      * Locates the required {@link StateFragment} in the provided {@link ComputationContext}.
      * @param context Provided {@link ComputationContext}.
      * @return Found {@link StateFragment}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    public StateFragment fragmentFrom(final ComputationContext context) {
+    public StateFragment fragmentFrom(final ComputationContext context) throws DecitaException {
         return context.locatorFor(this.locator).fragmentBy(this);
     }
 }

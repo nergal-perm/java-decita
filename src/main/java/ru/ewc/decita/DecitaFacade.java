@@ -39,6 +39,7 @@ public final class DecitaFacade {
     // @todo #1 Return something more real from the method. It seems that the evaluation
     // method should use some kind of computation context to store all the intermediate
     // results, links to objects that retrieve data and so on.
+
     /**
      * Main method for evaluating the Decision Table.
      *
@@ -48,7 +49,9 @@ public final class DecitaFacade {
     public Map<String, String> evaluateTable(final String table) {
         return this.content;
     }
-    // @todo #4 Implement the lookup for the requested Fragment.
-    // This means getting the specific Locator from the ComputationContext and
-    // the use that Locator to get the requested Fragment.
+    // @todo #4 Implement the Condition object as two Fragments and comparison
+    // It should be enough to handle the majority of computations here.
+
+    // @todo #4 Implement the Rule object as a set of Conditions and Outcomes
+    // And let the Rule evaluate itself in a given context.
 }

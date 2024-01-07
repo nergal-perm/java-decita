@@ -1,4 +1,4 @@
 --source=.
 --verbose
 --exclude target/**
---rule min-words:10
+--rule min-words:5

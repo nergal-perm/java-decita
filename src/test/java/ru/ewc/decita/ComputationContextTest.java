@@ -36,16 +36,6 @@ import org.junit.jupiter.api.Test;
  */
 class ComputationContextTest {
     @Test
-    void shouldInstantiateWithLocators() throws DecitaException {
-        final ComputationContext target = contextWithConstantLocator();
-        final Locator actual = target.locatorFor("constant");
-        MatcherAssert.assertThat(
-            actual,
-            Matchers.isA(ConstantLocator.class)
-        );
-    }
-
-    @Test
     void shouldFindAFragment() throws DecitaException {
         final ComputationContext context = contextWithConstantLocator();
         final StateFragment actual = new Coordinate("constant", "true").fragmentFrom(context);
@@ -58,7 +48,10 @@ class ComputationContextTest {
     @Test
     void shouldThrowIfLocatorIsNotFound() {
         final ComputationContext target = contextWithConstantLocator();
-        Assertions.assertThrows(DecitaException.class, () -> target.locatorFor("non-existing"));
+        Assertions.assertThrows(
+            DecitaException.class,
+            () -> target.fragmentFor("non-existing", "value")
+        );
     }
 
     private static ComputationContext contextWithConstantLocator() {

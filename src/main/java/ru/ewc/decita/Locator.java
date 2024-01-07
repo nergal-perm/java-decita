@@ -31,14 +31,14 @@ package ru.ewc.decita;
  * @since 0.1
  */
 public interface Locator {
+
     /**
-     * Determines the system's state - the value of a single property, described by
-     * {@link Coordinate} - and returns that state as a {@link StateFragment}'s instance.
-     *
-     * @param coordinate The {@link Coordinate} describing the requested state's property.
+     * Determines the system's state - the value of a single property, described by its name - and
+     * returns that state as a {@link StateFragment}'s instance.
+     * @param fragment The String identifier of the required property.
      * @return The value of the requested property as a {@link StateFragment}'s instance.
      */
-    StateFragment fragmentBy(Coordinate coordinate);
+    StateFragment fragmentBy(String fragment);
 
     /**
      * Registers the specified {@link Locator} in the given {@link ComputationContext}.

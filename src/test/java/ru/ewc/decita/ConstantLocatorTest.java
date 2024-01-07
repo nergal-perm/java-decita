@@ -48,7 +48,7 @@ class ConstantLocatorTest {
     @Test
     void shouldLocateBooleanFragment() {
         final Locator target = new ConstantLocator();
-        final StateFragment actual = target.fragmentBy(new Coordinate("Constant", "true"));
+        final StateFragment actual = target.fragmentBy("true");
         MatcherAssert.assertThat(
             actual.asBoolean(),
             Matchers.is(true)
@@ -58,7 +58,7 @@ class ConstantLocatorTest {
     @Test
     void shouldLocateStringFragment() {
         final Locator target = new ConstantLocator();
-        final StateFragment actual = target.fragmentBy(new Coordinate("Constant", "test value"));
+        final StateFragment actual = target.fragmentBy("test value");
         MatcherAssert.assertThat(
             actual.asString(),
             Matchers.is("test value")

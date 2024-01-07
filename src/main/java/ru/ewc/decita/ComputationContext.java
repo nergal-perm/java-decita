@@ -48,19 +48,16 @@ public class ComputationContext {
     }
 
     /**
-     * Returns a concrete {@link Locator} if it's found in an instance storage.
+     * Finds a {@link StateFragment} using internal set of {@link Locator}'s.
      *
-     * @param locator The String identifier of the required {@link Locator}.
-     * @return The instance of {@link Locator}.
-     * @throws DecitaException If the specified {@link Locator} is missing.
+     * @param locator String identifier of the {@link Locator} to use.
+     * @param fragment String identifier of the {@link StateFragment} to find.
+     * @return The {@link StateFragment} containing required state.
+     * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public Locator locatorFor(final String locator) throws DecitaException {
-        if (this.locators.containsKey(locator)) {
-            return this.locators.get(locator);
-        }
-        throw new DecitaException(
-            String.format("Locator '%s' not found in computation context", locator)
-        );
+    public final StateFragment fragmentFor(final String locator, final String fragment)
+        throws DecitaException {
+        return this.locatorFor(locator).fragmentBy(fragment);
     }
 
     /**
@@ -74,4 +71,20 @@ public class ComputationContext {
     }
     // @todo #4 Refactor the Locator registration process, probably it can be done with fluent API
     // or something like that. Current mechanism is too cumbersome.
+
+    /**
+     * Returns a concrete {@link Locator} if it's found in an instance storage.
+     *
+     * @param locator The String identifier of the required {@link Locator}.
+     * @return The instance of {@link Locator}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
+     */
+    private Locator locatorFor(final String locator) throws DecitaException {
+        if (this.locators.containsKey(locator)) {
+            return this.locators.get(locator);
+        }
+        throw new DecitaException(
+            String.format("Locator '%s' not found in computation context", locator)
+        );
+    }
 }

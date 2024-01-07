@@ -28,7 +28,7 @@ package ru.ewc.decita;
  * I am a simple data structure describing the required {@link StateFragment}. My responsibility is
  * to provide everything that is needed to retrieve the single {@link StateFragment}. The position
  * of every {@link StateFragment} is described by the {@link Locator}'s ID and the
- * {@link StateFragment}'s ID, so it look like a 2D coordinate.
+ * {@link StateFragment}'s ID, so it looks like a 2D coordinate.
  *
  * @since 0.1
  */
@@ -56,20 +56,12 @@ public final class Coordinate {
     }
 
     /**
-     * Returns the {@link StateFragment} identifier.
-     * @return The {@link StateFragment} identifier as a String.
-     */
-    public String fragmentId() {
-        return this.fragment;
-    }
-
-    /**
      * Locates the required {@link StateFragment} in the provided {@link ComputationContext}.
      * @param context Provided {@link ComputationContext}.
      * @return Found {@link StateFragment}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public StateFragment fragmentFrom(final ComputationContext context) throws DecitaException {
-        return context.locatorFor(this.locator).fragmentBy(this);
+        return context.fragmentFor(this.locator, this.fragment);
     }
 }

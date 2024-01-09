@@ -30,4 +30,11 @@ package ru.ewc.decita;
  * @since 0.1
  */
 public class Rule {
+    public boolean isComputed() {
+        return false;
+    }
+
+    public boolean isEliminated() {
+        return false;
+    }
 }

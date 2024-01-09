@@ -34,11 +34,20 @@ import org.junit.jupiter.api.Test;
  */
 class RuleTest {
     @Test
-    void testInstantiation() {
+    void testNotComputedAfterCreation() {
         final Rule target = new Rule();
         MatcherAssert.assertThat(
-            target,
-            Matchers.notNullValue()
+            target.isComputed(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testNotEliminatedAfterCreation() {
+        final Rule target = new Rule();
+        MatcherAssert.assertThat(
+            target.isEliminated(),
+            Matchers.is(false)
         );
     }
 }

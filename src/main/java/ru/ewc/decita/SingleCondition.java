@@ -68,6 +68,11 @@ public final class SingleCondition implements Condition {
         return this.comparisonFor(this.right).matches(this.left);
     }
 
+    @Override
+    public boolean isPrimitive() {
+        return this.right.isComputed() && this.left.isComputed();
+    }
+
     /**
      * Creates a {@link Matcher} that corresponds to the given operation and {@link Coordinate}.
      *

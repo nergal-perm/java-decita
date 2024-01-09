@@ -52,6 +52,33 @@ class SingleConditionTest {
         );
     }
 
+    @Test
+    void testNotComputedCondition() {
+        final Condition target = new SingleCondition(
+            new Coordinate(Locator.CONDITIONS, "always_true"),
+            "=",
+            TestObjects.valueTrue()
+        );
+        MatcherAssert.assertThat(
+            target.isPrimitive(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testBecomeComputedAfterEvaluation() throws DecitaException {
+        final Condition target = new SingleCondition(
+            new Coordinate(Locator.CONDITIONS, "always_true"),
+            "=",
+            TestObjects.valueTrue()
+        );
+        target.evaluate(TestObjects.computationContext());
+        MatcherAssert.assertThat(
+            target.isPrimitive(),
+            Matchers.is(true)
+        );
+    }
+
     private static SingleCondition simpleConstantCondition() {
         return TestObjects.alwaysTrueConstantCondition();
     }

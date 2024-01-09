@@ -37,4 +37,6 @@ public interface Condition {
      * @throws DecitaException If the evaluation cannot be performed.
      */
     boolean evaluate(ComputationContext context) throws DecitaException;
+
+    boolean isPrimitive();
 }

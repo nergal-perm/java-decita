@@ -66,6 +66,48 @@ public final class TestObjects {
     }
 
     /**
+     * Convenience method to get an instance of {@link Coordinate} pointing to the {@link Condition}
+     * that always resolves to {@code true}.
+     *
+     * @return A {@link Coordinate} of the always true {@link Condition}.
+     */
+    static Coordinate alwaysTrueConditionCoordinate() {
+        return new Coordinate(Locator.CONDITIONS, "always_true");
+    }
+
+    /**
+     * Convenience method to get an instance of {@link Rule} with the {@link Condition} that
+     * always resolves to {@code true}.
+     *
+     * @return Always succeeding {@link Rule} instance.
+     */
+    static Rule alwaysTrueEqualsTrueRule() {
+        return new Rule().with(
+            new SingleCondition(
+                alwaysTrueConditionCoordinate(),
+                "=",
+                valueTrue()
+            )
+        );
+    }
+
+    /**
+     * Convenience method to get an instance of {@link Rule} with the {@link Condition} that
+     * always resolves to {@code false}.
+     *
+     * @return Always failing {@link Rule} instance.
+     */
+    static Rule alwaysTrueEqualsFalseRule() {
+        return new Rule().with(
+            new SingleCondition(
+                alwaysTrueConditionCoordinate(),
+                "=",
+                new Coordinate(Locator.CONSTANT_VALUES, "false")
+            )
+        );
+    }
+
+    /**
      * Convenience method to get a new instance of {@link ConditionsLocator}.
      * @return Prefilled instance of {@link ConditionsLocator}.
      */

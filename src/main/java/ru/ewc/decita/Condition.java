@@ -27,16 +27,30 @@ package ru.ewc.decita;
 /**
  * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute
  * the result of such an assertion and answer it to the computation engine.
+ *
  * @since 0.1
  */
 public interface Condition {
     /**
      * Evaluates all the parts of the {@link Condition} and provides the result of that evaluation.
+     *
      * @param context The {@link ComputationContext} to evaluate {@link Condition} in.
      * @return Whether the {@link Condition} stands true.
      * @throws DecitaException If the evaluation cannot be performed.
      */
     boolean evaluate(ComputationContext context) throws DecitaException;
 
-    boolean isPrimitive();
+    /**
+     * Checks if all the parts of the Condition are resolved and point to the constant values.
+     *
+     * @return True, if both parts of the Condition are evaluated.
+     */
+    boolean isEvaluated();
+
+    /**
+     * Checks if this Condition resolves to {@code false}, meaning it is not satisfied.
+     *
+     * @return True, if this Condition resolves to {@code false}.
+     */
+    boolean isNotSatisfied();
 }

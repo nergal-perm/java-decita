@@ -51,6 +51,7 @@ public final class SingleCondition implements Condition {
 
     /**
      * Constructor.
+     *
      * @param left Left-side {@link Coordinate}.
      * @param comparison The comparison operation applied to both operands.
      * @param right Right-side {@link Coordinate}.
@@ -65,12 +66,26 @@ public final class SingleCondition implements Condition {
     public boolean evaluate(final ComputationContext context) throws DecitaException {
         this.right.locateIn(context);
         this.left.locateIn(context);
-        return this.comparisonFor(this.right).matches(this.left);
+        return this.isSatisfied();
     }
 
     @Override
-    public boolean isPrimitive() {
+    public boolean isEvaluated() {
         return this.right.isComputed() && this.left.isComputed();
+    }
+
+    @Override
+    public boolean isNotSatisfied() {
+        return this.isEvaluated() && !this.isSatisfied();
+    }
+
+    /**
+     * Checks if this {@link Condition} resolves to {@code true}.
+     *
+     * @return True, if it does.
+     */
+    private boolean isSatisfied() {
+        return this.isEvaluated() && this.comparisonFor(this.right).matches(this.left);
     }
 
     /**

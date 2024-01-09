@@ -24,17 +24,61 @@
 
 package ru.ewc.decita;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
  * whether all my second-order {@link Condition}s are {@code true} and if so - compute my outcomes.
+ *
  * @since 0.1
  */
 public class Rule {
+    /**
+     * The rule's {@link Condition}s.
+     */
+    private final List<Condition> conditions = new ArrayList<>(5);
+
+    /**
+     * Checks whether this rule is computed, i.e. all of its {@link Condition}s were resolved
+     * successfully.
+     *
+     * @return True if the rule is computed.
+     */
     public boolean isComputed() {
-        return false;
+        return this.conditions.stream().allMatch(Condition::isEvaluated);
     }
 
+    /**
+     * Checks whether this rule is not satisfied (i.e. any of its {@link Condition}s resolved to
+     * {@code false}).
+     *
+     * @return True if the rule is dissatisfied.
+     */
     public boolean isEliminated() {
-        return false;
+        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);
+    }
+
+    /**
+     * Adds a {@link Condition} to this rule.
+     *
+     * @param condition The {@link Condition} to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule with(final Condition condition) {
+        this.conditions.add(condition);
+        return this;
+    }
+
+    /**
+     * Checks if this {@link Rule} is satisfied.
+     *
+     * @param context The {@link ComputationContext}'s instance.
+     * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
+     */
+    public void check(final ComputationContext context) throws DecitaException {
+        for (final Condition cond : this.conditions) {
+            cond.evaluate(context);
+        }
     }
 }

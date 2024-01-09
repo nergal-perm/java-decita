@@ -29,8 +29,7 @@ import java.util.Map;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
- * is to provide the set of {@link Locator}s in order to find all the required
- * {@link StateFragment}s.
+ * is to provide the set of {@link Locator}s in order to find all the required {@link Coordinate}s.
  *
  * @since 0.1
  */
@@ -48,16 +47,18 @@ public class ComputationContext {
     }
 
     /**
-     * Finds a {@link StateFragment} using internal set of {@link Locator}'s.
+     * Finds a {@link Coordinate}'s value using internal set of {@link Locator}'s.
      *
      * @param locator String identifier of the {@link Locator} to use.
-     * @param fragment String identifier of the {@link StateFragment} to find.
-     * @return The {@link StateFragment} containing required state.
+     * @param fragment String identifier of the value to find.
+     * @param context The {@link ComputationContext} to get the value.
+     * @return The {@code String} value containing requested state.
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public final StateFragment fragmentFor(final String locator, final String fragment)
+    public final String valueFor(
+        final String locator, final String fragment, final ComputationContext context)
         throws DecitaException {
-        return this.locatorFor(locator).fragmentBy(fragment);
+        return this.locatorFor(locator).fragmentBy(fragment, context);
     }
 
     /**

@@ -46,21 +46,21 @@ class ConstantLocatorTest {
     }
 
     @Test
-    void shouldLocateBooleanFragment() {
+    void shouldLocateBooleanFragment() throws DecitaException {
         final Locator target = new ConstantLocator();
-        final StateFragment actual = target.fragmentBy("true");
+        final String actual = target.fragmentBy("true", TestObjects.computationContext());
         MatcherAssert.assertThat(
-            actual.asBoolean(),
-            Matchers.is(true)
+            actual,
+            Matchers.is("true")
         );
     }
 
     @Test
-    void shouldLocateStringFragment() {
+    void shouldLocateStringFragment() throws DecitaException {
         final Locator target = new ConstantLocator();
-        final StateFragment actual = target.fragmentBy("test value");
+        final String actual = target.fragmentBy("test value", TestObjects.computationContext());
         MatcherAssert.assertThat(
-            actual.asString(),
+            actual,
             Matchers.is("test value")
         );
     }

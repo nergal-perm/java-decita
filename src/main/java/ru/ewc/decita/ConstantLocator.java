@@ -34,12 +34,12 @@ package ru.ewc.decita;
 public final class ConstantLocator implements Locator {
 
     @Override
-    public StateFragment fragmentBy(final String fragment) {
-        return new StateFragment(fragment);
+    public String fragmentBy(final String fragment, final ComputationContext context) {
+        return fragment;
     }
 
     @Override
     public void registerWith(final ComputationContext context) {
-        context.registerLocator("constant", this);
+        context.registerLocator(Locator.CONSTANT_VALUES, this);
     }
 }

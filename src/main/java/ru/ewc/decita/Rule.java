@@ -30,6 +30,4 @@ package ru.ewc.decita;
  * @since 0.1
  */
 public class Rule {
-    // @todo #16 Make Coordinates mutable in order to get rid of StateFragments.
-    // It is possible to use only Coordinates in all the computations
 }

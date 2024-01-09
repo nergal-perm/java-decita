@@ -33,12 +33,24 @@ package ru.ewc.decita;
 public interface Locator {
 
     /**
-     * Determines the system's state - the value of a single property, described by its name - and
-     * returns that state as a {@link StateFragment}'s instance.
-     * @param fragment The String identifier of the required property.
-     * @return The value of the requested property as a {@link StateFragment}'s instance.
+     * Name for computed values {@link Locator}.
      */
-    StateFragment fragmentBy(String fragment);
+    String CONSTANT_VALUES = "constant";
+
+    /**
+     * Name for conditions {@link Locator}.
+     */
+    String CONDITIONS = "condition";
+
+    /**
+     * Determines the system's state - the value of a single property, described by its name.
+     *
+     * @param fragment The String identifier of the required property.
+     * @param context The {@link ComputationContext} to use in property retrieval.
+     * @return The value of the requested property as a {@code String}.
+     * @throws DecitaException When the requested {@link Coordinate} cannot be found.
+     */
+    String fragmentBy(String fragment, ComputationContext context) throws DecitaException;
 
     /**
      * Registers the specified {@link Locator} in the given {@link ComputationContext}.

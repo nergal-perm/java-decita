@@ -25,7 +25,7 @@
 package ru.ewc.decita;
 
 /**
- * I am an assertion made for two {@link StateFragment}s. My main responsibility is to compute
+ * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute
  * the result of such an assertion and answer it to the computation engine.
  * @since 0.1
  */

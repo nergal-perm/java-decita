@@ -43,6 +43,7 @@ public final class TestObjects {
     static ComputationContext computationContext() {
         final ComputationContext target = new ComputationContext();
         new ConstantLocator().registerWith(target);
+        conditionsLocator().registerWith(target);
         return target;
     }
 
@@ -60,7 +61,16 @@ public final class TestObjects {
      * Convenience method to get a new instance of {@link Coordinate} with value {@code true}.
      * @return The concrete value {@link Locator}.
      */
-    private static Coordinate valueTrue() {
+    static Coordinate valueTrue() {
         return new Coordinate(Locator.CONSTANT_VALUES, "true");
+    }
+
+    /**
+     * Convenience method to get a new instance of {@link ConditionsLocator}.
+     * @return Prefilled instance of {@link ConditionsLocator}.
+     */
+    private static Locator conditionsLocator() {
+        return new ConditionsLocator()
+            .with("always_true", alwaysTrueConstantCondition());
     }
 }

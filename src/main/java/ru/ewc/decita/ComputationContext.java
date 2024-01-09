@@ -52,12 +52,14 @@ public class ComputationContext {
      *
      * @param locator String identifier of the {@link Locator} to use.
      * @param fragment String identifier of the {@link StateFragment} to find.
+     * @param context The {@link ComputationContext} to get the value.
      * @return The {@link StateFragment} containing required state.
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public final StateFragment fragmentFor(final String locator, final String fragment)
+    public final StateFragment fragmentFor(
+        final String locator, final String fragment, final ComputationContext context)
         throws DecitaException {
-        return this.locatorFor(locator).fragmentBy(fragment);
+        return this.locatorFor(locator).fragmentBy(fragment, context);
     }
 
     /**

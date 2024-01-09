@@ -51,7 +51,7 @@ class ComputationContextTest {
         final ComputationContext target = contextWithConstantLocator();
         Assertions.assertThrows(
             DecitaException.class,
-            () -> target.fragmentFor("non-existing", "value")
+            () -> target.fragmentFor("non-existing", "value", target)
         );
     }
 

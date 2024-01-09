@@ -37,12 +37,12 @@ public final class Coordinate {
      * String identifier of the concrete {@link Locator} responsible for retrieving the
      * {@link StateFragment}.
      */
-    private final String locator;
+    private String locator;
 
     /**
      * String identifier of the requested state property's value.
      */
-    private final String fragment;
+    private String fragment;
 
     /**
      * Ctor.
@@ -63,7 +63,10 @@ public final class Coordinate {
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public StateFragment fragmentFrom(final ComputationContext context) throws DecitaException {
-        return context.fragmentFor(this.locator, this.fragment);
+        final StateFragment located = context.fragmentFor(this.locator, this.fragment, context);
+        this.locator = Locator.CONSTANT_VALUES;
+        this.fragment = located.asString();
+        return located;
     }
 
     /**

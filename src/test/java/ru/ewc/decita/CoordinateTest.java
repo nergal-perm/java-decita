@@ -30,12 +30,33 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Coordinate} class.
+ *
  * @since 0.1
  */
 class CoordinateTest {
     @Test
     void testAlreadyComputed() {
-        final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
+        final Coordinate target = TestObjects.valueTrue();
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void testIsNotYetComputed() {
+        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testChangesUponLocation() throws DecitaException {
+        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        final ComputationContext context = TestObjects.computationContext();
+        target.fragmentFrom(context);
         MatcherAssert.assertThat(
             target.isComputed(),
             Matchers.is(true)

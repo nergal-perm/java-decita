@@ -24,22 +24,41 @@
 
 package ru.ewc.decita;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * I am a concrete {@link Locator} responsible for finding (creating instances of) Constant
- * Fragments. It is useful for all kinds of comparisons, especially for the calculation of the
- * Truth Table's Rules.
+ * I am the {@link Locator} responsible for storing and retrieving all the {@link Condition}s known
+ * to the engine.
  *
  * @since 0.1
  */
-public final class ConstantLocator implements Locator {
+public final class ConditionsLocator implements Locator {
+    /**
+     * Collection of stored {@link Condition}s.
+     */
+    private final Map<String, Condition> conditions = new HashMap<>();
 
     @Override
-    public StateFragment fragmentBy(final String fragment, final ComputationContext context) {
-        return new StateFragment(fragment);
+    public StateFragment fragmentBy(final String fragment, final ComputationContext context)
+        throws DecitaException {
+        return new StateFragment(String.valueOf(this.conditions.get(fragment).evaluate(context)));
     }
 
     @Override
     public void registerWith(final ComputationContext context) {
-        context.registerLocator(Locator.CONSTANT_VALUES, this);
+        context.registerLocator(Locator.CONDITIONS, this);
+    }
+
+    /**
+     * Stores a new {@link Condition} within this instance.
+     *
+     * @param name Name of the {@link Condition}.
+     * @param condition The {@link Condition} itself.
+     * @return Itself, in order to use fluent API.
+     */
+    public ConditionsLocator with(final String name, final SingleCondition condition) {
+        this.conditions.put(name, condition);
+        return this;
     }
 }

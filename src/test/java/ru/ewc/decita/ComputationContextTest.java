@@ -38,7 +38,8 @@ class ComputationContextTest {
     @Test
     void shouldFindAFragment() throws DecitaException {
         final ComputationContext context = contextWithConstantLocator();
-        final StateFragment actual = new Coordinate("constant", "true").fragmentFrom(context);
+        final StateFragment actual = new Coordinate(Locator.CONSTANT_VALUES, "true")
+            .fragmentFrom(context);
         MatcherAssert.assertThat(
             actual.asBoolean(),
             Matchers.is(true)

@@ -40,6 +40,6 @@ public final class ConstantLocator implements Locator {
 
     @Override
     public void registerWith(final ComputationContext context) {
-        context.registerLocator("constant", this);
+        context.registerLocator(Locator.CONSTANT_VALUES, this);
     }
 }

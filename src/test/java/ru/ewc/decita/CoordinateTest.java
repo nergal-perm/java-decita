@@ -24,43 +24,21 @@
 
 package ru.ewc.decita;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 /**
- * I hold different preconfigured objects for unit-tests.
+ * Tests for {@link Coordinate} class.
  * @since 0.1
  */
-public final class TestObjects {
-    /**
-     * Ctor.
-     */
-    private TestObjects() {
-        // empty
-    }
-
-    /**
-     * The {@link ComputationContext} with some predefined {@link Locator}s.
-     * @return A prefilled {@link ComputationContext}.
-     */
-    static ComputationContext computationContext() {
-        final ComputationContext target = new ComputationContext();
-        new ConstantLocator().registerWith(target);
-        return target;
-    }
-
-    /**
-     * The {@link Condition} that compares a constant to itself.
-     * @return A simple and always true {@link Condition}.
-     */
-    static SingleCondition alwaysTrueConstantCondition() {
-        return new SingleCondition(
-            valueTrue(), "=", valueTrue()
+class CoordinateTest {
+    @Test
+    void testAlreadyComputed() {
+        final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(true)
         );
-    }
-
-    /**
-     * Convenience method to get a new instance of {@link Coordinate} with value {@code true}.
-     * @return The concrete value {@link Locator}.
-     */
-    private static Coordinate valueTrue() {
-        return new Coordinate(Locator.CONSTANT_VALUES, "true");
     }
 }

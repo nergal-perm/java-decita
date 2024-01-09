@@ -33,6 +33,11 @@ package ru.ewc.decita;
 public interface Locator {
 
     /**
+     * Name for computed values Locator.
+     */
+    String CONSTANT_VALUES = "constant";
+
+    /**
      * Determines the system's state - the value of a single property, described by its name - and
      * returns that state as a {@link StateFragment}'s instance.
      * @param fragment The String identifier of the required property.

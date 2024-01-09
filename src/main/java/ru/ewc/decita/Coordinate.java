@@ -57,11 +57,21 @@ public final class Coordinate {
 
     /**
      * Locates the required {@link StateFragment} in the provided {@link ComputationContext}.
+     *
      * @param context Provided {@link ComputationContext}.
      * @return Found {@link StateFragment}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public StateFragment fragmentFrom(final ComputationContext context) throws DecitaException {
         return context.fragmentFor(this.locator, this.fragment);
+    }
+
+    /**
+     * Tests if {@link Coordinate} is already computed, i.e. its value is constant.
+     *
+     * @return True, if {@link Coordinate} points to a constant value.
+     */
+    public boolean isComputed() {
+        return Locator.CONSTANT_VALUES.equals(this.locator);
     }
 }

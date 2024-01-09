@@ -55,12 +55,12 @@ class SingleConditionTest {
     @Test
     void testNotComputedCondition() {
         final Condition target = new SingleCondition(
-            new Coordinate(Locator.CONDITIONS, "always_true"),
+            TestObjects.alwaysTrueConditionCoordinate(),
             "=",
             TestObjects.valueTrue()
         );
         MatcherAssert.assertThat(
-            target.isPrimitive(),
+            target.isEvaluated(),
             Matchers.is(false)
         );
     }
@@ -68,13 +68,13 @@ class SingleConditionTest {
     @Test
     void testBecomeComputedAfterEvaluation() throws DecitaException {
         final Condition target = new SingleCondition(
-            new Coordinate(Locator.CONDITIONS, "always_true"),
+            TestObjects.alwaysTrueConditionCoordinate(),
             "=",
             TestObjects.valueTrue()
         );
         target.evaluate(TestObjects.computationContext());
         MatcherAssert.assertThat(
-            target.isPrimitive(),
+            target.isEvaluated(),
             Matchers.is(true)
         );
     }

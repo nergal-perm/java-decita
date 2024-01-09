@@ -24,46 +24,41 @@
 
 package ru.ewc.decita;
 
-import lombok.EqualsAndHashCode;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * I am a fragment of the system state. My responsibility is to hold a single primitive value of a
- * single state property. That value will eventually be used in comparisons, i.e. Conditions
- * computations.
+ * I am the {@link Locator} responsible for storing and retrieving all the {@link Condition}s known
+ * to the engine.
  *
  * @since 0.1
  */
-@EqualsAndHashCode
-public class StateFragment {
+public final class ConditionsLocator implements Locator {
     /**
-     * Inner representation of a given value.
+     * Collection of stored {@link Condition}s.
      */
-    private final String value;
+    private final Map<String, Condition> conditions = new HashMap<>();
 
-    /**
-     * Ctor.
-     *
-     * @param value String representation of requested value.
-     */
-    public StateFragment(final String value) {
-        this.value = value;
+    @Override
+    public String fragmentBy(final String fragment, final ComputationContext context)
+        throws DecitaException {
+        return String.valueOf(this.conditions.get(fragment).evaluate(context));
+    }
+
+    @Override
+    public void registerWith(final ComputationContext context) {
+        context.registerLocator(Locator.CONDITIONS, this);
     }
 
     /**
-     * Determines whether the {@link StateFragment}'s value can be represented as {@code true}.
+     * Stores a new {@link Condition} within this instance.
      *
-     * @return True - if the {@link StateFragment}'s value is equal to "true".
+     * @param name Name of the {@link Condition}.
+     * @param condition The {@link Condition} itself.
+     * @return Itself, in order to use fluent API.
      */
-    public boolean asBoolean() {
-        return "true".equalsIgnoreCase(this.value);
-    }
-
-    /**
-     * Returns its value literally.
-     *
-     * @return The value of this {@link StateFragment}.
-     */
-    public String asString() {
-        return this.value;
+    public ConditionsLocator with(final String name, final SingleCondition condition) {
+        this.conditions.put(name, condition);
+        return this;
     }
 }

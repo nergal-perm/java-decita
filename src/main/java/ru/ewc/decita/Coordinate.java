@@ -24,31 +24,33 @@
 
 package ru.ewc.decita;
 
+import lombok.EqualsAndHashCode;
+
 /**
- * I am a simple data structure describing the required {@link StateFragment}. My responsibility is
- * to provide everything that is needed to retrieve the single {@link StateFragment}. The position
- * of every {@link StateFragment} is described by the {@link Locator}'s ID and the
- * {@link StateFragment}'s ID, so it looks like a 2D coordinate.
+ * I am a simple data structure describing the position of the required value. My responsibility is
+ * to provide everything that is needed to retrieve that value. The position of every value is
+ * described by the {@link Locator}'s ID and the {@code String} value's ID, so it looks like a
+ * 2D-coordinate.
  *
  * @since 0.1
  */
+@EqualsAndHashCode
 public final class Coordinate {
     /**
-     * String identifier of the concrete {@link Locator} responsible for retrieving the
-     * {@link StateFragment}.
+     * String identifier of the concrete {@link Locator} responsible for retrieving the value.
      */
-    private final String locator;
+    private String locator;
 
     /**
      * String identifier of the requested state property's value.
      */
-    private final String fragment;
+    private String fragment;
 
     /**
      * Ctor.
      *
      * @param locator The {@link Locator} identifier.
-     * @param fragment The {@link StateFragment} identifier.
+     * @param fragment The value's identifier.
      */
     public Coordinate(final String locator, final String fragment) {
         this.locator = locator;
@@ -56,12 +58,25 @@ public final class Coordinate {
     }
 
     /**
-     * Locates the required {@link StateFragment} in the provided {@link ComputationContext}.
+     * Locates the required value in the provided {@link ComputationContext}.
+     *
      * @param context Provided {@link ComputationContext}.
-     * @return Found {@link StateFragment}.
+     * @return A constant value {@link Coordinate}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    public StateFragment fragmentFrom(final ComputationContext context) throws DecitaException {
-        return context.fragmentFor(this.locator, this.fragment);
+    public Coordinate locateIn(final ComputationContext context) throws DecitaException {
+        final String located = context.valueFor(this.locator, this.fragment, context);
+        this.locator = Locator.CONSTANT_VALUES;
+        this.fragment = located;
+        return this;
+    }
+
+    /**
+     * Tests if {@link Coordinate} is already computed, i.e. its value is constant.
+     *
+     * @return True, if {@link Coordinate} points to a constant value.
+     */
+    public boolean isComputed() {
+        return Locator.CONSTANT_VALUES.equals(this.locator);
     }
 }

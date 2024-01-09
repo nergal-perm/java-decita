@@ -26,35 +26,40 @@ package ru.ewc.decita;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * The tests for {@link ComputationContext}.
+ * Tests for {@link Coordinate} class.
  *
  * @since 0.1
  */
-class ComputationContextTest {
+class CoordinateTest {
     @Test
-    void shouldFindAFragment() throws DecitaException {
-        final ComputationContext context = contextWithConstantLocator();
-        final Coordinate actual = TestObjects.valueTrue().locateIn(context);
+    void testAlreadyComputed() {
+        final Coordinate target = TestObjects.valueTrue();
         MatcherAssert.assertThat(
-            actual,
-            Matchers.equalTo(TestObjects.valueTrue())
+            target.isComputed(),
+            Matchers.is(true)
         );
     }
 
     @Test
-    void shouldThrowIfLocatorIsNotFound() {
-        final ComputationContext target = contextWithConstantLocator();
-        Assertions.assertThrows(
-            DecitaException.class,
-            () -> target.valueFor("non-existing", "value", target)
+    void testIsNotYetComputed() {
+        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(false)
         );
     }
 
-    private static ComputationContext contextWithConstantLocator() {
-        return TestObjects.computationContext();
+    @Test
+    void testChangesUponLocation() throws DecitaException {
+        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        final ComputationContext context = TestObjects.computationContext();
+        target.locateIn(context);
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(true)
+        );
     }
 }

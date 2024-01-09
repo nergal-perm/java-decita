@@ -34,8 +34,8 @@ package ru.ewc.decita;
 public final class ConstantLocator implements Locator {
 
     @Override
-    public StateFragment fragmentBy(final String fragment, final ComputationContext context) {
-        return new StateFragment(fragment);
+    public String fragmentBy(final String fragment, final ComputationContext context) {
+        return fragment;
     }
 
     @Override

@@ -56,7 +56,7 @@ class CoordinateTest {
     void testChangesUponLocation() throws DecitaException {
         final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
         final ComputationContext context = TestObjects.computationContext();
-        target.fragmentFrom(context);
+        target.locateIn(context);
         MatcherAssert.assertThat(
             target.isComputed(),
             Matchers.is(true)

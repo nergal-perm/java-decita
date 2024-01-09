@@ -43,15 +43,14 @@ public interface Locator {
     String CONDITIONS = "condition";
 
     /**
-     * Determines the system's state - the value of a single property, described by its name - and
-     * returns that state as a {@link StateFragment}'s instance.
+     * Determines the system's state - the value of a single property, described by its name.
      *
      * @param fragment The String identifier of the required property.
      * @param context The {@link ComputationContext} to use in property retrieval.
-     * @return The value of the requested property as a {@link StateFragment}'s instance.
-     * @throws DecitaException When the requested {@link Condition} cannot be evaluated.
+     * @return The value of the requested property as a {@code String}.
+     * @throws DecitaException When the requested {@link Coordinate} cannot be found.
      */
-    StateFragment fragmentBy(String fragment, ComputationContext context) throws DecitaException;
+    String fragmentBy(String fragment, ComputationContext context) throws DecitaException;
 
     /**
      * Registers the specified {@link Locator} in the given {@link ComputationContext}.

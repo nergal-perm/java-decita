@@ -28,7 +28,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 /**
- * I represent a simple {@link Condition} using two {@link StateFragment}s and some comparison
+ * I represent a simple {@link Condition} using two {@link Coordinate}s and some comparison
  * operation. My main responsibility is to compute that comparison and check if it's true or not.
  *
  * @since 0.1
@@ -50,7 +50,7 @@ public final class SingleCondition implements Condition {
     private final Coordinate right;
 
     /**
-     * Ctor.
+     * Constructor.
      * @param left Left-side {@link Coordinate}.
      * @param comparison The comparison operation applied to both operands.
      * @param right Right-side {@link Coordinate}.
@@ -63,41 +63,21 @@ public final class SingleCondition implements Condition {
 
     @Override
     public boolean evaluate(final ComputationContext context) throws DecitaException {
-        return this.comparisonFor(this.rightFragment(context)).matches(this.leftFragment(context));
+        this.right.locateIn(context);
+        this.left.locateIn(context);
+        return this.comparisonFor(this.right).matches(this.left);
     }
 
     /**
-     * Evaluates the left-side {@link StateFragment}.
+     * Creates a {@link Matcher} that corresponds to the given operation and {@link Coordinate}.
      *
-     * @param context The {@link ComputationContext} used to find the {@link StateFragment}.
-     * @return The requested {@link StateFragment}.
-     * @throws DecitaException If {@link StateFragment} cannot be found.
-     */
-    private StateFragment leftFragment(final ComputationContext context) throws DecitaException {
-        return this.left.fragmentFrom(context);
-    }
-
-    /**
-     * Evaluates the right-side {@link StateFragment}.
-     *
-     * @param context The {@link ComputationContext} used to find the {@link StateFragment}.
-     * @return The requested {@link StateFragment}.
-     * @throws DecitaException If {@link StateFragment} cannot be found.
-     */
-    private StateFragment rightFragment(final ComputationContext context) throws DecitaException {
-        return this.right.fragmentFrom(context);
-    }
-
-    /**
-     * Creates a {@link Matcher} that corresponds to the given operation and {@link StateFragment}.
-     *
-     * @param fragment The {@link StateFragment} to use with the {@link Matcher}.
+     * @param coordinate The {@link Coordinate} to use with the {@link Matcher}.
      * @return The {@link Matcher} to use in this {@link Condition}.
      */
-    private Matcher<?> comparisonFor(final StateFragment fragment) {
+    private Matcher<?> comparisonFor(final Coordinate coordinate) {
         Matcher<?> matcher = Matchers.not(Matchers.anything());
         if ("=".equalsIgnoreCase(this.comparison)) {
-            matcher = Matchers.equalTo(fragment);
+            matcher = Matchers.equalTo(coordinate);
         }
         return matcher;
     }

@@ -38,11 +38,10 @@ class ComputationContextTest {
     @Test
     void shouldFindAFragment() throws DecitaException {
         final ComputationContext context = contextWithConstantLocator();
-        final StateFragment actual = new Coordinate(Locator.CONSTANT_VALUES, "true")
-            .fragmentFrom(context);
+        final Coordinate actual = TestObjects.valueTrue().locateIn(context);
         MatcherAssert.assertThat(
-            actual.asBoolean(),
-            Matchers.is(true)
+            actual,
+            Matchers.equalTo(TestObjects.valueTrue())
         );
     }
 
@@ -51,12 +50,11 @@ class ComputationContextTest {
         final ComputationContext target = contextWithConstantLocator();
         Assertions.assertThrows(
             DecitaException.class,
-            () -> target.fragmentFor("non-existing", "value", target)
+            () -> target.valueFor("non-existing", "value", target)
         );
     }
 
     private static ComputationContext contextWithConstantLocator() {
         return TestObjects.computationContext();
     }
-
 }

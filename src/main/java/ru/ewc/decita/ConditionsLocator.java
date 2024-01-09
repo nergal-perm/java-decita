@@ -40,9 +40,9 @@ public final class ConditionsLocator implements Locator {
     private final Map<String, Condition> conditions = new HashMap<>();
 
     @Override
-    public StateFragment fragmentBy(final String fragment, final ComputationContext context)
+    public String fragmentBy(final String fragment, final ComputationContext context)
         throws DecitaException {
-        return new StateFragment(String.valueOf(this.conditions.get(fragment).evaluate(context)));
+        return String.valueOf(this.conditions.get(fragment).evaluate(context));
     }
 
     @Override

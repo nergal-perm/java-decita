@@ -49,4 +49,5 @@ public final class DecitaFacade {
     public Map<String, String> evaluateTable(final String table) {
         return this.content;
     }
+    // @todo #4 Implement DecisionTable as a set of Rules with Outcomes
 }

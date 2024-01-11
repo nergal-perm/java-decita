@@ -49,6 +49,4 @@ public final class DecitaFacade {
     public Map<String, String> evaluateTable(final String table) {
         return this.content;
     }
-    // @todo #4 Implement the Rule object as a set of Conditions and Outcomes
-    // And let the Rule evaluate itself in a given context.
 }

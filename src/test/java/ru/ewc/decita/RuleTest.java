@@ -30,15 +30,53 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for a Rule class.
+ *
  * @since 0.1
  */
 class RuleTest {
     @Test
-    void testInstantiation() {
-        final Rule target = new Rule();
+    void testNotComputedAfterCreation() {
+        final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
         MatcherAssert.assertThat(
-            target,
-            Matchers.notNullValue()
+            target.isComputed(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testNotEliminatedAfterCreation() {
+        final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
+        MatcherAssert.assertThat(
+            target.isEliminated(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testComputedAfterEvaluation() throws DecitaException {
+        final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
+        target.check(TestObjects.computationContext());
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            target.isEliminated(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testEliminatedAfterEvaluation() throws DecitaException {
+        final Rule target = TestObjects.alwaysTrueEqualsFalseRule();
+        target.check(TestObjects.computationContext());
+        MatcherAssert.assertThat(
+            target.isComputed(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            target.isEliminated(),
+            Matchers.is(true)
         );
     }
 }

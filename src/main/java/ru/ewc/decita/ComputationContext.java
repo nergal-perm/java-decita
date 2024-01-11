@@ -70,8 +70,6 @@ public class ComputationContext {
     public void registerLocator(final String id, final Locator locator) {
         this.locators.put(id, locator);
     }
-    // @todo #4 Refactor the Locator registration process, probably it can be done with fluent API
-    // or something like that. Current mechanism is too cumbersome.
 
     /**
      * Returns a concrete {@link Locator} if it's found in an instance storage.

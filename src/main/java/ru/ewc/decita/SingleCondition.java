@@ -24,6 +24,7 @@
 
 package ru.ewc.decita;
 
+import lombok.EqualsAndHashCode;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
@@ -33,6 +34,7 @@ import org.hamcrest.Matchers;
  *
  * @since 0.1
  */
+@EqualsAndHashCode
 public final class SingleCondition implements Condition {
     /**
      * Left-side {@link Coordinate}.

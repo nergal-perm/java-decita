@@ -25,7 +25,10 @@
 package ru.ewc.decita;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import lombok.EqualsAndHashCode;
 
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
@@ -33,11 +36,40 @@ import java.util.List;
  *
  * @since 0.1
  */
-public class Rule {
+@EqualsAndHashCode
+public final class Rule {
     /**
      * The rule's {@link Condition}s.
      */
     private final List<Condition> conditions = new ArrayList<>(5);
+
+    /**
+     * The rule's outcomes.
+     */
+    private final Map<String, String> outcomes = new HashMap<>();
+
+    /**
+     * Adds a {@link Condition} to this rule.
+     *
+     * @param condition The {@link Condition} to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule withCondition(final Condition condition) {
+        this.conditions.add(condition);
+        return this;
+    }
+
+    /**
+     * Adds an outcome to this rule.
+     *
+     * @param outcome The key of an outcome to add.
+     * @param value The string representation of an outcome's value to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule withOutcome(final String outcome, final String value) {
+        this.outcomes.put(outcome, value);
+        return this;
+    }
 
     /**
      * Checks whether this rule is computed, i.e. all of its {@link Condition}s were resolved
@@ -60,14 +92,13 @@ public class Rule {
     }
 
     /**
-     * Adds a {@link Condition} to this rule.
+     * Checks whether this rule is satisfied (i.e. all of its {@link Condition}s are computed and
+     * resolved to {@code true}).
      *
-     * @param condition The {@link Condition} to add.
-     * @return Itself, in order to implement fluent API.
+     * @return True if the rule is satisfied.
      */
-    public Rule with(final Condition condition) {
-        this.conditions.add(condition);
-        return this;
+    public boolean isSatisfied() {
+        return this.conditions.stream().allMatch(c -> c.isEvaluated() && !c.isNotSatisfied());
     }
 
     /**
@@ -77,8 +108,19 @@ public class Rule {
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
     public void check(final ComputationContext context) throws DecitaException {
-        for (final Condition cond : this.conditions) {
-            cond.evaluate(context);
+        if (!this.isEliminated() || !this.isComputed()) {
+            for (final Condition cond : this.conditions) {
+                cond.evaluate(context);
+            }
         }
+    }
+
+    /**
+     * Returns this rule outcomes.
+     *
+     * @return The simple dictionary, containing all this rule's outcomes.
+     */
+    public Map<String, String> outcome() {
+        return this.outcomes;
     }
 }

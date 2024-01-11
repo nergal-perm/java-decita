@@ -21,34 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package ru.ewc.decita;
 
+import java.util.List;
 import java.util.Map;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Main class for the outside users.
+ * Tests for {@link DecisionTable}.
  *
  * @since 0.1
  */
-public final class DecitaFacade {
-    /**
-     * Temporary field to make Qulice checks pass.
-     */
-    private final Map<String, String> content = Map.of("outcome", "true");
+class DecisionTableTest {
+    @Test
+    void shouldComputeTheExistingOutcome() throws DecitaException {
+        final DecisionTable target = new DecisionTable(TestObjects.rulesList());
+        final ComputationContext context = TestObjects.computationContext();
+        final Map<String, String> outcome = target.outcome(context);
+        MatcherAssert.assertThat(
+            outcome.get("outcome"),
+            Matchers.is("Hello")
+        );
+    }
 
-    // @todo #1 Return something more real from the method. It seems that the evaluation
-    // method should use some kind of computation context to store all the intermediate
-    // results, links to objects that retrieve data and so on.
-
-    // @todo #4 Find and compute the DecisionTable via Locator and Coordinate
-
-    /**
-     * Main method for evaluating the Decision Table.
-     *
-     * @param table Name of the table to evaluate.
-     * @return A dictionary of all the outcomes and their values.
-     */
-    public Map<String, String> evaluateTable(final String table) {
-        return this.content;
+    @Test
+    void shouldComputeElseRule() throws DecitaException {
+        final DecisionTable target =
+            new DecisionTable(List.of(TestObjects.alwaysTrueEqualsFalseRule()));
+        final ComputationContext context = TestObjects.computationContext();
+        final Map<String, String> outcome = target.outcome(context);
+        MatcherAssert.assertThat(
+            outcome.get("outcome"),
+            Matchers.is("undefined")
+        );
     }
 }

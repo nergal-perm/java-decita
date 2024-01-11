@@ -24,8 +24,12 @@
 
 package ru.ewc.decita;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * I hold different preconfigured objects for unit-tests.
+ *
  * @since 0.1
  */
 public final class TestObjects {
@@ -38,6 +42,7 @@ public final class TestObjects {
 
     /**
      * The {@link ComputationContext} with some predefined {@link Locator}s.
+     *
      * @return A prefilled {@link ComputationContext}.
      */
     static ComputationContext computationContext() {
@@ -49,6 +54,7 @@ public final class TestObjects {
 
     /**
      * The {@link Condition} that compares a constant to itself.
+     *
      * @return A simple and always true {@link Condition}.
      */
     static SingleCondition alwaysTrueConstantCondition() {
@@ -59,10 +65,20 @@ public final class TestObjects {
 
     /**
      * Convenience method to get a new instance of {@link Coordinate} with value {@code true}.
-     * @return The concrete value {@link Locator}.
+     *
+     * @return The concrete value {@link Coordinate}.
      */
     static Coordinate valueTrue() {
         return new Coordinate(Locator.CONSTANT_VALUES, "true");
+    }
+
+    /**
+     * Convenience method to get a new instance of {@link Coordinate} with value {@code false}.
+     *
+     * @return The concrete value {@link Coordinate}.
+     */
+    static Coordinate valueFalse() {
+        return new Coordinate(Locator.CONSTANT_VALUES, "false");
     }
 
     /**
@@ -82,13 +98,9 @@ public final class TestObjects {
      * @return Always succeeding {@link Rule} instance.
      */
     static Rule alwaysTrueEqualsTrueRule() {
-        return new Rule().with(
-            new SingleCondition(
-                alwaysTrueConditionCoordinate(),
-                "=",
-                valueTrue()
-            )
-        );
+        return new Rule()
+            .withCondition(new SingleCondition(alwaysTrueConditionCoordinate(), "=", valueTrue()))
+            .withOutcome("outcome", "Hello");
     }
 
     /**
@@ -98,17 +110,27 @@ public final class TestObjects {
      * @return Always failing {@link Rule} instance.
      */
     static Rule alwaysTrueEqualsFalseRule() {
-        return new Rule().with(
-            new SingleCondition(
-                alwaysTrueConditionCoordinate(),
-                "=",
-                new Coordinate(Locator.CONSTANT_VALUES, "false")
-            )
-        );
+        return new Rule()
+            .withCondition(new SingleCondition(alwaysTrueConditionCoordinate(), "=", valueFalse()))
+            .withOutcome("outcome", "World");
+    }
+
+    /**
+     * Convenience method to get a simple {@link Rule} list that can be used to populate a
+     * {@link DecisionTable}.
+     *
+     * @return A list of {@link Rule}s.
+     */
+    static List<Rule> rulesList() {
+        final List<Rule> rules = new ArrayList<>(2);
+        rules.add(alwaysTrueEqualsTrueRule());
+        rules.add(alwaysTrueEqualsFalseRule());
+        return rules;
     }
 
     /**
      * Convenience method to get a new instance of {@link ConditionsLocator}.
+     *
      * @return Prefilled instance of {@link ConditionsLocator}.
      */
     private static Locator conditionsLocator() {

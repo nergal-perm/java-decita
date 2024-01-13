@@ -55,8 +55,7 @@ public final class TableLocator implements Locator {
                 String.format("Outcome coordinate '%s' can not be understood", fragment)
             );
         }
-        return this.tables.getOrDefault(address[0], TableLocator.DEFAULT_VALUE).outcome(context)
-            .get(address[1]);
+        return this.tableByName(address[0]).outcome(context).get(address[1]);
     }
 
     @Override
@@ -71,8 +70,31 @@ public final class TableLocator implements Locator {
      * @param table The {@link DecisionTable}'s instance to register.
      * @return Itself, in order to implement a fluent API.
      */
-    public Locator withTable(final DecisionTable table) {
+    public TableLocator withTable(final DecisionTable table) {
         this.tables.put(table.tableName(), table);
         return this;
+    }
+
+    /**
+     * Computes the decision for the requested {@link DecisionTable}.
+     *
+     * @param name Name of the table.
+     * @param context The {@link ComputationContext} to make the decision in.
+     * @return A dictionary containing the decision.
+     * @throws DecitaException If the decision could not be made.
+     */
+    public Map<String, String> decisionFor(final String name, final ComputationContext context)
+        throws DecitaException {
+        return this.tableByName(name).outcome(context);
+    }
+
+    /**
+     * Gets the requested {@link DecisionTable} or the default (missing) one.
+     *
+     * @param name The name of the table to get.
+     * @return An instance of {@link DecisionTable}.
+     */
+    private DecisionTable tableByName(final String name) {
+        return this.tables.getOrDefault(name, TableLocator.DEFAULT_VALUE);
     }
 }

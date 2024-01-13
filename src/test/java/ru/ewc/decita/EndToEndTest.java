@@ -25,37 +25,46 @@
 package ru.ewc.decita;
 
 import java.util.List;
-import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link DecisionTable}.
+ * Full scenario tests.
  *
  * @since 0.1
  */
-class DecisionTableTest {
+class EndToEndTest {
+    /**
+     * Constant for the table outcome field.
+     */
+    public static final String OUTCOME = "outcome";
+
     @Test
-    void shouldComputeTheExistingOutcome() throws DecitaException {
-        final DecisionTable target = new DecisionTable("no-matter", TestObjects.rulesList());
+    void shouldComputeTableWithLinkToAnother() throws DecitaException {
+        final DecisionTable hello = new DecisionTable(
+            "hello-world",
+            List.of(
+                TestObjects.alwaysTrueEqualsTrueRule().withOutcome(EndToEndTest.OUTCOME, "Hello"),
+                TestObjects.alwaysTrueEqualsFalseRule().withOutcome(EndToEndTest.OUTCOME, "World")
+            )
+        );
         final ComputationContext context = TestObjects.computationContext();
-        final Map<String, String> outcome = target.outcome(context);
+        context.registerLocator(Locator.TABLE, new TableLocator().withTable(hello));
+        final DecisionTable target = new DecisionTable(
+            "target",
+            List.of(
+                new Rule()
+                    .withCondition(TestObjects.helloWorldOutcomeIs("Hello"))
+                    .withOutcome(EndToEndTest.OUTCOME, "true"),
+                new Rule()
+                    .withCondition(TestObjects.helloWorldOutcomeIs("World"))
+                    .withOutcome(EndToEndTest.OUTCOME, "false")
+            ));
         MatcherAssert.assertThat(
-            outcome.get("outcome"),
-            Matchers.is("Hello")
+            target.outcome(context),
+            Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true"))
         );
     }
 
-    @Test
-    void shouldComputeElseRule() throws DecitaException {
-        final DecisionTable target =
-            new DecisionTable("no-matter", List.of(TestObjects.alwaysTrueEqualsFalseRule()));
-        final ComputationContext context = TestObjects.computationContext();
-        final Map<String, String> outcome = target.outcome(context);
-        MatcherAssert.assertThat(
-            outcome.get("outcome"),
-            Matchers.is("undefined")
-        );
-    }
 }

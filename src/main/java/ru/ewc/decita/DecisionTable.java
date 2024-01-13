@@ -46,13 +46,29 @@ public final class DecisionTable {
     private final Rule elserule;
 
     /**
+     * A table's name.
+     */
+    private final String name;
+
+    /**
      * Ctor.
      *
+     * @param name A table's name.
      * @param rules A collection of {@link Rule}s for this table.
      */
-    public DecisionTable(final Iterable<Rule> rules) {
+    public DecisionTable(final String name, final Iterable<Rule> rules) {
         this.rules = rules;
+        this.name = name;
         this.elserule = new Rule().withOutcome("outcome", "undefined");
+    }
+
+    /**
+     * Gets the table name.
+     *
+     * @return A table's name.
+     */
+    public String tableName() {
+        return this.name;
     }
 
     /**

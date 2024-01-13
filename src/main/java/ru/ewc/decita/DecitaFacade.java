@@ -40,7 +40,8 @@ public final class DecitaFacade {
     // method should use some kind of computation context to store all the intermediate
     // results, links to objects that retrieve data and so on.
 
-    // @todo #4 Find and compute the DecisionTable via Locator and Coordinate
+    // @todo #4 Implement the full DecisionTable result as a Map.
+    // The table itself should be found in the ComputationContext.
 
     /**
      * Main method for evaluating the Decision Table.

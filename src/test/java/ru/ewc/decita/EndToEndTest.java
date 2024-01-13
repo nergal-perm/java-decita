@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import java.util.List;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,30 +42,65 @@ class EndToEndTest {
     public static final String OUTCOME = "outcome";
 
     @Test
-    void shouldComputeTableWithLinkToAnother() throws DecitaException {
-        final DecisionTable hello = new DecisionTable(
+    void shouldComputeTheWholeTable() throws DecitaException {
+        final Map<String, String> actual = contextWithHelloWorld().decisionFor("target");
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.allOf(
+                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true")),
+                Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
+            )
+        );
+    }
+
+    /**
+     * Convenience method to create a naive target table.
+     *
+     * @return The {@link DecisionTable} instance.
+     */
+    private static DecisionTable tableThatLinkToHelloWorld() {
+        return new DecisionTable(
+            "target",
+            List.of(
+                new Rule()
+                    .withCondition(TestObjects.helloWorldOutcomeIs("Hello"))
+                    .withOutcome(EndToEndTest.OUTCOME, "true")
+                    .withOutcome("text", "hello world"),
+                new Rule()
+                    .withCondition(TestObjects.helloWorldOutcomeIs("World"))
+                    .withOutcome(EndToEndTest.OUTCOME, "false")
+                    .withOutcome("text", "no text")
+            ));
+    }
+
+    /**
+     * Convenience method to create a context for naive tables.
+     *
+     * @return Prefilled {@link ComputationContext}.
+     */
+    private static ComputationContext contextWithHelloWorld() {
+        final ComputationContext context = TestObjects.computationContext();
+        context.registerLocator(
+            Locator.TABLE,
+            new TableLocator()
+                .withTable(helloWorldTable())
+                .withTable(tableThatLinkToHelloWorld())
+        );
+        return context;
+    }
+
+    /**
+     * Convenience method to create a naive 'Hello world' table.
+     *
+     * @return The {@link DecisionTable} instance.
+     */
+    private static DecisionTable helloWorldTable() {
+        return new DecisionTable(
             "hello-world",
             List.of(
                 TestObjects.alwaysTrueEqualsTrueRule().withOutcome(EndToEndTest.OUTCOME, "Hello"),
                 TestObjects.alwaysTrueEqualsFalseRule().withOutcome(EndToEndTest.OUTCOME, "World")
             )
         );
-        final ComputationContext context = TestObjects.computationContext();
-        context.registerLocator(Locator.TABLE, new TableLocator().withTable(hello));
-        final DecisionTable target = new DecisionTable(
-            "target",
-            List.of(
-                new Rule()
-                    .withCondition(TestObjects.helloWorldOutcomeIs("Hello"))
-                    .withOutcome(EndToEndTest.OUTCOME, "true"),
-                new Rule()
-                    .withCondition(TestObjects.helloWorldOutcomeIs("World"))
-                    .withOutcome(EndToEndTest.OUTCOME, "false")
-            ));
-        MatcherAssert.assertThat(
-            target.outcome(context),
-            Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true"))
-        );
     }
-
 }

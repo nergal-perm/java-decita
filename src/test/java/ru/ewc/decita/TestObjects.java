@@ -129,6 +129,21 @@ public final class TestObjects {
     }
 
     /**
+     * Convenience method to create {@link Condition}s pointing to 'hello-world'
+     * {@link DecisionTable} computation result.
+     *
+     * @param outcome The name of the table's computation field.
+     * @return A {@link Condition} pointing to 'hello-world' table result.
+     */
+    static SingleCondition helloWorldOutcomeIs(final String outcome) {
+        return new SingleCondition(
+            new Coordinate(Locator.TABLE, "hello-world::outcome"),
+            "=",
+            new Coordinate(Locator.CONSTANT_VALUES, outcome)
+        );
+    }
+
+    /**
      * Convenience method to get a new instance of {@link ConditionsLocator}.
      *
      * @return Prefilled instance of {@link ConditionsLocator}.

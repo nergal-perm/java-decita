@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class ComputationContext {
+public final class ComputationContext {
     /**
      * The set of all the available {@link Locator}s.
      */
@@ -55,7 +55,7 @@ public class ComputationContext {
      * @return The {@code String} value containing requested state.
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public final String valueFor(
+    public String valueFor(
         final String locator, final String fragment, final ComputationContext context)
         throws DecitaException {
         return this.locatorFor(locator).fragmentBy(fragment, context);
@@ -72,6 +72,17 @@ public class ComputationContext {
     }
     // @todo #23 Refactor the Locator registration process, probably it can be done with fluent API
     // or something like that. Current mechanism is too cumbersome.
+
+    /**
+     * Computes the specified {@link DecisionTable} result as a Dictionary.
+     *
+     * @param name The name of the table to compute.
+     * @return The Dictionary containing the decision result.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    public Map<String, String> decisionFor(final String name) throws DecitaException {
+        return ((TableLocator) this.locatorFor(Locator.TABLE)).decisionFor(name, this);
+    }
 
     /**
      * Returns a concrete {@link Locator} if it's found in an instance storage.

@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 class SingleConditionTest {
     @Test
     void testInstantiating() {
-        final Condition target = simpleConstantCondition();
+        final Condition target = TestObjects.alwaysTrueConstantCondition();
         MatcherAssert.assertThat(
             target,
             Matchers.notNullValue()
@@ -45,9 +45,9 @@ class SingleConditionTest {
 
     @Test
     void testEvaluatingToTrue() throws DecitaException {
-        final Condition target = simpleConstantCondition();
+        final Condition target = TestObjects.alwaysTrueConstantCondition();
         MatcherAssert.assertThat(
-            target.evaluate(computationContext()),
+            target.evaluate(TestObjects.defaultContext()),
             Matchers.is(true)
         );
     }
@@ -55,9 +55,7 @@ class SingleConditionTest {
     @Test
     void testNotComputedCondition() {
         final Condition target = new SingleCondition(
-            TestObjects.alwaysTrueConditionCoordinate(),
-            "=",
-            TestObjects.valueTrue()
+            TestObjects.alwaysTrueConditionCoordinate(), "=", TestObjects.valueTrue()
         );
         MatcherAssert.assertThat(
             target.isEvaluated(),
@@ -67,23 +65,11 @@ class SingleConditionTest {
 
     @Test
     void testBecomeComputedAfterEvaluation() throws DecitaException {
-        final Condition target = new SingleCondition(
-            TestObjects.alwaysTrueConditionCoordinate(),
-            "=",
-            TestObjects.valueTrue()
-        );
+        final Condition target = TestObjects.alwaysTrueConstantCondition();
         target.evaluate(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             target.isEvaluated(),
             Matchers.is(true)
         );
-    }
-
-    private static SingleCondition simpleConstantCondition() {
-        return TestObjects.alwaysTrueConstantCondition();
-    }
-
-    private static ComputationContext computationContext() {
-        return TestObjects.defaultContext();
     }
 }

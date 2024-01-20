@@ -41,11 +41,6 @@ public interface Locator {
     String CONSTANT_VALUES = "constant";
 
     /**
-     * Name for conditions {@link Locator}.
-     */
-    String CONDITIONS = "condition";
-
-    /**
      * Determines the system's state - the value of a single property, described by its name.
      *
      * @param fragment The String identifier of the required property.

@@ -45,6 +45,6 @@ class ComputationContextTest {
     }
 
     private static ComputationContext contextWithConstantLocator() {
-        return TestObjects.computationContext();
+        return TestObjects.defaultContext();
     }
 }

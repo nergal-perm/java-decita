@@ -60,7 +60,6 @@ class EndToEndTest {
      */
     private static DecisionTable tableThatLinkToHelloWorld() {
         return new DecisionTable(
-            "target",
             List.of(
                 new Rule()
                     .withCondition(TestObjects.helloWorldOutcomeIs("Hello"))
@@ -79,14 +78,12 @@ class EndToEndTest {
      * @return Prefilled {@link ComputationContext}.
      */
     private static ComputationContext contextWithHelloWorld() {
-        final ComputationContext context = TestObjects.computationContext();
-        context.registerLocator(
-            Locator.TABLE,
-            new TableLocator()
-                .withTable(helloWorldTable())
-                .withTable(tableThatLinkToHelloWorld())
+        return TestObjects.contextWithLocators(
+            Map.of(
+                "hello-world", helloWorldTable(),
+                "target", tableThatLinkToHelloWorld()
+            )
         );
-        return context;
     }
 
     /**
@@ -96,7 +93,6 @@ class EndToEndTest {
      */
     private static DecisionTable helloWorldTable() {
         return new DecisionTable(
-            "hello-world",
             List.of(
                 TestObjects.alwaysTrueEqualsTrueRule().withOutcome(EndToEndTest.OUTCOME, "Hello"),
                 TestObjects.alwaysTrueEqualsFalseRule().withOutcome(EndToEndTest.OUTCOME, "World")

@@ -38,8 +38,8 @@ import org.junit.jupiter.api.Test;
 class DecisionTableTest {
     @Test
     void shouldComputeTheExistingOutcome() throws DecitaException {
-        final DecisionTable target = new DecisionTable("no-matter", TestObjects.rulesList());
-        final ComputationContext context = TestObjects.computationContext();
+        final DecisionTable target = new DecisionTable(TestObjects.rulesList());
+        final ComputationContext context = TestObjects.defaultContext();
         final Map<String, String> outcome = target.outcome(context);
         MatcherAssert.assertThat(
             outcome.get("outcome"),
@@ -50,8 +50,8 @@ class DecisionTableTest {
     @Test
     void shouldComputeElseRule() throws DecitaException {
         final DecisionTable target =
-            new DecisionTable("no-matter", List.of(TestObjects.alwaysTrueEqualsFalseRule()));
-        final ComputationContext context = TestObjects.computationContext();
+            new DecisionTable(List.of(TestObjects.alwaysTrueEqualsFalseRule()));
+        final ComputationContext context = TestObjects.defaultContext();
         final Map<String, String> outcome = target.outcome(context);
         MatcherAssert.assertThat(
             outcome.get("outcome"),

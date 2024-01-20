@@ -35,15 +35,6 @@ import org.junit.jupiter.api.Test;
  */
 class RuleTest {
     @Test
-    void testNotComputedAfterCreation() {
-        final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
-        MatcherAssert.assertThat(
-            target.isComputed(),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
     void testNotEliminatedAfterCreation() {
         final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
         MatcherAssert.assertThat(

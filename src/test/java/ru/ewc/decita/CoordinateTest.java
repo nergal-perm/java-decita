@@ -45,7 +45,7 @@ class CoordinateTest {
 
     @Test
     void testIsNotYetComputed() {
-        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        final Coordinate target = new Coordinate("always_true", "outcome");
         MatcherAssert.assertThat(
             target.isComputed(),
             Matchers.is(false)
@@ -54,7 +54,7 @@ class CoordinateTest {
 
     @Test
     void testChangesUponLocation() throws DecitaException {
-        final Coordinate target = new Coordinate(Locator.CONDITIONS, "always_true");
+        final Coordinate target = new Coordinate("always_true", "outcome");
         final ComputationContext context = TestObjects.defaultContext();
         target.locateIn(context);
         MatcherAssert.assertThat(

@@ -71,9 +71,7 @@ public final class TestObjects {
      * @return A simple and always true {@link Condition}.
      */
     static SingleCondition alwaysTrueConstantCondition() {
-        return new SingleCondition(
-            valueTrue(), "=", valueTrue()
-        );
+        return new SingleCondition(valueTrue(), "=", valueTrue());
     }
 
     /**
@@ -92,7 +90,7 @@ public final class TestObjects {
      * @return A {@link Coordinate} of the always true {@link Condition}.
      */
     static Coordinate alwaysTrueConditionCoordinate() {
-        return new Coordinate(Locator.CONDITIONS, "always_true");
+        return new Coordinate("always_true", "outcome");
     }
 
     /**
@@ -103,7 +101,7 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsTrueRule() {
         return new Rule()
-            .withCondition(new SingleCondition(alwaysTrueConditionCoordinate(), "=", valueTrue()))
+            .withCondition(alwaysTrueConstantCondition())
             .withOutcome("outcome", "Hello");
     }
 
@@ -142,14 +140,14 @@ public final class TestObjects {
      * Convenience method to create {@link Condition}s pointing to 'hello-world'
      * {@link DecisionTable} computation result.
      *
-     * @param outcome The name of the table's computation field.
+     * @param expected The name of the table's computation field.
      * @return A {@link Condition} pointing to 'hello-world' table result.
      */
-    static SingleCondition helloWorldOutcomeIs(final String outcome) {
+    static SingleCondition helloWorldOutcomeIs(final String expected) {
         return new SingleCondition(
             new Coordinate("hello-world", "outcome"),
             "=",
-            new Coordinate(Locator.CONSTANT_VALUES, outcome)
+            new Coordinate(Locator.CONSTANT_VALUES, expected)
         );
     }
 
@@ -160,9 +158,8 @@ public final class TestObjects {
      */
     private static Map<String, Locator> defaultLocators() {
         return Map.of(
-            Locator.CONSTANT_VALUES, new ConstantLocator(),
-            Locator.CONDITIONS, new ConditionsLocator()
-                .with("always_true", alwaysTrueConstantCondition())
+            "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
+            Locator.CONSTANT_VALUES, new ConstantLocator()
         );
     }
 

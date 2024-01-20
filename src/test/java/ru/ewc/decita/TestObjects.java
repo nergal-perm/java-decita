@@ -70,8 +70,8 @@ public final class TestObjects {
      *
      * @return A simple and always true {@link Condition}.
      */
-    static SingleCondition alwaysTrueConstantCondition() {
-        return new SingleCondition(valueTrue(), "=", valueTrue());
+    static Condition alwaysTrueConstantCondition() {
+        return new EqualsCondition(valueTrue(), valueTrue());
     }
 
     /**
@@ -114,9 +114,8 @@ public final class TestObjects {
     static Rule alwaysTrueEqualsFalseRule() {
         return new Rule()
             .withCondition(
-                new SingleCondition(
+                new EqualsCondition(
                     alwaysTrueConditionCoordinate(),
-                    "=",
                     new Coordinate(Locator.CONSTANT_VALUES, "false")
                 )
             )
@@ -143,10 +142,9 @@ public final class TestObjects {
      * @param expected The name of the table's computation field.
      * @return A {@link Condition} pointing to 'hello-world' table result.
      */
-    static SingleCondition helloWorldOutcomeIs(final String expected) {
-        return new SingleCondition(
+    static Condition helloWorldOutcomeIs(final String expected) {
+        return new EqualsCondition(
             new Coordinate("hello-world", "outcome"),
-            "=",
             new Coordinate(Locator.CONSTANT_VALUES, expected)
         );
     }

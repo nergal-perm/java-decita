@@ -26,7 +26,6 @@ package ru.ewc.decita;
 
 import lombok.EqualsAndHashCode;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 
 /**
  * I represent a simple {@link Condition} using two {@link Coordinate}s and some comparison
@@ -35,18 +34,11 @@ import org.hamcrest.Matchers;
  * @since 0.1
  */
 @EqualsAndHashCode
-public final class SingleCondition implements Condition {
-    // @todo #31 Create concrete Conditions classes for 1-Order and 2-Order Conditions.
-    // 1-Order - is a 'EqualsCondition', 2-Order - is a 'EqualsTrueCondition'
+public abstract class SingleCondition implements Condition {
     /**
      * Left-side {@link Coordinate}.
      */
     private final Coordinate left;
-
-    /**
-     * The comparison operation applied to both operands.
-     */
-    private final String comparison;
 
     /**
      * Right-side {@link Coordinate}.
@@ -57,30 +49,44 @@ public final class SingleCondition implements Condition {
      * Constructor.
      *
      * @param left Left-side {@link Coordinate}.
-     * @param comparison The comparison operation applied to both operands.
      * @param right Right-side {@link Coordinate}.
      */
-    public SingleCondition(final Coordinate left, final String comparison, final Coordinate right) {
+    protected SingleCondition(final Coordinate left, final Coordinate right) {
         this.left = left;
-        this.comparison = comparison;
         this.right = right;
     }
 
     @Override
-    public boolean evaluate(final ComputationContext context) throws DecitaException {
+    public final boolean evaluate(final ComputationContext context) throws DecitaException {
         this.right.locateIn(context);
         this.left.locateIn(context);
         return this.isSatisfied();
     }
 
     @Override
-    public boolean isEvaluated() {
+    public final boolean isEvaluated() {
         return this.right.isComputed() && this.left.isComputed();
     }
 
     @Override
-    public boolean isNotSatisfied() {
+    public final boolean isNotSatisfied() {
         return this.isEvaluated() && !this.isSatisfied();
+    }
+
+    /**
+     * Creates a {@link Matcher} that corresponds to the given operation and {@link Coordinate}.
+     *
+     * @return The {@link Matcher} to use in this {@link Condition}.
+     */
+    protected abstract Matcher<Coordinate> comparisonFor();
+
+    /**
+     * Returns the right part of this {@link Condition}.
+     *
+     * @return The {@link Coordinate} that is its right part.
+     */
+    protected final Coordinate rightPart() {
+        return this.right;
     }
 
     /**
@@ -89,20 +95,6 @@ public final class SingleCondition implements Condition {
      * @return True, if it does.
      */
     private boolean isSatisfied() {
-        return this.isEvaluated() && this.comparisonFor(this.right).matches(this.left);
-    }
-
-    /**
-     * Creates a {@link Matcher} that corresponds to the given operation and {@link Coordinate}.
-     *
-     * @param coordinate The {@link Coordinate} to use with the {@link Matcher}.
-     * @return The {@link Matcher} to use in this {@link Condition}.
-     */
-    private Matcher<?> comparisonFor(final Coordinate coordinate) {
-        Matcher<?> matcher = Matchers.not(Matchers.anything());
-        if ("=".equalsIgnoreCase(this.comparison)) {
-            matcher = Matchers.equalTo(coordinate);
-        }
-        return matcher;
+        return this.isEvaluated() && this.comparisonFor().matches(this.left);
     }
 }

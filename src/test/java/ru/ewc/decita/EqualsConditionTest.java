@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-class SingleConditionTest {
+class EqualsConditionTest {
     @Test
     void testInstantiating() {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
@@ -54,8 +54,9 @@ class SingleConditionTest {
 
     @Test
     void testNotComputedCondition() {
-        final Condition target = new SingleCondition(
-            TestObjects.alwaysTrueConditionCoordinate(), "=", TestObjects.valueTrue()
+        final Condition target = new EqualsCondition(
+            TestObjects.alwaysTrueConditionCoordinate(),
+            TestObjects.valueTrue()
         );
         MatcherAssert.assertThat(
             target.isEvaluated(),

@@ -34,6 +34,8 @@ import java.util.stream.StreamSupport;
  * @since 0.1
  */
 public final class DecisionTable {
+    // @todo #32 Make DecisionTable implement Locator interface.
+    // Fill the ComputationContext with DecisionTables Locators and not the single Table Locator.
     /**
      * A collection of table's {@link Rule}s.
      */

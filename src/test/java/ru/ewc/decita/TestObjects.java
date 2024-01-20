@@ -26,6 +26,7 @@ package ru.ewc.decita;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * I hold different preconfigured objects for unit-tests.
@@ -46,10 +47,12 @@ public final class TestObjects {
      * @return A prefilled {@link ComputationContext}.
      */
     static ComputationContext computationContext() {
-        final ComputationContext target = new ComputationContext();
-        new ConstantLocator().registerWith(target);
-        conditionsLocator().registerWith(target);
-        return target;
+        return new ComputationContext(
+            Map.of(
+                Locator.CONSTANT_VALUES, new ConstantLocator(),
+                Locator.CONDITIONS, conditionsLocator()
+            )
+        );
     }
 
     /**

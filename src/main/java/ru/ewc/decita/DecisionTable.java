@@ -33,7 +33,7 @@ import java.util.stream.StreamSupport;
  *
  * @since 0.1
  */
-public final class DecisionTable {
+public final class DecisionTable implements Locator {
     // @todo #32 Make DecisionTable implement Locator interface.
     // Fill the ComputationContext with DecisionTables Locators and not the single Table Locator.
     /**
@@ -64,6 +64,12 @@ public final class DecisionTable {
         this.elserule = new Rule().withOutcome("outcome", "undefined");
     }
 
+    @Override
+    public String fragmentBy(final String fragment, final ComputationContext context)
+        throws DecitaException {
+        return this.outcome(context).getOrDefault(fragment, "undefined");
+    }
+
     /**
      * Gets the table name.
      *
@@ -73,13 +79,7 @@ public final class DecisionTable {
         return this.name;
     }
 
-    /**
-     * Computes this table's outcomes by checking all of its {@link Rule}s.
-     *
-     * @param context The specific {@link ComputationContext} to make a decision in.
-     * @return The simple dictionary of the table's outcomes.
-     * @throws DecitaException If any of the {@link Rule}s cannot be checked.
-     */
+    @Override
     public Map<String, String> outcome(final ComputationContext context) throws DecitaException {
         for (final Rule rule : this.rules) {
             rule.check(context);

@@ -24,6 +24,9 @@
 
 package ru.ewc.decita;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * I am the Locator service. My main responsibility is to find requested Fragment of the application
  * state.
@@ -58,9 +61,13 @@ public interface Locator {
     String fragmentBy(String fragment, ComputationContext context) throws DecitaException;
 
     /**
-     * Registers the specified {@link Locator} in the given {@link ComputationContext}.
+     * Computes this table's outcomes by checking all of its {@link Rule}s.
      *
-     * @param context Context to register the {@link Locator} in.
+     * @param context The specific {@link ComputationContext} to make a decision in.
+     * @return The simple dictionary of the table's outcomes.
+     * @throws DecitaException If any of the {@link Rule}s cannot be checked.
      */
-    void registerWith(ComputationContext context);
+    default Map<String, String> outcome(ComputationContext context) throws DecitaException {
+        return Collections.singletonMap("outcome", "undefined");
+    }
 }

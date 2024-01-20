@@ -99,4 +99,7 @@ public final class ComputationContext {
             String.format("Locator '%s' not found in computation context", locator)
         );
     }
+    // @todo #31 Remove the explicit 'table' part from Table Coordinate.
+    // Every locator's name that is not known to the engine should try to resolve
+    // as a concrete Table.
 }

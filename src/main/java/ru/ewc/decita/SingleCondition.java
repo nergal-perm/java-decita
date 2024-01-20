@@ -36,6 +36,8 @@ import org.hamcrest.Matchers;
  */
 @EqualsAndHashCode
 public final class SingleCondition implements Condition {
+    // @todo #31 Create concrete Conditions classes for 1-Order and 2-Order Conditions.
+    // 1-Order - is a 'EqualsCondition', 2-Order - is a 'EqualsTrueCondition'
     /**
      * Left-side {@link Coordinate}.
      */

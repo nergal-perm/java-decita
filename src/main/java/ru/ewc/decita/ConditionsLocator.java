@@ -34,6 +34,8 @@ import java.util.Map;
  * @since 0.1
  */
 public final class ConditionsLocator implements Locator {
+    // @todo #31 Remove the ability to locate Conditions from DecisionTables.
+
     /**
      * Collection of stored {@link Condition}s.
      */

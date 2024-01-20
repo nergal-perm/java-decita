@@ -41,9 +41,11 @@ public final class ComputationContext {
 
     /**
      * Ctor.
+     *
+     * @param locators Dictionary of predefined (required) locators.
      */
-    public ComputationContext() {
-        this.locators = new HashMap<>();
+    public ComputationContext(final Map<String, Locator> locators) {
+        this.locators = new HashMap<>(locators);
     }
 
     /**
@@ -89,15 +91,9 @@ public final class ComputationContext {
      *
      * @param locator The String identifier of the required {@link Locator}.
      * @return The instance of {@link Locator}.
-     * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    private Locator locatorFor(final String locator) throws DecitaException {
-        if (this.locators.containsKey(locator)) {
-            return this.locators.get(locator);
-        }
-        throw new DecitaException(
-            String.format("Locator '%s' not found in computation context", locator)
-        );
+    private Locator locatorFor(final String locator) {
+        return this.locators.getOrDefault(locator, this.locators.get(Locator.TABLE));
     }
     // @todo #31 Remove the explicit 'table' part from Table Coordinate.
     // Every locator's name that is not known to the engine should try to resolve

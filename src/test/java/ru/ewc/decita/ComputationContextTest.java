@@ -26,7 +26,6 @@ package ru.ewc.decita;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -42,15 +41,6 @@ class ComputationContextTest {
         MatcherAssert.assertThat(
             actual,
             Matchers.equalTo(TestObjects.valueTrue())
-        );
-    }
-
-    @Test
-    void shouldThrowIfLocatorIsNotFound() {
-        final ComputationContext target = contextWithConstantLocator();
-        Assertions.assertThrows(
-            DecitaException.class,
-            () -> target.valueFor("non-existing", "value", target)
         );
     }
 

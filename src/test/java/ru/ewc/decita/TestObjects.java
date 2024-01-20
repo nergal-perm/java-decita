@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +47,22 @@ public final class TestObjects {
      *
      * @return A prefilled {@link ComputationContext}.
      */
-    static ComputationContext computationContext() {
-        return new ComputationContext(
-            Map.of(
-                Locator.CONSTANT_VALUES, new ConstantLocator(),
-                Locator.CONDITIONS, conditionsLocator()
-            )
-        );
+    static ComputationContext defaultContext() {
+        return new ComputationContext(defaultLocators());
+    }
+
+    /**
+     * Creates the {@link ComputationContext} filled with both required {@link Locator}s and
+     * {@link Locator}s passed in as an argument.
+     *
+     * @param locators A collection of {@link Locator}'s to add to context.
+     * @return An instance of {@link ComputationContext} filled with specified {@link Locator}s
+     *  along with the required ones.
+     */
+    static ComputationContext contextWithLocators(final Map<String, Locator> locators) {
+        final Map<String, Locator> updated = new HashMap<>(locators);
+        updated.putAll(defaultLocators());
+        return new ComputationContext(updated);
     }
 
     /**
@@ -73,15 +83,6 @@ public final class TestObjects {
      */
     static Coordinate valueTrue() {
         return new Coordinate(Locator.CONSTANT_VALUES, "true");
-    }
-
-    /**
-     * Convenience method to get a new instance of {@link Coordinate} with value {@code false}.
-     *
-     * @return The concrete value {@link Coordinate}.
-     */
-    static Coordinate valueFalse() {
-        return new Coordinate(Locator.CONSTANT_VALUES, "false");
     }
 
     /**
@@ -114,7 +115,13 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsFalseRule() {
         return new Rule()
-            .withCondition(new SingleCondition(alwaysTrueConditionCoordinate(), "=", valueFalse()))
+            .withCondition(
+                new SingleCondition(
+                    alwaysTrueConditionCoordinate(),
+                    "=",
+                    new Coordinate(Locator.CONSTANT_VALUES, "false")
+                )
+            )
             .withOutcome("outcome", "World");
     }
 
@@ -140,19 +147,23 @@ public final class TestObjects {
      */
     static SingleCondition helloWorldOutcomeIs(final String outcome) {
         return new SingleCondition(
-            new Coordinate(Locator.TABLE, "hello-world::outcome"),
+            new Coordinate("hello-world", "outcome"),
             "=",
             new Coordinate(Locator.CONSTANT_VALUES, outcome)
         );
     }
 
     /**
-     * Convenience method to get a new instance of {@link ConditionsLocator}.
+     * A collection of default (required) {@link Locator}s.
      *
-     * @return Prefilled instance of {@link ConditionsLocator}.
+     * @return A collection of required {@link Locator}s.
      */
-    private static Locator conditionsLocator() {
-        return new ConditionsLocator()
-            .with("always_true", alwaysTrueConstantCondition());
+    private static Map<String, Locator> defaultLocators() {
+        return Map.of(
+            Locator.CONSTANT_VALUES, new ConstantLocator(),
+            Locator.CONDITIONS, new ConditionsLocator()
+                .with("always_true", alwaysTrueConstantCondition())
+        );
     }
+
 }

@@ -72,7 +72,7 @@ class SingleConditionTest {
             "=",
             TestObjects.valueTrue()
         );
-        target.evaluate(TestObjects.computationContext());
+        target.evaluate(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             target.isEvaluated(),
             Matchers.is(true)
@@ -84,6 +84,6 @@ class SingleConditionTest {
     }
 
     private static ComputationContext computationContext() {
-        return TestObjects.computationContext();
+        return TestObjects.defaultContext();
     }
 }

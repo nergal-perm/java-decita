@@ -46,11 +46,6 @@ public interface Locator {
     String CONDITIONS = "condition";
 
     /**
-     * Name for tables {@link Locator}.
-     */
-    String TABLE = "table";
-
-    /**
      * Determines the system's state - the value of a single property, described by its name.
      *
      * @param fragment The String identifier of the required property.

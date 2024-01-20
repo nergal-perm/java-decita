@@ -47,11 +47,6 @@ public final class ConditionsLocator implements Locator {
         return String.valueOf(this.conditions.get(fragment).evaluate(context));
     }
 
-    @Override
-    public void registerWith(final ComputationContext context) {
-        context.registerLocator(Locator.CONDITIONS, this);
-    }
-
     /**
      * Stores a new {@link Condition} within this instance.
      *

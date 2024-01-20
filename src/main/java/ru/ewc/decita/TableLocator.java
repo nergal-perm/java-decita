@@ -58,11 +58,6 @@ public final class TableLocator implements Locator {
         return this.tableByName(address[0]).outcome(context).get(address[1]);
     }
 
-    @Override
-    public void registerWith(final ComputationContext context) {
-        context.registerLocator(Locator.TABLE, this);
-    }
-
     /**
      * Registers an instance of {@link DecisionTable} with this {@link TableLocator} thus making
      * the table discoverable by the engine.

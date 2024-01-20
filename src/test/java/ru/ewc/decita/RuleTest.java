@@ -55,7 +55,7 @@ class RuleTest {
     @Test
     void testComputedAfterEvaluation() throws DecitaException {
         final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
-        target.check(TestObjects.computationContext());
+        target.check(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             target.isComputed(),
             Matchers.is(true)
@@ -69,7 +69,7 @@ class RuleTest {
     @Test
     void testEliminatedAfterEvaluation() throws DecitaException {
         final Rule target = TestObjects.alwaysTrueEqualsFalseRule();
-        target.check(TestObjects.computationContext());
+        target.check(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             target.isComputed(),
             Matchers.is(true)

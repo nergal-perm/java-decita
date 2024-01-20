@@ -64,18 +64,6 @@ public final class ComputationContext {
     }
 
     /**
-     * Registers a new {@link Locator} with this {@link ComputationContext}.
-     *
-     * @param id The {@link Locator}'s identifier.
-     * @param locator The {@link Locator}'s instance.
-     */
-    public void registerLocator(final String id, final Locator locator) {
-        this.locators.put(id, locator);
-    }
-    // @todo #23 Refactor the Locator registration process, probably it can be done with fluent API
-    // or something like that. Current mechanism is too cumbersome.
-
-    /**
      * Computes the specified {@link DecisionTable} result as a Dictionary.
      *
      * @param name The name of the table to compute.
@@ -83,7 +71,7 @@ public final class ComputationContext {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decisionFor(final String name) throws DecitaException {
-        return ((TableLocator) this.locatorFor(Locator.TABLE)).decisionFor(name, this);
+        return this.locatorFor(name).outcome(this);
     }
 
     /**
@@ -91,9 +79,15 @@ public final class ComputationContext {
      *
      * @param locator The String identifier of the required {@link Locator}.
      * @return The instance of {@link Locator}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    private Locator locatorFor(final String locator) {
-        return this.locators.getOrDefault(locator, this.locators.get(Locator.TABLE));
+    private Locator locatorFor(final String locator) throws DecitaException {
+        if (this.locators.containsKey(locator)) {
+            return this.locators.get(locator);
+        }
+        throw new DecitaException(
+            String.format("Locator '%s' not found in computation context", locator)
+        );
     }
     // @todo #31 Remove the explicit 'table' part from Table Coordinate.
     // Every locator's name that is not known to the engine should try to resolve

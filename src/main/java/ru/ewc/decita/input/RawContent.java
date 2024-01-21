@@ -25,13 +25,35 @@
 package ru.ewc.decita.input;
 
 import java.util.List;
+import lombok.Getter;
+import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.Rule;
 
+/**
+ * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
+ * all the data needed to construct {@link Rule}s and fill the {@link DecisionTable}.
+ *
+ * @since 0.2
+ */
+@Getter
 public class RawContent {
-    private final String fileName;
+    /**
+     * The name of the source table.
+     */
+    private final String table;
+
+    /**
+     * The contents of the source entity.
+     */
     private final List<String> contents;
 
-    public RawContent(final String fileName, final List<String> contents) {
-        this.fileName = fileName;
+    /**
+     * Ctor.
+     * @param table Name of the source table.
+     * @param contents Contents of the source.
+     */
+    public RawContent(final String table, final List<String> contents) {
+        this.table = table;
         this.contents = contents;
     }
 }

@@ -24,7 +24,22 @@
 package ru.ewc.decita.input;
 
 import java.util.List;
+import ru.ewc.decita.DecisionTable;
 
+/**
+ * I am the interface for all the source data Readers. My implementors should know how to get data
+ * from their sources and then transform it into a format suitable for constructing
+ * {@code DecisionTables}.
+ *
+ * @since 0.2
+ */
 public interface ContentReader {
+    /**
+     * Reads all the source data and returns the unified storage object, capable of transforming
+     * data into {@link DecisionTable}s.
+     *
+     * @return A collection of objects, representing the contents of {@link DecisionTable}s data
+     *  sources.
+     */
     List<RawContent> readAllTables();
 }

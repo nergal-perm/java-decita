@@ -21,35 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.ewc.decita.input;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link PlainTextContentReader}.
+ * Tests for all the input-related classes.
  *
  * @since 0.2
  */
-class PlainTextContentReaderTest {
-    @Test
-    void testReadFilesFromFolder() {
-        final ContentReader target = new PlainTextContentReader(tablesDirectory().toUri(), ".csv");
-        final List<RawContent> actual = target.readAllTables();
-        MatcherAssert.assertThat(
-            actual,
-            Matchers.hasSize(2)
-        );
-    }
-
-    private static Path tablesDirectory() {
-        return Path.of(
-            Paths.get("").toAbsolutePath().toString(),
-            "src/test/resources/tables"
-        );
-    }
-}
+package ru.ewc.decita.input;

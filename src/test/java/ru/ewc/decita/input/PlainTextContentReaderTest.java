@@ -21,17 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package ru.ewc.decita.input;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * All the input mechanisms reside here.
+ * Tests for {@link PlainTextContentReader}.
  *
  * @since 0.2
  */
-package ru.ewc.decita.input;
-// @todo #40 Implement the converter from 2D-Arrays to the DecisionTable.
+class PlainTextContentReaderTest {
+    @Test
+    void testReadFilesFromFolder() {
+        final ContentReader target = new PlainTextContentReader(tablesDirectory().toUri(), ".csv");
+        final List<RawContent> actual = target.readAllTables();
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.hasSize(2)
+        );
+    }
 
-// @todo #40 File system Decision Tables should be prototypes for every computation.
-// It means that computing something once doesn't change the state of all the prototypes and the
-// next computation will use clean, uncomputed Coordinates.
-
-// @todo #40 Convert file lines into two 2d-arrays of data.
+    private static Path tablesDirectory() {
+        return Path.of(
+            Paths.get("").toAbsolutePath().toString(),
+            "src/test/resources/tables"
+        );
+    }
+}

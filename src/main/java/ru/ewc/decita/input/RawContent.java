@@ -22,16 +22,38 @@
  * SOFTWARE.
  */
 
+package ru.ewc.decita.input;
+
+import java.util.List;
+import lombok.Getter;
+import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.Rule;
+
 /**
- * All the input mechanisms reside here.
+ * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
+ * all the data needed to construct {@link Rule}s and fill the {@link DecisionTable}.
  *
  * @since 0.2
  */
-package ru.ewc.decita.input;
-// @todo #40 Implement the converter from 2D-Arrays to the DecisionTable.
+@Getter
+public class RawContent {
+    /**
+     * The name of the source table.
+     */
+    private final String table;
 
-// @todo #40 File system Decision Tables should be prototypes for every computation.
-// It means that computing something once doesn't change the state of all the prototypes and the
-// next computation will use clean, uncomputed Coordinates.
+    /**
+     * The contents of the source entity.
+     */
+    private final List<String> contents;
 
-// @todo #40 Convert file lines into two 2d-arrays of data.
+    /**
+     * Ctor.
+     * @param table Name of the source table.
+     * @param contents Contents of the source.
+     */
+    public RawContent(final String table, final List<String> contents) {
+        this.table = table;
+        this.contents = contents;
+    }
+}

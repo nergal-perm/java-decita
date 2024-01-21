@@ -21,17 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package ru.ewc.decita.input;
+
+import java.util.List;
+import ru.ewc.decita.DecisionTable;
 
 /**
- * All the input mechanisms reside here.
+ * I am the interface for all the source data Readers. My implementors should know how to get data
+ * from their sources and then transform it into a format suitable for constructing
+ * {@code DecisionTables}.
  *
  * @since 0.2
  */
-package ru.ewc.decita.input;
-// @todo #40 Implement the converter from 2D-Arrays to the DecisionTable.
-
-// @todo #40 File system Decision Tables should be prototypes for every computation.
-// It means that computing something once doesn't change the state of all the prototypes and the
-// next computation will use clean, uncomputed Coordinates.
-
-// @todo #40 Convert file lines into two 2d-arrays of data.
+public interface ContentReader {
+    /**
+     * Reads all the source data and returns the unified storage object, capable of transforming
+     * data into {@link DecisionTable}s.
+     *
+     * @return A collection of objects, representing the contents of {@link DecisionTable}s data
+     *  sources.
+     */
+    List<RawContent> readAllTables();
+}

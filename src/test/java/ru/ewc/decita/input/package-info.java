@@ -23,15 +23,8 @@
  */
 
 /**
- * All the input mechanisms reside here.
+ * Tests for all the input-related classes.
  *
  * @since 0.2
  */
 package ru.ewc.decita.input;
-// @todo #40 Implement the converter from 2D-Arrays to the DecisionTable.
-
-// @todo #40 File system Decision Tables should be prototypes for every computation.
-// It means that computing something once doesn't change the state of all the prototypes and the
-// next computation will use clean, uncomputed Coordinates.
-
-// @todo #40 Convert file lines into two 2d-arrays of data.

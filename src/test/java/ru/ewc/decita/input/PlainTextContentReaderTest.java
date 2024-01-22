@@ -42,21 +42,44 @@ class PlainTextContentReaderTest {
         final ContentReader target = new PlainTextContentReader(tablesDirectory(), ".csv", ";");
         final List<RawContent> actual = target.readAllTables();
         MatcherAssert.assertThat(actual, Matchers.hasSize(2));
-        MatcherAssert.assertThat(
-            "The number of conditions: ",
-            actual.get(0).getConditions().length,
-            Matchers.is(1)
-        );
-        MatcherAssert.assertThat(
-            "The number of outcomes: ",
-            actual.get(0).getOutcomes().length,
-            Matchers.is(1)
-        );
-        MatcherAssert.assertThat(
-            "The number of rules: ",
-            actual.get(0).getConditions()[0].length,
-            Matchers.is(3)
-        );
+        checkConditions(actual);
+        checkOutcomes(actual);
+    }
+
+    private static void checkOutcomes(final List<RawContent> actual) {
+        actual.stream()
+            .filter(rc -> rc.getTable().equalsIgnoreCase("sample-table"))
+            .findFirst().ifPresent(
+                rc -> {
+                    MatcherAssert.assertThat(
+                        "The number of outcomes: ",
+                        rc.getOutcomes().length,
+                        Matchers.is(1)
+                    );
+                    MatcherAssert.assertThat(
+                        rc.getOutcomes()[0],
+                        Matchers.arrayContaining("outcome", "hello", "world")
+                    );
+                }
+            );
+    }
+
+    private static void checkConditions(final List<RawContent> actual) {
+        actual.stream()
+            .filter(rc -> rc.getTable().equalsIgnoreCase("sample-table"))
+            .findFirst().ifPresent(
+                rc -> {
+                    MatcherAssert.assertThat(
+                        "The number of conditions: ",
+                        rc.getConditions().length,
+                        Matchers.is(1)
+                    );
+                    MatcherAssert.assertThat(
+                        rc.getConditions()[0],
+                        Matchers.arrayContaining("sample-condition", "true", "false")
+                    );
+                }
+            );
     }
 
     private static URI tablesDirectory() {

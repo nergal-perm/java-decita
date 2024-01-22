@@ -115,33 +115,48 @@ public final class PlainTextContentReader implements ContentReader {
 
     /**
      * Creates the 2D-array representation of the {@link DecisionTable}'s Conditions part.
+     *
      * @param contents Raw contents of a file as a Strings collection.
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Conditions.
      */
     private String[][] outcomesFrom(final List<String> contents) {
-        final int height = contents.size() - separatorIndex(contents) - 1;
-        final int width = contents.get(0).split(this.delimiter).length;
-        return new String[height][width];
+        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));
     }
 
     /**
      * Creates the 2D-array representation of the {@link DecisionTable}'s Outcomes part.
+     *
      * @param contents Raw contents of a file as a Strings collection.
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Outcomes.
      */
     private String[][] conditionsFrom(final List<String> contents) {
-        final int height = separatorIndex(contents);
-        final int width = contents.get(0).split(this.delimiter).length;
-        return new String[height][width];
+        return this.toArray(contents.subList(0, separatorIndex(contents)));
     }
 
     /**
-     * Convenience method to find the line between Conditions and Outcomes parts of the source data.
-     * @param contents Raw contents of a file as a String collection.
-     * @return Index of the separating line.
+     * Finds the position of the line separating Conditions from Outcomes in a source file.
+     *
+     * @param contents A collection of source data file lines.
+     * @return An {@code Integer} corresponding to the separating line index.
      */
     private static int separatorIndex(final List<String> contents) {
         return contents.indexOf("---");
+    }
+
+    /**
+     * Transforms the list of Strings to a 2D-array of Strings suitable for {@link DecisionTable}
+     * generation.
+     *
+     * @param lines A collection of Strings representing the file contents.
+     * @return A 2D-array of Strings
+     */
+    private String[][] toArray(final List<String> lines) {
+        final int width = lines.get(0).split(this.delimiter).length;
+        final String[][] result = new String[lines.size()][width];
+        for (int idx = 0; idx < lines.size(); idx = idx + 1) {
+            result[idx] = lines.get(idx).split(this.delimiter);
+        }
+        return result;
     }
 
     /**

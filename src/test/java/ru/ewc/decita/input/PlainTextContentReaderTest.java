@@ -23,6 +23,7 @@
  */
 package ru.ewc.decita.input;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -38,18 +39,53 @@ import org.junit.jupiter.api.Test;
 class PlainTextContentReaderTest {
     @Test
     void testReadFilesFromFolder() {
-        final ContentReader target = new PlainTextContentReader(tablesDirectory().toUri(), ".csv");
+        final ContentReader target = new PlainTextContentReader(tablesDirectory(), ".csv", ";");
         final List<RawContent> actual = target.readAllTables();
-        MatcherAssert.assertThat(
-            actual,
-            Matchers.hasSize(2)
-        );
+        MatcherAssert.assertThat(actual, Matchers.hasSize(2));
+        checkConditions(actual);
+        checkOutcomes(actual);
     }
 
-    private static Path tablesDirectory() {
+    private static void checkOutcomes(final List<RawContent> actual) {
+        actual.stream()
+            .filter(rc -> rc.getTable().equalsIgnoreCase("sample-table"))
+            .findFirst().ifPresent(
+                rc -> {
+                    MatcherAssert.assertThat(
+                        "The number of outcomes: ",
+                        rc.getOutcomes().length,
+                        Matchers.is(1)
+                    );
+                    MatcherAssert.assertThat(
+                        rc.getOutcomes()[0],
+                        Matchers.arrayContaining("outcome", "hello", "world")
+                    );
+                }
+            );
+    }
+
+    private static void checkConditions(final List<RawContent> actual) {
+        actual.stream()
+            .filter(rc -> rc.getTable().equalsIgnoreCase("sample-table"))
+            .findFirst().ifPresent(
+                rc -> {
+                    MatcherAssert.assertThat(
+                        "The number of conditions: ",
+                        rc.getConditions().length,
+                        Matchers.is(1)
+                    );
+                    MatcherAssert.assertThat(
+                        rc.getConditions()[0],
+                        Matchers.arrayContaining("sample-condition", "true", "false")
+                    );
+                }
+            );
+    }
+
+    private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),
             "src/test/resources/tables"
-        );
+        ).toUri();
     }
 }

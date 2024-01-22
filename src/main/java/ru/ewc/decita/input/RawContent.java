@@ -24,7 +24,6 @@
 
 package ru.ewc.decita.input;
 
-import java.util.List;
 import lombok.Getter;
 import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.Rule;
@@ -43,17 +42,27 @@ public class RawContent {
     private final String table;
 
     /**
-     * The contents of the source entity.
+     * Array of String values that form the Conditions part of a {@link DecisionTable}.
      */
-    private final List<String> contents;
+    private final String[][] conditions;
+
+    /**
+     * Array of String values that form the Outcomes/Actions part of a {@link DecisionTable}.
+     */
+    private final String[][] outcomes;
 
     /**
      * Ctor.
+     *
+     * @param conditions A 2D-array of Strings describing the Conditions part of the
+     *  {@link DecisionTable}.
+     * @param outcomes A 2D-array of Strings describing the Outcomes part of the
+     *  {@link DecisionTable}.
      * @param table Name of the source table.
-     * @param contents Contents of the source.
      */
-    public RawContent(final String table, final List<String> contents) {
+    public RawContent(final String[][] conditions, final String[][] outcomes, final String table) {
         this.table = table;
-        this.contents = contents;
+        this.conditions = conditions.clone();
+        this.outcomes = outcomes.clone();
     }
 }

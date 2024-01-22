@@ -54,14 +54,21 @@ public final class PlainTextContentReader implements ContentReader {
     private final String extension;
 
     /**
-     * Ctor.
-     *
-     * @param folder The folder of source data files.
-     * @param extension The extension of source data files.
+     * The symbol that separates CSV-record fields.
      */
-    public PlainTextContentReader(final URI folder, final String extension) {
-        this.folder = folder;
+    private final String delimiter;
+
+    /**
+     * Ctor with specified delimiter.
+     *
+     * @param dir The folder of source data files.
+     * @param extension The extension of source data files.
+     * @param delimiter The symbol that separates CSV-record fields.
+     */
+    public PlainTextContentReader(final URI dir, final String extension, final String delimiter) {
+        this.folder = dir;
         this.extension = extension;
+        this.delimiter = delimiter;
     }
 
     @Override
@@ -98,10 +105,43 @@ public final class PlainTextContentReader implements ContentReader {
      */
     private RawContent readContentFromFile(final String file) {
         final Path path = Path.of(file);
+        final List<String> contents = contentsOf(path);
         return new RawContent(
-            path.getFileName().toString().replace(this.extension, ""),
-            contentsOf(path)
+            this.conditionsFrom(contents),
+            this.outcomesFrom(contents),
+            path.getFileName().toString().replace(this.extension, "")
         );
+    }
+
+    /**
+     * Creates the 2D-array representation of the {@link DecisionTable}'s Conditions part.
+     * @param contents Raw contents of a file as a Strings collection.
+     * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Conditions.
+     */
+    private String[][] outcomesFrom(final List<String> contents) {
+        final int height = contents.size() - separatorIndex(contents) - 1;
+        final int width = contents.get(0).split(this.delimiter).length;
+        return new String[height][width];
+    }
+
+    /**
+     * Creates the 2D-array representation of the {@link DecisionTable}'s Outcomes part.
+     * @param contents Raw contents of a file as a Strings collection.
+     * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Outcomes.
+     */
+    private String[][] conditionsFrom(final List<String> contents) {
+        final int height = separatorIndex(contents);
+        final int width = contents.get(0).split(this.delimiter).length;
+        return new String[height][width];
+    }
+
+    /**
+     * Convenience method to find the line between Conditions and Outcomes parts of the source data.
+     * @param contents Raw contents of a file as a String collection.
+     * @return Index of the separating line.
+     */
+    private static int separatorIndex(final List<String> contents) {
+        return contents.indexOf("---");
     }
 
     /**

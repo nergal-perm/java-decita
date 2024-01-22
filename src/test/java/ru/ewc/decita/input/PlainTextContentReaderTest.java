@@ -23,6 +23,7 @@
  */
 package ru.ewc.decita.input;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -38,18 +39,30 @@ import org.junit.jupiter.api.Test;
 class PlainTextContentReaderTest {
     @Test
     void testReadFilesFromFolder() {
-        final ContentReader target = new PlainTextContentReader(tablesDirectory().toUri(), ".csv");
+        final ContentReader target = new PlainTextContentReader(tablesDirectory(), ".csv", ";");
         final List<RawContent> actual = target.readAllTables();
+        MatcherAssert.assertThat(actual, Matchers.hasSize(2));
         MatcherAssert.assertThat(
-            actual,
-            Matchers.hasSize(2)
+            "The number of conditions: ",
+            actual.get(0).getConditions().length,
+            Matchers.is(1)
+        );
+        MatcherAssert.assertThat(
+            "The number of outcomes: ",
+            actual.get(0).getOutcomes().length,
+            Matchers.is(1)
+        );
+        MatcherAssert.assertThat(
+            "The number of rules: ",
+            actual.get(0).getConditions()[0].length,
+            Matchers.is(3)
         );
     }
 
-    private static Path tablesDirectory() {
+    private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),
             "src/test/resources/tables"
-        );
+        ).toUri();
     }
 }

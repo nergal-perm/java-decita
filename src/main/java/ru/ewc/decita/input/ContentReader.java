@@ -24,7 +24,10 @@
 package ru.ewc.decita.input;
 
 import java.util.List;
+import java.util.Map;
+import ru.ewc.decita.ComputationContext;
 import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.Locator;
 
 /**
  * I am the interface for all the source data Readers. My implementors should know how to get data
@@ -42,4 +45,13 @@ public interface ContentReader {
      *  sources.
      */
     List<RawContent> readAllTables();
+
+    /**
+     * Reads all the source data and returns the {@link Locator}s collection, that can be used to
+     * initialize the {@link ComputationContext}.
+     *
+     * @return A collection of {@link Locator}s , representing the contents of
+     *  {@link DecisionTable}s data sources.
+     */
+    Map<String, Locator> allTables();
 }

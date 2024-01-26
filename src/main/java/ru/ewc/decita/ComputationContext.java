@@ -24,7 +24,8 @@
 
 package ru.ewc.decita;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -42,10 +43,17 @@ public final class ComputationContext {
     /**
      * Ctor.
      *
-     * @param locators Dictionary of predefined (required) locators.
+     * @param locators A single dictionary of predefined (required) locators, or an array of such
+     *  dictionaries.
      */
-    public ComputationContext(final Map<String, Locator> locators) {
-        this.locators = new HashMap<>(locators);
+    @SafeVarargs
+    public ComputationContext(final Map<String, Locator>... locators) {
+        this.locators = Arrays.stream(locators).reduce(
+            (result, locatorMap) -> {
+                result.putAll(locatorMap);
+                return result;
+            }
+        ).orElse(Collections.emptyMap());
     }
 
     /**

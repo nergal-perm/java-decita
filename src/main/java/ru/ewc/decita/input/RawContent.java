@@ -24,8 +24,11 @@
 
 package ru.ewc.decita.input;
 
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.EqualsCondition;
 import ru.ewc.decita.Rule;
 
 /**
@@ -34,8 +37,7 @@ import ru.ewc.decita.Rule;
  *
  * @since 0.2
  */
-@Getter
-public class RawContent {
+public final class RawContent {
     /**
      * The name of the source table.
      */
@@ -64,5 +66,53 @@ public class RawContent {
         this.table = table;
         this.conditions = conditions.clone();
         this.outcomes = outcomes.clone();
+    }
+
+    /**
+     * Answers the table name.
+     *
+     * @return The table name.
+     */
+    public String tableName() {
+        return this.table;
+    }
+
+    /**
+     * Creates a {@link DecisionTable} from the raw contents.
+     *
+     * @return The {@link DecisionTable} created from the source file.
+     */
+    public DecisionTable asDecisionTable() {
+        final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
+        for (int column = 1; column < this.conditions[0].length; column += 1) {
+            final Rule rule = new Rule();
+            for (final String[] condition : this.conditions) {
+                rule.withCondition(
+                    new EqualsCondition(
+                        coordinateFrom(condition[0]),
+                        coordinateFrom(condition[column])
+                    )
+                );
+            }
+            for (final String[] outcome : this.outcomes) {
+                rule.withOutcome(
+                    outcome[0],
+                    outcome[column]
+                );
+            }
+            rules.add(rule);
+        }
+        return new DecisionTable(rules);
+    }
+
+    /**
+     * Creates a {@link Coordinate} based on a string representation.
+     *
+     * @param coordinate String representation of a coordinate.
+     * @return A concrete {@link Coordinate} based on given string representation.
+     */
+    private static Coordinate coordinateFrom(final String coordinate) {
+        final String[] split = coordinate.split("::");
+        return new Coordinate(split[0], split[1]);
     }
 }

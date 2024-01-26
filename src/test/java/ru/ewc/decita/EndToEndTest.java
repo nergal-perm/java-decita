@@ -24,11 +24,14 @@
 
 package ru.ewc.decita;
 
-import java.util.List;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decita.input.PlainTextContentReader;
 
 /**
  * Full scenario tests.
@@ -43,7 +46,11 @@ class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
-        final Map<String, String> actual = contextWithHelloWorld().decisionFor("target");
+        final ComputationContext context = new ComputationContext(
+            new PlainTextContentReader(tablesDirectory(), ".csv", ";").allTables(),
+            Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
+        );
+        final Map<String, String> actual = context.decisionFor("sample-table");
         MatcherAssert.assertThat(
             actual,
             Matchers.allOf(
@@ -53,50 +60,10 @@ class EndToEndTest {
         );
     }
 
-    /**
-     * Convenience method to create a naive target table.
-     *
-     * @return The {@link DecisionTable} instance.
-     */
-    private static DecisionTable tableThatLinkToHelloWorld() {
-        return new DecisionTable(
-            List.of(
-                new Rule()
-                    .withCondition(TestObjects.helloWorldOutcomeIs("Hello"))
-                    .withOutcome(EndToEndTest.OUTCOME, "true")
-                    .withOutcome("text", "hello world"),
-                new Rule()
-                    .withCondition(TestObjects.helloWorldOutcomeIs("World"))
-                    .withOutcome(EndToEndTest.OUTCOME, "false")
-                    .withOutcome("text", "no text")
-            ));
-    }
-
-    /**
-     * Convenience method to create a context for naive tables.
-     *
-     * @return Prefilled {@link ComputationContext}.
-     */
-    private static ComputationContext contextWithHelloWorld() {
-        return TestObjects.contextWithLocators(
-            Map.of(
-                "hello-world", helloWorldTable(),
-                "target", tableThatLinkToHelloWorld()
-            )
-        );
-    }
-
-    /**
-     * Convenience method to create a naive 'Hello world' table.
-     *
-     * @return The {@link DecisionTable} instance.
-     */
-    private static DecisionTable helloWorldTable() {
-        return new DecisionTable(
-            List.of(
-                TestObjects.alwaysTrueEqualsTrueRule().withOutcome(EndToEndTest.OUTCOME, "Hello"),
-                TestObjects.alwaysTrueEqualsFalseRule().withOutcome(EndToEndTest.OUTCOME, "World")
-            )
-        );
+    private static URI tablesDirectory() {
+        return Path.of(
+            Paths.get("").toAbsolutePath().toString(),
+            "src/test/resources/tables"
+        ).toUri();
     }
 }

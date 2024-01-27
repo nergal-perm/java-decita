@@ -48,7 +48,11 @@ class EndToEndTest {
     void shouldComputeTheWholeTable() throws DecitaException {
         final ComputationContext context = new ComputationContext(
             new PlainTextContentReader(tablesDirectory(), ".csv", ";").allTables(),
-            Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
+            Map.of(
+                Locator.CONSTANT_VALUES, new ConstantLocator(),
+                "data", new InMemoryStorage(
+                    Map.of("is-stored", "true")
+                ))
         );
         final Map<String, String> actual = context.decisionFor("sample-table");
         MatcherAssert.assertThat(

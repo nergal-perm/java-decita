@@ -28,11 +28,11 @@
  * @since 0.2
  */
 package ru.ewc.decita.input;
-// @todo #40 File system Decision Tables should be prototypes for every computation.
+// @todo #23 File system Decision Tables should be prototypes for every computation.
 // It means that computing something once doesn't change the state of all the prototypes and the
 // next computation will use clean, uncomputed Coordinates.
 
-// @todo #42 Implement TableSources class to handle the implicit locator names.
+// @todo #23 Implement TableSources class to handle the implicit locator names.
 // My idea is to allow short notation for coordinates in tables, like just "42" instead of
 // "constant::42" for constants (omitting the "constant" locator name) or "is_expired" instead of
 // "is_expired::outcome" for conditions (omitting the outcome name for the table with a single

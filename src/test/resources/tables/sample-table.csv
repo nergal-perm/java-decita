@@ -1,4 +1,0 @@
-hello-world::outcome;constant::hello;constant::world
----
-outcome;true;false
-text;hello world;the world is not enough

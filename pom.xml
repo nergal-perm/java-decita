@@ -31,23 +31,32 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.66.0</version>
+    <version>0.67.0</version>
   </parent>
 
   <groupId>ru.ewc</groupId>
   <artifactId>java-decita</artifactId>
   <version>0.2</version>
   <packaging>jar</packaging>
+
   <name>Java Decision Tables</name>
   <description>Decision Tables calculation engine</description>
-
+  <url>https://nergal-perm.github.io/java-decita/</url>
+  <inceptionYear>2023</inceptionYear>
+  <organization>
+    <name>Eugene Terekhov</name>
+    <url>https://github.com/nergal-perm</url>
+  </organization>
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://raw.githubusercontent.com/ewc-tabletop/java-decita/LICENSE</url>
+      <url>https://raw.githubusercontent.com/nergal-perm/java-decita/LICENSE</url>
       <distribution>site</distribution>
     </license>
   </licenses>
+  <scm>
+    <url>https://github.com/nergal-perm/java-decita</url>
+  </scm>
 
   <dependencies>
     <dependency>

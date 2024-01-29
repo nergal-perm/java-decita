@@ -95,9 +95,14 @@
   </scm>
 
   <distributionManagement>
-    <downloadUrl></downloadUrl>
+    <downloadUrl>https://github.com/nergal-perm/java-decita/packages/</downloadUrl>
     <repository>
-      <id>Github packages</id>
+      <id>github</id>
+      <name>GitHub nergal-perm Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/nergal-perm/java-decita</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
     <snapshotRepository>
       <id>Github packages</id>

@@ -50,13 +50,63 @@
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://raw.githubusercontent.com/nergal-perm/java-decita/LICENSE</url>
+      <url>https://raw.githubusercontent.com/nergal-perm/java-decita/master/LICENSE</url>
       <distribution>site</distribution>
+      <comments>MIT License</comments>
     </license>
   </licenses>
+
+  <developers>
+    <developer>
+      <id>1</id>
+      <name>Eugene Terekhov</name>
+      <email>nergal@psu.ru</email>
+      <url>https://github.com/nergal-perm</url>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+4</timezone>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Nikita Batin</name>
+      <url>https://github.com/citerm</url>
+      <roles>
+        <role>Architect</role>
+      </roles>
+      <timezone>+3</timezone>
+    </contributor>
+  </contributors>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/nergal-perm/java-decita/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>github</system>
+    <url>https://github.com/nergal-perm/java-decita/actions</url>
+  </ciManagement>
   <scm>
+    <connection>scm:git:github.com:nergal-perm/java-decita.git</connection>
+    <developerConnection>scm:git:github.com:nergal-perm/java-decita.git</developerConnection>
     <url>https://github.com/nergal-perm/java-decita</url>
   </scm>
+
+  <distributionManagement>
+    <downloadUrl></downloadUrl>
+    <repository>
+      <id>Github packages</id>
+    </repository>
+    <snapshotRepository>
+      <id>Github packages</id>
+    </snapshotRepository>
+    <site>
+      <id>github.io</id>
+      <url>https://nergal-perm.github.io/java-decita</url>
+    </site>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -91,6 +141,29 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>site</id>
+      <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>summary</report>
+                  <report>scm</report>
+                  <report>team</report>
+                  <report>dependencies</report>
+                  <report>plugins</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
   </profiles>
 </project>

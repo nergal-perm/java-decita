@@ -27,23 +27,17 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd"
          name="java-decita">
     <skin>
-        <groupId>io.github.stevecrox.maven.skins</groupId>
-        <artifactId>bootstrap-site-skin</artifactId>
-        <version>1.0.16</version>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-maven-skin</artifactId>
+        <version>1.7.1</version>
     </skin>
-    <custom>
-        <bootstrapSkin>
-            <linkedin>
-                <accountId>evgenii-terekhov-2a77389a</accountId>
-            </linkedin>
-            <gitHub>
-                <organisation>nergal-perm</organisation>
-                <repository>java-decita</repository>
-            </gitHub>
-            <bootswatchStyle>flatly</bootswatchStyle>
-        </bootstrapSkin>
-    </custom>
-
+    <bannerLeft>
+        <name>java-decita</name>
+        <src>./images/logo.png</src>
+        <href>https://nergal-perm.github.io/java-decita</href>
+        <width>178</width>
+        <height>59</height>
+    </bannerLeft>
     <body>
         <menu name="Info and Reports" inherit="top">
             <item name="Project Info" href="./project-info.html"/>

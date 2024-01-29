@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlainTextContentReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita.input</a> &gt; <span class="el_source">PlainTextContentReader.java</span></div><h1>PlainTextContentReader.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package ru.ewc.decita.input;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.Locator;
+
+/**
+ * I am the specific {@link ContentReader} that knows how to read CSV-files. My main responsibility
+ * is to perform file-system read operation and transform the file lines into a format suitable for
+ * constructing {@link DecisionTable}s.
+ *
+ * @since 0.2
+ */
+public final class PlainTextContentReader implements ContentReader {
+    /**
+     * Path to a folder with source files.
+     */
+    private final URI folder;
+
+    /**
+     * The extension of the source files.
+     */
+    private final String extension;
+
+    /**
+     * The symbol that separates CSV-record fields.
+     */
+    private final String delimiter;
+
+    /**
+     * Ctor with specified delimiter.
+     *
+     * @param dir The folder of source data files.
+     * @param extension The extension of source data files.
+     * @param delimiter The symbol that separates CSV-record fields.
+     */
+<span class="fc" id="L70">    public PlainTextContentReader(final URI dir, final String extension, final String delimiter) {</span>
+<span class="fc" id="L71">        this.folder = dir;</span>
+<span class="fc" id="L72">        this.extension = extension;</span>
+<span class="fc" id="L73">        this.delimiter = delimiter;</span>
+<span class="fc" id="L74">    }</span>
+
+    @Override
+    public List&lt;RawContent&gt; readAllTables() {
+        List&lt;RawContent&gt; contents;
+<span class="fc" id="L79">        try (Stream&lt;Path&gt; files = Files.walk(Paths.get(this.folder))) {</span>
+<span class="fc" id="L80">            contents = this.contentsOf(files);</span>
+<span class="nc" id="L81">        } catch (final IOException exception) {</span>
+<span class="nc" id="L82">            contents = Collections.emptyList();</span>
+<span class="fc" id="L83">        }</span>
+<span class="fc" id="L84">        return contents;</span>
+    }
+
+    @Override
+    public Map&lt;String, Locator&gt; allTables() {
+<span class="fc" id="L89">        return this.readAllTables()</span>
+<span class="fc" id="L90">            .stream()</span>
+<span class="fc" id="L91">            .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable));</span>
+    }
+
+    /**
+     * Reads the contents of all the files, passed in as a stream of paths.
+     *
+     * @param files Stream of paths to read data from.
+     * @return A collection of {@link RawContent}, each element corresponds to a single
+     *  {@link DecisionTable}.
+     */
+    private List&lt;RawContent&gt; contentsOf(final Stream&lt;Path&gt; files) {
+<span class="fc" id="L102">        return files.filter(Files::isRegularFile)</span>
+<span class="fc" id="L103">            .filter(path -&gt; path.getFileName().toString().endsWith(this.extension))</span>
+<span class="fc" id="L104">            .map(Path::toString)</span>
+<span class="fc" id="L105">            .map(this::readContentFromFile)</span>
+<span class="fc" id="L106">            .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Reads the contents of the specified file as a {@link RawContent}.
+     *
+     * @param file File to read, represented as {@code String}.
+     * @return The file's contents in a format suitable for constructing {@link DecisionTable}s.
+     */
+    private RawContent readContentFromFile(final String file) {
+<span class="fc" id="L116">        final Path path = Path.of(file);</span>
+<span class="fc" id="L117">        final List&lt;String&gt; contents = contentsOf(path);</span>
+<span class="fc" id="L118">        return new RawContent(</span>
+<span class="fc" id="L119">            this.conditionsFrom(contents),</span>
+<span class="fc" id="L120">            this.outcomesFrom(contents),</span>
+<span class="fc" id="L121">            path.getFileName().toString().replace(this.extension, &quot;&quot;)</span>
+        );
+    }
+
+    /**
+     * Creates the 2D-array representation of the {@link DecisionTable}'s Conditions part.
+     *
+     * @param contents Raw contents of a file as a Strings collection.
+     * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Conditions.
+     */
+    private String[][] outcomesFrom(final List&lt;String&gt; contents) {
+<span class="fc" id="L132">        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));</span>
+    }
+
+    /**
+     * Creates the 2D-array representation of the {@link DecisionTable}'s Outcomes part.
+     *
+     * @param contents Raw contents of a file as a Strings collection.
+     * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Outcomes.
+     */
+    private String[][] conditionsFrom(final List&lt;String&gt; contents) {
+<span class="fc" id="L142">        return this.toArray(contents.subList(0, separatorIndex(contents)));</span>
+    }
+
+    /**
+     * Finds the position of the line separating Conditions from Outcomes in a source file.
+     *
+     * @param contents A collection of source data file lines.
+     * @return An {@code Integer} corresponding to the separating line index.
+     */
+    private static int separatorIndex(final List&lt;String&gt; contents) {
+<span class="fc" id="L152">        return contents.indexOf(&quot;---&quot;);</span>
+    }
+
+    /**
+     * Transforms the list of Strings to a 2D-array of Strings suitable for {@link DecisionTable}
+     * generation.
+     *
+     * @param lines A collection of Strings representing the file contents.
+     * @return A 2D-array of Strings
+     */
+    private String[][] toArray(final List&lt;String&gt; lines) {
+<span class="fc" id="L163">        final int width = lines.get(0).split(this.delimiter).length;</span>
+<span class="fc" id="L164">        final String[][] result = new String[lines.size()][width];</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        for (int idx = 0; idx &lt; lines.size(); idx = idx + 1) {</span>
+<span class="fc" id="L166">            result[idx] = lines.get(idx).split(this.delimiter);</span>
+        }
+<span class="fc" id="L168">        return result;</span>
+    }
+
+    /**
+     * Reads the contents of the specified file as a collection of {@code String}s.
+     *
+     * @param file File to read, represented as {@code Path}.
+     * @return The collection of {@code String}s read from file.
+     */
+    private static List&lt;String&gt; contentsOf(final Path file) {
+        List&lt;String&gt; strings;
+        try {
+<span class="fc" id="L180">            strings = Files.readAllLines(file, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L181">        } catch (final IOException exception) {</span>
+<span class="nc" id="L182">            strings = Collections.emptyList();</span>
+<span class="fc" id="L183">        }</span>
+<span class="fc" id="L184">        return strings;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

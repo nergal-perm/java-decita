@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Coordinate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita</a> &gt; <span class="el_source">Coordinate.java</span></div><h1>Coordinate.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita;
+
+import lombok.EqualsAndHashCode;
+
+/**
+ * I am a simple data structure describing the position of the required value. My responsibility is
+ * to provide everything that is needed to retrieve that value. The position of every value is
+ * described by the {@link Locator}'s ID and the {@code String} value's ID, so it looks like a
+ * 2D-coordinate.
+ *
+ * @since 0.1
+ */
+<span class="pc bpc" id="L37" title="13 of 20 branches missed.">@EqualsAndHashCode</span>
+public final class Coordinate {
+    /**
+     * String identifier of the concrete {@link Locator} responsible for retrieving the value.
+     */
+    private String locator;
+
+    /**
+     * String identifier of the requested state property's value.
+     */
+    private String fragment;
+
+    /**
+     * Ctor.
+     *
+     * @param locator The {@link Locator} identifier.
+     * @param fragment The value's identifier.
+     */
+<span class="fc" id="L55">    public Coordinate(final String locator, final String fragment) {</span>
+<span class="fc" id="L56">        this.locator = locator;</span>
+<span class="fc" id="L57">        this.fragment = fragment;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Locates the required value in the provided {@link ComputationContext}.
+     *
+     * @param context Provided {@link ComputationContext}.
+     * @return A constant value {@link Coordinate}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
+     */
+    public Coordinate locateIn(final ComputationContext context) throws DecitaException {
+<span class="fc" id="L68">        final String located = context.valueFor(this.locator, this.fragment, context);</span>
+<span class="fc" id="L69">        this.locator = Locator.CONSTANT_VALUES;</span>
+<span class="fc" id="L70">        this.fragment = located;</span>
+<span class="fc" id="L71">        return this;</span>
+    }
+
+    /**
+     * Tests if {@link Coordinate} is already computed, i.e. its value is constant.
+     *
+     * @return True, if {@link Coordinate} points to a constant value.
+     */
+    public boolean isComputed() {
+<span class="fc" id="L80">        return Locator.CONSTANT_VALUES.equals(this.locator);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

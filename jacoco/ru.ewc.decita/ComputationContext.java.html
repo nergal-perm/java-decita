@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ComputationContext.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita</a> &gt; <span class="el_source">ComputationContext.java</span></div><h1>ComputationContext.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+
+/**
+ * I am the container for all the things, required for TruthTable evaluation. My main responsibility
+ * is to provide the set of {@link Locator}s in order to find all the required {@link Coordinate}s.
+ *
+ * @since 0.1
+ */
+public final class ComputationContext {
+    /**
+     * The set of all the available {@link Locator}s.
+     */
+    private final Map&lt;String, Locator&gt; locators;
+
+    /**
+     * Ctor.
+     *
+     * @param locators A single dictionary of predefined (required) locators, or an array of such
+     *  dictionaries.
+     */
+    @SafeVarargs
+<span class="fc" id="L50">    public ComputationContext(final Map&lt;String, Locator&gt;... locators) {</span>
+<span class="fc" id="L51">        this.locators = Arrays.stream(locators).reduce(</span>
+            (result, locatorMap) -&gt; {
+<span class="fc" id="L53">                result.putAll(locatorMap);</span>
+<span class="fc" id="L54">                return result;</span>
+            }
+<span class="fc" id="L56">        ).orElse(Collections.emptyMap());</span>
+<span class="fc" id="L57">    }</span>
+
+    /**
+     * Finds a {@link Coordinate}'s value using internal set of {@link Locator}'s.
+     *
+     * @param locator String identifier of the {@link Locator} to use.
+     * @param fragment String identifier of the value to find.
+     * @param context The {@link ComputationContext} to get the value.
+     * @return The {@code String} value containing requested state.
+     * @throws DecitaException If the {@link Locator} wasn't found in the context.
+     */
+    public String valueFor(
+        final String locator, final String fragment, final ComputationContext context)
+        throws DecitaException {
+<span class="fc" id="L71">        return this.locatorFor(locator).fragmentBy(fragment, context);</span>
+    }
+
+    /**
+     * Computes the specified {@link DecisionTable} result as a Dictionary.
+     *
+     * @param name The name of the table to compute.
+     * @return The Dictionary containing the decision result.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    public Map&lt;String, String&gt; decisionFor(final String name) throws DecitaException {
+<span class="fc" id="L82">        return this.locatorFor(name).outcome(this);</span>
+    }
+
+    /**
+     * Returns a concrete {@link Locator} if it's found in an instance storage.
+     *
+     * @param locator The String identifier of the required {@link Locator}.
+     * @return The instance of {@link Locator}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
+     */
+    private Locator locatorFor(final String locator) throws DecitaException {
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (this.locators.containsKey(locator)) {</span>
+<span class="fc" id="L94">            return this.locators.get(locator);</span>
+        }
+<span class="nc" id="L96">        throw new DecitaException(</span>
+<span class="nc" id="L97">            String.format(&quot;Locator '%s' not found in computation context&quot;, locator)</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

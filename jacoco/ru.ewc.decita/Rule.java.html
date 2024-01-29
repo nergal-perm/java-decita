@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita</a> &gt; <span class="el_source">Rule.java</span></div><h1>Rule.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.EqualsAndHashCode;
+
+/**
+ * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
+ * whether all my second-order {@link Condition}s are {@code true} and if so - compute my outcomes.
+ *
+ * @since 0.1
+ */
+<span class="nc bnc" id="L39" title="All 20 branches missed.">@EqualsAndHashCode</span>
+<span class="fc" id="L40">public final class Rule {</span>
+    /**
+     * The rule's {@link Condition}s.
+     */
+<span class="fc" id="L44">    private final List&lt;Condition&gt; conditions = new ArrayList&lt;&gt;(5);</span>
+
+    /**
+     * The rule's outcomes.
+     */
+<span class="fc" id="L49">    private final Map&lt;String, String&gt; outcomes = new HashMap&lt;&gt;();</span>
+
+    /**
+     * Adds a {@link Condition} to this rule.
+     *
+     * @param condition The {@link Condition} to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule withCondition(final Condition condition) {
+<span class="fc" id="L58">        this.conditions.add(condition);</span>
+<span class="fc" id="L59">        return this;</span>
+    }
+
+    /**
+     * Adds an outcome to this rule.
+     *
+     * @param outcome The key of an outcome to add.
+     * @param value The string representation of an outcome's value to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule withOutcome(final String outcome, final String value) {
+<span class="fc" id="L70">        this.outcomes.put(outcome, value);</span>
+<span class="fc" id="L71">        return this;</span>
+    }
+
+    /**
+     * Checks whether this rule is computed, i.e. all of its {@link Condition}s were resolved
+     * successfully.
+     *
+     * @return True if the rule is computed.
+     */
+    public boolean isComputed() {
+<span class="fc" id="L81">        return this.conditions.stream().allMatch(Condition::isEvaluated);</span>
+    }
+
+    /**
+     * Checks whether this rule is not satisfied (i.e. any of its {@link Condition}s resolved to
+     * {@code false}).
+     *
+     * @return True if the rule is dissatisfied.
+     */
+    public boolean isEliminated() {
+<span class="fc" id="L91">        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);</span>
+    }
+
+    /**
+     * Checks whether this rule is satisfied (i.e. all of its {@link Condition}s are computed and
+     * resolved to {@code true}).
+     *
+     * @return True if the rule is satisfied.
+     */
+    public boolean isSatisfied() {
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">        return this.conditions.stream().allMatch(c -&gt; c.isEvaluated() &amp;&amp; !c.isNotSatisfied());</span>
+    }
+
+    /**
+     * Checks if this {@link Rule} is satisfied.
+     *
+     * @param context The {@link ComputationContext}'s instance.
+     * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
+     */
+    public void check(final ComputationContext context) throws DecitaException {
+<span class="pc bpc" id="L111" title="1 of 4 branches missed.">        if (!this.isEliminated() || !this.isComputed()) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            for (final Condition cond : this.conditions) {</span>
+<span class="fc" id="L113">                cond.evaluate(context);</span>
+<span class="fc" id="L114">            }</span>
+        }
+<span class="fc" id="L116">    }</span>
+
+    /**
+     * Returns this rule outcomes.
+     *
+     * @return The simple dictionary, containing all this rule's outcomes.
+     */
+    public Map&lt;String, String&gt; outcome() {
+<span class="fc" id="L124">        return this.outcomes;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

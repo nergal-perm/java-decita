@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RawContent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita.input</a> &gt; <span class="el_source">RawContent.java</span></div><h1>RawContent.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita.input;
+
+import java.util.ArrayList;
+import java.util.List;
+import ru.ewc.decita.Coordinate;
+import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.EqualsCondition;
+import ru.ewc.decita.Rule;
+
+/**
+ * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
+ * all the data needed to construct {@link Rule}s and fill the {@link DecisionTable}.
+ *
+ * @since 0.2
+ */
+public final class RawContent {
+    /**
+     * The name of the source table.
+     */
+    private final String table;
+
+    /**
+     * Array of String values that form the Conditions part of a {@link DecisionTable}.
+     */
+    private final String[][] conditions;
+
+    /**
+     * Array of String values that form the Outcomes/Actions part of a {@link DecisionTable}.
+     */
+    private final String[][] outcomes;
+
+    /**
+     * Ctor.
+     *
+     * @param conditions A 2D-array of Strings describing the Conditions part of the
+     *  {@link DecisionTable}.
+     * @param outcomes A 2D-array of Strings describing the Outcomes part of the
+     *  {@link DecisionTable}.
+     * @param table Name of the source table.
+     */
+<span class="fc" id="L65">    public RawContent(final String[][] conditions, final String[][] outcomes, final String table) {</span>
+<span class="fc" id="L66">        this.table = table;</span>
+<span class="fc" id="L67">        this.conditions = conditions.clone();</span>
+<span class="fc" id="L68">        this.outcomes = outcomes.clone();</span>
+<span class="fc" id="L69">    }</span>
+
+    /**
+     * Answers the table name.
+     *
+     * @return The table name.
+     */
+    public String tableName() {
+<span class="fc" id="L77">        return this.table;</span>
+    }
+
+    /**
+     * Creates a {@link DecisionTable} from the raw contents.
+     *
+     * @return The {@link DecisionTable} created from the source file.
+     */
+    public DecisionTable asDecisionTable() {
+<span class="fc" id="L86">        final List&lt;Rule&gt; rules = new ArrayList&lt;&gt;(this.conditions[0].length - 1);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (int column = 1; column &lt; this.conditions[0].length; column += 1) {</span>
+<span class="fc" id="L88">            final Rule rule = new Rule();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            for (final String[] condition : this.conditions) {</span>
+<span class="fc" id="L90">                rule.withCondition(</span>
+                    new EqualsCondition(
+<span class="fc" id="L92">                        coordinateFrom(condition[0]),</span>
+<span class="fc" id="L93">                        coordinateFrom(condition[column])</span>
+                    )
+                );
+            }
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            for (final String[] outcome : this.outcomes) {</span>
+<span class="fc" id="L98">                rule.withOutcome(</span>
+                    outcome[0],
+                    outcome[column]
+                );
+            }
+<span class="fc" id="L103">            rules.add(rule);</span>
+        }
+<span class="fc" id="L105">        return new DecisionTable(rules);</span>
+    }
+
+    /**
+     * Creates a {@link Coordinate} based on a string representation.
+     *
+     * @param coordinate String representation of a coordinate.
+     * @return A concrete {@link Coordinate} based on given string representation.
+     */
+    private static Coordinate coordinateFrom(final String coordinate) {
+<span class="fc" id="L115">        final String[] split = coordinate.split(&quot;::&quot;);</span>
+<span class="fc" id="L116">        return new Coordinate(split[0], split[1]);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

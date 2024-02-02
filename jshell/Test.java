@@ -34,12 +34,19 @@ import ru.ewc.decita.ConstantLocator;
 import ru.ewc.decita.InMemoryStorage;
 import ru.ewc.decita.DecitaException;
 
+// @todo #61 Add method to set the tables source directory
 URI dir = URI.create("file://" + System.getProperty("user.dir") + "/src/test/resources/tables");
+
+// @todo #61 Add method to load computational state from yaml
+// That is, read the structured yaml file (1st level - Locator name, 2nd level - field names) as
+// the Locators for the ComputationContext. Move those initializations inside that method.
 Map<String, String> storage = new HashMap<>(Map.of("is-stored", "true"));
+Map<String, Map<String, String>> dataLocators = new HashMap<>(Map.of("data", storage));
 
 void decideFor(String tableName) throws DecitaException {
     final ComputationContext context = new ComputationContext(
         new PlainTextContentReader(dir, ".csv", ";").allTables(),
+        // @todo #61 Initialize ComputationContext with the computation state read from yaml
         Map.of(
             Locator.CONSTANT_VALUES, new ConstantLocator(),
             "data", new InMemoryStorage(storage))

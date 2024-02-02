@@ -36,7 +36,7 @@
 
   <groupId>ru.ewc</groupId>
   <artifactId>java-decita</artifactId>
-  <version>0.2</version>
+  <version>0.2.2</version>
   <packaging>jar</packaging>
 
   <name>Java Decision Tables</name>
@@ -128,6 +128,11 @@
       <artifactId>jcabi-matchers</artifactId>
       <version>1.7.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>3.19.0</version>
     </dependency>
   </dependencies>
 

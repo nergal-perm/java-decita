@@ -25,6 +25,7 @@ package ru.ewc.decita.manual;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.ParsedLine;
@@ -51,6 +52,11 @@ public final class Shell {
     private final PrintWriter writer;
 
     /**
+     * Holds the location of decision table sources.
+     */
+    private URI folder;
+
+    /**
      * Ctor.
      *
      * @throws IOException If the terminal could not be created.
@@ -64,7 +70,15 @@ public final class Shell {
             .completer(new StringsCompleter("sources", "hello"))
             .parser(new DefaultParser())
             .build();
+        this.folder = URI.create(
+            String.format(
+                "file://%s/src/test/resources/tables",
+                System.getProperty("user.dir")
+            )
+        );
     }
+    // @todo #61 Rebuild Completer each time the folder with tables is loaded.
+    // That will allow autocompletion for table names, so it will be easier to issue commands.
 
     /**
      * The method to run a simplified manual testing utility.
@@ -117,7 +131,11 @@ public final class Shell {
      * @param table The name of the table to resolve.
      */
     private void decideFor(final String table) {
-        this.writer.printf("Let's decide for a table '%s'", table);
+        this.writer.printf(
+            "Let's decide for a table '%s'%nfrom %s%n",
+            table,
+            this.folder.toString()
+        );
     }
 
     /**
@@ -126,7 +144,8 @@ public final class Shell {
      * @param path The path to decision tables.
      */
     private void pointToSources(final String path) {
-        this.writer.printf("Let's import tables from %s", path);
+        this.folder = URI.create(String.format("file://%s", path.replace("'", "")));
+        this.writer.printf("Let's import tables from %s%n", path);
     }
 
     /**

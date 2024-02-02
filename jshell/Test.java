@@ -38,7 +38,6 @@ URI tablesSource(String path) {
     return URI.create("file://" + path.replaceAll("'", ""));
 }
 
-// @todo #61 Add method to set the tables source directory
 URI dir = tablesSource(System.getProperty("user.dir") + "/src/test/resources/tables");
 
 // @todo #61 Add method to load computational state from yaml

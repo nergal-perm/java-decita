@@ -23,12 +23,19 @@
  */
 package ru.ewc.decita.manual;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.ParsedLine;
@@ -36,6 +43,11 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.yaml.snakeyaml.Yaml;
+import ru.ewc.decita.ComputationContext;
+import ru.ewc.decita.ConstantLocator;
+import ru.ewc.decita.InMemoryStorage;
+import ru.ewc.decita.Locator;
 import ru.ewc.decita.input.PlainTextContentReader;
 
 /**
@@ -48,7 +60,7 @@ public final class Shell {
     /**
      * Set of predefined autocompletion options, contains all available commands.
      */
-    public static final List<String> COMMANDS = List.of("sources", "decide");
+    public static final Set<String> COMMANDS = Set.of("sources", "decide");
 
     /**
      * Object holding current terminal.
@@ -71,6 +83,11 @@ public final class Shell {
     private URI folder;
 
     /**
+     * Preconfigured state to use in computations.
+     */
+    private Map<String, InMemoryStorage> state;
+
+    /**
      * Ctor.
      *
      * @throws IOException If the terminal could not be created.
@@ -82,7 +99,7 @@ public final class Shell {
         this.reader = LineReaderBuilder
             .builder()
             .terminal(this.terminal)
-            .completer(new StringsCompleter("sources", "hello"))
+            .completer(new StringsCompleter("tables", "decide", "state"))
             .parser(new DefaultParser())
             .build();
         this.folder = URI.create(
@@ -127,11 +144,14 @@ public final class Shell {
         final String command = parsed.words().get(0);
         final String param = extractParameterFrom(parsed);
         switch (command) {
-            case "sources":
+            case "tables":
                 this.pointToSources(param);
                 break;
             case "decide":
                 this.decideFor(param);
+                break;
+            case "state":
+                this.loadState(param);
                 break;
             default:
                 break;
@@ -143,12 +163,18 @@ public final class Shell {
      *
      * @param table The name of the table to resolve.
      */
+    @SneakyThrows
     private void decideFor(final String table) {
-        this.writer.printf(
-            "Let's decide for a table '%s'%nfrom %s%n",
-            table,
-            this.folder.toString()
+        final Map<String, Locator> locators = new HashMap<>(this.state.size() + 1);
+        locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
+        locators.putAll(this.state);
+        final ComputationContext context = new ComputationContext(
+            new PlainTextContentReader(this.folder, ".csv", ";").allTables(),
+            locators
         );
+        final Map<String, String> actual = context.decisionFor(table);
+        this.writer.printf("%n--== %s ==--%n", table.toUpperCase(Locale.getDefault()));
+        actual.forEach((key, value) -> this.writer.printf("%s : %s%n", key, value));
     }
 
     /**
@@ -168,6 +194,35 @@ public final class Shell {
     }
 
     /**
+     * Loads the computational state from a user-specified file.
+     *
+     * @param path Path to the yaml file, containing desired state.
+     */
+    @SneakyThrows
+    private void loadState(final String path) {
+        final InputStream stream = Files.newInputStream(
+            new File(
+                URI.create(String.format("file://%s", path.replace("'", "")))
+            ).toPath()
+        );
+        this.state = fillStorageFrom(stream);
+    }
+
+    /**
+     * Converts yaml data read from input stream to a correct {@link InMemoryStorage} object.
+     *
+     * @param stream InputStream that contains yaml file data.
+     * @return The collection of {@link InMemoryStorage} objects.
+     */
+    private static Map<String, InMemoryStorage> fillStorageFrom(final InputStream stream) {
+        return new Yaml()
+            .<Map<String, Map<String, String>>>load(stream)
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
+    }
+
+    /**
      * Returns a complete set of all the table names, read from the user-specified folder.
      *
      * @return Set of Strings, representing decision table names.
@@ -183,8 +238,8 @@ public final class Shell {
      * @param tables List of table names.
      * @return A collection of string elements, each of which is the autocomplete option.
      */
-    private static List<String> completionOptionsFor(final Set<String> tables) {
-        final List<String> result = new ArrayList<>(tables);
+    private static Set<String> completionOptionsFor(final Set<String> tables) {
+        final Set<String> result = new HashSet<>(tables);
         result.addAll(Shell.COMMANDS);
         return result;
     }

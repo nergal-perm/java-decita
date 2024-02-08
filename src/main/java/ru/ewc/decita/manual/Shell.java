@@ -60,7 +60,7 @@ public final class Shell {
     /**
      * Set of predefined autocompletion options, contains all available commands.
      */
-    public static final Set<String> COMMANDS = Set.of("sources", "decide");
+    public static final Set<String> COMMANDS = Set.of("tables", "decide", "state");
 
     /**
      * Object holding current terminal.
@@ -99,7 +99,7 @@ public final class Shell {
         this.reader = LineReaderBuilder
             .builder()
             .terminal(this.terminal)
-            .completer(new StringsCompleter("tables", "decide", "state"))
+            .completer(new StringsCompleter(Shell.COMMANDS))
             .parser(new DefaultParser())
             .build();
         this.folder = URI.create(

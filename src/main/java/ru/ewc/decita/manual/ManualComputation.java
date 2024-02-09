@@ -24,11 +24,21 @@
 
 package ru.ewc.decita.manual;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.SneakyThrows;
+import org.yaml.snakeyaml.Yaml;
 import ru.ewc.decita.ComputationContext;
+import ru.ewc.decita.ConstantLocator;
 import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.DecitaException;
+import ru.ewc.decita.InMemoryStorage;
 import ru.ewc.decita.Locator;
 import ru.ewc.decita.input.PlainTextContentReader;
 
@@ -44,6 +54,11 @@ public class ManualComputation {
     private final PlainTextContentReader tables;
 
     /**
+     * An URI pointing to a state yaml file.
+     */
+    private final URI state;
+
+    /**
      * Ctor.
      */
     public ManualComputation() {
@@ -56,11 +71,18 @@ public class ManualComputation {
      * @param path A path to tables files.
      */
     public ManualComputation(final String path) {
-        this.tables = new PlainTextContentReader(
-            URI.create(String.format("file://%s", path.replace("'", ""))),
-            ".csv",
-            ";"
-        );
+        this(new PlainTextContentReader(uriFrom(path), ".csv", ";"), uriFrom(path));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param tables Reader that can read tables data from the file system.
+     * @param state Path to yaml describing the current system's state.
+     */
+    public ManualComputation(final PlainTextContentReader tables, final URI state) {
+        this.tables = tables;
+        this.state = state;
     }
 
     /**
@@ -73,11 +95,67 @@ public class ManualComputation {
     }
 
     /**
+     * Creates a copy of this instance with a new path to state yaml.
+     *
+     * @param path Path to a file that holds the current state's description.
+     * @return A new instance of {@link ManualComputation}.
+     */
+    public ManualComputation statePath(final String path) {
+        return new ManualComputation(
+            this.tables,
+            uriFrom(path)
+        );
+    }
+
+    /**
+     * Converts yaml data read from input stream to a correct {@link InMemoryStorage} object.
+     *
+     * @return The collection of {@link InMemoryStorage} objects.
+     */
+    @SneakyThrows
+    public Map<String, Locator> currentState() {
+        final InputStream stream = Files.newInputStream(new File(this.state).toPath());
+        final Map<String, InMemoryStorage> collect = new Yaml()
+            .<Map<String, Map<String, String>>>load(stream)
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
+        final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
+        locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
+        locators.putAll(collect);
+        return locators;
+    }
+
+    /**
      * Returns a complete set of all the table names, read from the user-specified folder.
      *
      * @return Set of Strings, representing decision table names.
      */
     Set<String> tableNames() {
         return this.tablesAsLocators().keySet();
+    }
+
+    /**
+     * Computes the decision for a specified table.
+     *
+     * @param table Name of the tables to make a decision against.
+     * @return The collection of outcomes from the specified table.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    Map<String, String> decideFor(final String table) throws DecitaException {
+        return new ComputationContext(
+            this.tablesAsLocators(),
+            this.currentState()
+        ).decisionFor(table);
+    }
+
+    /**
+     * Converts a string representation of the file system path to a correct URI.
+     *
+     * @param path File system path as a String.
+     * @return URI that corresponds to a given path.
+     */
+    private static URI uriFrom(final String path) {
+        return URI.create(String.format("file://%s", path.replace("'", "")));
     }
 }

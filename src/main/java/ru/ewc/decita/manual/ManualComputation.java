@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -59,13 +60,6 @@ public class ManualComputation {
     private final URI state;
 
     /**
-     * Ctor.
-     */
-    public ManualComputation() {
-        this(String.format("%s/src/test/resources/tables", System.getProperty("user.dir")));
-    }
-
-    /**
      * Ctor with path to tables.
      *
      * @param path A path to tables files.
@@ -91,7 +85,13 @@ public class ManualComputation {
      * @return A dictionary of {@link DecisionTable}s.
      */
     public Map<String, Locator> tablesAsLocators() {
-        return this.tables.allTables();
+        final Map<String, Locator> result;
+        if (this.tables == null) {
+            result = Collections.emptyMap();
+        } else {
+            result = this.tables.allTables();
+        }
+        return result;
     }
 
     /**
@@ -156,6 +156,10 @@ public class ManualComputation {
      * @return URI that corresponds to a given path.
      */
     private static URI uriFrom(final String path) {
-        return URI.create(String.format("file://%s", path.replace("'", "")));
+        String temp = path;
+        if (temp.charAt(0) == '/') {
+            temp = path.substring(1);
+        }
+        return URI.create(String.format("file:///%s", temp.replace("'", "").replace("\\", "/")));
     }
 }

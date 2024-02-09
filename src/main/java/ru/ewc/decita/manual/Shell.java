@@ -48,7 +48,6 @@ import ru.ewc.decita.ComputationContext;
 import ru.ewc.decita.ConstantLocator;
 import ru.ewc.decita.InMemoryStorage;
 import ru.ewc.decita.Locator;
-import ru.ewc.decita.input.PlainTextContentReader;
 
 /**
  * I am the shell for manual library testing. My main responsibility is to hide Java complexities
@@ -78,21 +77,20 @@ public final class Shell {
     private final PrintWriter writer;
 
     /**
-     * Holds the location of decision table sources.
-     */
-    private URI folder;
-
-    /**
      * Preconfigured state to use in computations.
      */
     private Map<String, InMemoryStorage> state;
+
+    /**
+     * An instance of a manual computation.
+     */
+    private ManualComputation computation;
 
     /**
      * Ctor.
      *
      * @throws IOException If the terminal could not be created.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     private Shell() throws IOException {
         this.terminal = TerminalBuilder.terminal();
         this.writer = this.terminal.writer();
@@ -102,12 +100,7 @@ public final class Shell {
             .completer(new StringsCompleter(Shell.COMMANDS))
             .parser(new DefaultParser())
             .build();
-        this.folder = URI.create(
-            String.format(
-                "file://%s/src/test/resources/tables",
-                System.getProperty("user.dir")
-            )
-        );
+        this.computation = new ManualComputation();
     }
 
     /**
@@ -169,7 +162,7 @@ public final class Shell {
         locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
         locators.putAll(this.state);
         final ComputationContext context = new ComputationContext(
-            new PlainTextContentReader(this.folder, ".csv", ";").allTables(),
+            this.computation.tablesAsLocators(),
             locators
         );
         final Map<String, String> actual = context.decisionFor(table);
@@ -178,19 +171,29 @@ public final class Shell {
     }
 
     /**
-     * Import decision tables from a folder in file system.
+     * Store a path to decision tables folder for following computations.
      *
      * @param path The path to decision tables.
      */
     private void pointToSources(final String path) {
-        this.folder = URI.create(String.format("file://%s", path.replace("'", "")));
-        final Set<String> tables = this.extractFilenamesFromPath();
+        this.computation = new ManualComputation(path);
         this.reader = LineReaderBuilder
             .builder()
             .terminal(this.terminal)
-            .completer(new StringsCompleter(completionOptionsFor(tables)))
+            .completer(this.commandsAndTableNames())
             .build();
         this.writer.printf("Let's import tables from %s%n", path);
+    }
+
+    /**
+     * Computes a new completion set, including all the loaded table names.
+     *
+     * @return An instance of {@link StringsCompleter} with all the available commands and tables
+     */
+    private StringsCompleter commandsAndTableNames() {
+        final Set<String> result = new HashSet<>(this.computation.tableNames());
+        result.addAll(Shell.COMMANDS);
+        return new StringsCompleter(result);
     }
 
     /**
@@ -220,28 +223,6 @@ public final class Shell {
             .entrySet()
             .stream()
             .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
-    }
-
-    /**
-     * Returns a complete set of all the table names, read from the user-specified folder.
-     *
-     * @return Set of Strings, representing decision table names.
-     */
-    private Set<String> extractFilenamesFromPath() {
-        return new PlainTextContentReader(this.folder, ".csv", ";").allTables().keySet();
-    }
-
-    /**
-     * Computes a list of all autocompletion options base on a predefined set of available commands
-     * and a list of tables in a user-specified folder.
-     *
-     * @param tables List of table names.
-     * @return A collection of string elements, each of which is the autocomplete option.
-     */
-    private static Set<String> completionOptionsFor(final Set<String> tables) {
-        final Set<String> result = new HashSet<>(tables);
-        result.addAll(Shell.COMMANDS);
-        return result;
     }
 
     /**

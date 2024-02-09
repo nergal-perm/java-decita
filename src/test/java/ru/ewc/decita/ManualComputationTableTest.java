@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-class DecisionTableTest {
+class ManualComputationTableTest {
     @Test
     void shouldComputeTheExistingOutcome() throws DecitaException {
         final DecisionTable target = new DecisionTable(TestObjects.rulesList());

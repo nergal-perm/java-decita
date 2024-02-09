@@ -121,13 +121,25 @@ public final class Shell {
         final String param = extractParameterFrom(parsed);
         switch (command) {
             case "tables":
-                this.pointToSources(param);
+                if (param == null) {
+                    this.writer.println("Please give me a path to tables folder...");
+                } else {
+                    this.pointToSources(param);
+                }
                 break;
             case "state":
-                this.loadState(param);
+                if (param == null) {
+                    this.writer.println("Please give me a path to current state file...");
+                } else {
+                    this.loadState(param);
+                }
                 break;
             case "decide":
-                this.decideFor(param);
+                if (param == null) {
+                    this.writer.println("Please give me a table name...");
+                } else {
+                    this.decideFor(param);
+                }
                 break;
             default:
                 break;
@@ -182,6 +194,7 @@ public final class Shell {
         this.computation.decideFor(table).forEach(
             (key, value) -> this.writer.printf("%s : %s%n", key, value)
         );
+        this.writer.println();
     }
 
     /**

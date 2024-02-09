@@ -23,18 +23,11 @@
  */
 package ru.ewc.decita.manual;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -43,11 +36,6 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.yaml.snakeyaml.Yaml;
-import ru.ewc.decita.ComputationContext;
-import ru.ewc.decita.ConstantLocator;
-import ru.ewc.decita.InMemoryStorage;
-import ru.ewc.decita.Locator;
 
 /**
  * I am the shell for manual library testing. My main responsibility is to hide Java complexities
@@ -75,11 +63,6 @@ public final class Shell {
      * Object that can write anything to console.
      */
     private final PrintWriter writer;
-
-    /**
-     * Preconfigured state to use in computations.
-     */
-    private Map<String, InMemoryStorage> state;
 
     /**
      * An instance of a manual computation.
@@ -140,34 +123,15 @@ public final class Shell {
             case "tables":
                 this.pointToSources(param);
                 break;
-            case "decide":
-                this.decideFor(param);
-                break;
             case "state":
                 this.loadState(param);
+                break;
+            case "decide":
+                this.decideFor(param);
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     * Method that resolves the decision table in a specific Computation context.
-     *
-     * @param table The name of the table to resolve.
-     */
-    @SneakyThrows
-    private void decideFor(final String table) {
-        final Map<String, Locator> locators = new HashMap<>(this.state.size() + 1);
-        locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
-        locators.putAll(this.state);
-        final ComputationContext context = new ComputationContext(
-            this.computation.tablesAsLocators(),
-            locators
-        );
-        final Map<String, String> actual = context.decisionFor(table);
-        this.writer.printf("%n--== %s ==--%n", table.toUpperCase(Locale.getDefault()));
-        actual.forEach((key, value) -> this.writer.printf("%s : %s%n", key, value));
     }
 
     /**
@@ -203,26 +167,21 @@ public final class Shell {
      */
     @SneakyThrows
     private void loadState(final String path) {
-        final InputStream stream = Files.newInputStream(
-            new File(
-                URI.create(String.format("file://%s", path.replace("'", "")))
-            ).toPath()
-        );
-        this.state = fillStorageFrom(stream);
+        this.computation = this.computation.statePath(path);
+        this.writer.printf("Let's use state from %s%n", path);
     }
 
     /**
-     * Converts yaml data read from input stream to a correct {@link InMemoryStorage} object.
+     * Method that resolves the decision table in a specific Computation context.
      *
-     * @param stream InputStream that contains yaml file data.
-     * @return The collection of {@link InMemoryStorage} objects.
+     * @param table The name of the table to resolve.
      */
-    private static Map<String, InMemoryStorage> fillStorageFrom(final InputStream stream) {
-        return new Yaml()
-            .<Map<String, Map<String, String>>>load(stream)
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
+    @SneakyThrows
+    private void decideFor(final String table) {
+        this.writer.printf("%n--== %s ==--%n", table.toUpperCase(Locale.getDefault()));
+        this.computation.decideFor(table).forEach(
+            (key, value) -> this.writer.printf("%s : %s%n", key, value)
+        );
     }
 
     /**

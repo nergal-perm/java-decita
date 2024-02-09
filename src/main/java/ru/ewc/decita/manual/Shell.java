@@ -81,9 +81,8 @@ public final class Shell {
             .builder()
             .terminal(this.terminal)
             .completer(new StringsCompleter(Shell.COMMANDS))
-            .parser(new DefaultParser())
+            .parser(new DefaultParser().escapeChars(new char['\\']))
             .build();
-        this.computation = new ManualComputation();
     }
 
     /**
@@ -190,11 +189,15 @@ public final class Shell {
      */
     @SneakyThrows
     private void decideFor(final String table) {
-        this.writer.printf("%n--== %s ==--%n", table.toUpperCase(Locale.getDefault()));
-        this.computation.decideFor(table).forEach(
-            (key, value) -> this.writer.printf("%s : %s%n", key, value)
-        );
-        this.writer.println();
+        if (this.computation == null) {
+            this.writer.println("Please set me up using 'tables' and 'state' commands...");
+        } else {
+            this.writer.printf("%n--== %s ==--%n", table.toUpperCase(Locale.getDefault()));
+            this.computation.decideFor(table).forEach(
+                (key, value) -> this.writer.printf("%s : %s%n", key, value)
+            );
+            this.writer.println();
+        }
     }
 
     /**
@@ -206,7 +209,7 @@ public final class Shell {
     private static String extractParameterFrom(final ParsedLine parsed) {
         final String param;
         if (parsed.words().size() > 1) {
-            param = parsed.words().get(1);
+            param = parsed.words().get(1).replace("\\", "\\\\");
         } else {
             param = null;
         }

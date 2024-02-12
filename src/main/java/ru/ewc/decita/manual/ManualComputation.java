@@ -160,7 +160,13 @@ public class ManualComputation {
      * @return Set of Strings, representing decision table names.
      */
     Set<String> tableNames() {
-        return this.tablesAsLocators().keySet();
+        final Set<String> result;
+        if (this.tables == null) {
+            result = Collections.emptySet();
+        } else {
+            result = this.tablesAsLocators().keySet();
+        }
+        return result;
     }
 
     /**

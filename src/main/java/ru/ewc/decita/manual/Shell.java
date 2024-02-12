@@ -77,12 +77,7 @@ public final class Shell {
     private Shell() throws IOException {
         this.terminal = TerminalBuilder.terminal();
         this.writer = this.terminal.writer();
-        this.reader = LineReaderBuilder
-            .builder()
-            .terminal(this.terminal)
-            .completer(new StringsCompleter(Shell.COMMANDS))
-            .parser(new DefaultParser().escapeChars(new char['\\']))
-            .build();
+        this.reader = buildReader();
     }
 
     /**
@@ -155,11 +150,7 @@ public final class Shell {
             this.computation = new ManualComputation();
         }
         this.computation = this.computation.tablePath(path);
-        this.reader = LineReaderBuilder
-            .builder()
-            .terminal(this.terminal)
-            .completer(this.commandsAndTableNames())
-            .build();
+        this.reader = buildReader();
         this.writer.printf("Let's import tables from %s%n", path);
     }
 
@@ -169,7 +160,12 @@ public final class Shell {
      * @return An instance of {@link StringsCompleter} with all the available commands and tables
      */
     private StringsCompleter commandsAndTableNames() {
-        final Set<String> result = new HashSet<>(this.computation.tableNames());
+        final Set<String> result;
+        if (this.computation == null) {
+            result = new HashSet<>();
+        } else {
+            result = new HashSet<>(this.computation.tableNames());
+        }
         result.addAll(Shell.COMMANDS);
         return new StringsCompleter(result);
     }
@@ -221,4 +217,19 @@ public final class Shell {
         }
         return param;
     }
+
+    /**
+     * Builds a terminal with escaping line parser.
+     *
+     * @return An instance of a preconfigured line parser.
+     */
+    private LineReader buildReader() {
+        return LineReaderBuilder
+            .builder()
+            .terminal(this.terminal)
+            .completer(this.commandsAndTableNames())
+            .parser(new DefaultParser().escapeChars(new char['\\']))
+            .build();
+    }
+
 }

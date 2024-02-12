@@ -24,11 +24,14 @@
 
 package ru.ewc.decita;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import lombok.SneakyThrows;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decita.manual.ManualComputation;
 
 /**
  * Tests for {@link DecisionTable}.
@@ -56,6 +59,16 @@ class ManualComputationTableTest {
         MatcherAssert.assertThat(
             outcome.get("outcome"),
             Matchers.is("undefined")
+        );
+    }
+
+    @SneakyThrows
+    @Test
+    void testPaths() {
+        final URI actual = ManualComputation.uriFrom("C:\\Users\\test");
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.is(new URI("file:/C:/Users/test"))
         );
     }
 }

@@ -80,6 +80,23 @@ public class ManualComputation {
     }
 
     /**
+     * Converts a string representation of the file system path to a correct URI.
+     *
+     * @param path File system path as a String.
+     * @return URI that corresponds to a given path.
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static URI uriFrom(final String path) {
+        final StringBuilder result = new StringBuilder("file:/");
+        if (path.charAt(0) == '/') {
+            result.append(path.replace('\\', '/').substring(1));
+        } else {
+            result.append(path.replace('\\', '/'));
+        }
+        return URI.create(result.toString());
+    }
+
+    /**
      * Reads all the tables from disk in a format suitable to construct {@link ComputationContext}.
      *
      * @return A dictionary of {@link DecisionTable}s.
@@ -147,19 +164,5 @@ public class ManualComputation {
             this.tablesAsLocators(),
             this.currentState()
         ).decisionFor(table);
-    }
-
-    /**
-     * Converts a string representation of the file system path to a correct URI.
-     *
-     * @param path File system path as a String.
-     * @return URI that corresponds to a given path.
-     */
-    private static URI uriFrom(final String path) {
-        String temp = path;
-        if (temp.charAt(0) == '/') {
-            temp = path.substring(1);
-        }
-        return URI.create(String.format("file:///%s", temp.replace("'", "").replace("\\", "/")));
     }
 }

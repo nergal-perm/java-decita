@@ -151,7 +151,10 @@ public final class Shell {
      * @param path The path to decision tables.
      */
     private void pointToSources(final String path) {
-        this.computation = new ManualComputation(path);
+        if (this.computation == null) {
+            this.computation = new ManualComputation();
+        }
+        this.computation = this.computation.tablePath(path);
         this.reader = LineReaderBuilder
             .builder()
             .terminal(this.terminal)
@@ -178,6 +181,9 @@ public final class Shell {
      */
     @SneakyThrows
     private void loadState(final String path) {
+        if (this.computation == null) {
+            this.computation = new ManualComputation();
+        }
         this.computation = this.computation.statePath(path);
         this.writer.printf("Let's use state from %s%n", path);
     }

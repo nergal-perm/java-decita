@@ -48,6 +48,7 @@ import ru.ewc.decita.input.PlainTextContentReader;
  *
  * @since 0.2.2
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public class ManualComputation {
     /**
      * An instance of object that reads all the tables from disk.
@@ -55,17 +56,15 @@ public class ManualComputation {
     private final PlainTextContentReader tables;
 
     /**
-     * An URI pointing to a state yaml file.
+     * A URI pointing to a state yaml file.
      */
     private final URI state;
 
     /**
-     * Ctor with path to tables.
-     *
-     * @param path A path to tables files.
+     * Default Ctor.
      */
-    public ManualComputation(final String path) {
-        this(new PlainTextContentReader(uriFrom(path), ".csv", ";"), uriFrom(path));
+    public ManualComputation() {
+        this(null, null);
     }
 
     /**
@@ -74,7 +73,7 @@ public class ManualComputation {
      * @param tables Reader that can read tables data from the file system.
      * @param state Path to yaml describing the current system's state.
      */
-    public ManualComputation(final PlainTextContentReader tables, final URI state) {
+    private ManualComputation(final PlainTextContentReader tables, final URI state) {
         this.tables = tables;
         this.state = state;
     }
@@ -85,7 +84,6 @@ public class ManualComputation {
      * @param path File system path as a String.
      * @return URI that corresponds to a given path.
      */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static URI uriFrom(final String path) {
         final StringBuilder result = new StringBuilder("file:/");
         if (path.charAt(0) == '/') {
@@ -121,6 +119,19 @@ public class ManualComputation {
         return new ManualComputation(
             this.tables,
             uriFrom(path)
+        );
+    }
+
+    /**
+     * Creates a copy of this instance with a new path to tables folder.
+     *
+     * @param path Path to a folder containing all the decision tables.
+     * @return A new instance of {@link ManualComputation}.
+     */
+    public ManualComputation tablePath(final String path) {
+        return new ManualComputation(
+            new PlainTextContentReader(uriFrom(path), ".csv", ";"),
+            this.state
         );
     }
 
@@ -165,4 +176,5 @@ public class ManualComputation {
             this.currentState()
         ).decisionFor(table);
     }
+
 }

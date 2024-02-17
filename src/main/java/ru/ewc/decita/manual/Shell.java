@@ -77,7 +77,7 @@ public final class Shell {
     private Shell() throws IOException {
         this.terminal = TerminalBuilder.terminal();
         this.writer = this.terminal.writer();
-        this.reader = buildReader();
+        this.reader = this.buildReader();
     }
 
     /**
@@ -150,7 +150,7 @@ public final class Shell {
             this.computation = new ManualComputation();
         }
         this.computation = this.computation.tablePath(path);
-        this.reader = buildReader();
+        this.reader = this.buildReader();
         this.writer.printf("Let's import tables from %s%n", path);
     }
 

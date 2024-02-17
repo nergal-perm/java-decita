@@ -36,6 +36,7 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import ru.ewc.decita.DecitaException;
 
 /**
  * I am the shell for manual library testing. My main responsibility is to hide Java complexities
@@ -77,7 +78,7 @@ public final class Shell {
     private Shell() throws IOException {
         this.terminal = TerminalBuilder.terminal();
         this.writer = this.terminal.writer();
-        this.reader = buildReader();
+        this.reader = this.buildReader();
     }
 
     /**
@@ -101,7 +102,11 @@ public final class Shell {
             if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
                 break;
             }
-            this.performCommand(this.reader.getParser().parse(line, 0));
+            try {
+                this.performCommand(this.reader.getParser().parse(line, 0));
+            } catch (final DecitaException exception) {
+                this.writer.printf("An error encountered: %s%n", exception.getMessage());
+            }
         }
     }
 
@@ -150,7 +155,7 @@ public final class Shell {
             this.computation = new ManualComputation();
         }
         this.computation = this.computation.tablePath(path);
-        this.reader = buildReader();
+        this.reader = this.buildReader();
         this.writer.printf("Let's import tables from %s%n", path);
     }
 

@@ -25,10 +25,10 @@
 package ru.ewc.decita;
 
 /**
- * I am the exceptin to use in all the failures inside the Decita library.
+ * I am the exception to use in all the failures inside the Decita library.
  * @since 0.1
  */
-public class DecitaException extends Exception {
+public class DecitaException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**

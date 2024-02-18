@@ -67,8 +67,6 @@ public class ManualComputation {
         this(null, null);
     }
 
-    //@todo #78 Initialize ManualComputation with paths to tables and state
-
     /**
      * Ctor.
      *
@@ -159,7 +157,7 @@ public class ManualComputation {
      * @return The collection of outcomes from the specified table.
      * @throws DecitaException If the table could not be found or computed.
      */
-    Map<String, String> decideFor(final String table) throws DecitaException {
+    public Map<String, String> decideFor(final String table) throws DecitaException {
         return new ComputationContext(
             this.tablesAsLocators(),
             this.currentState()
@@ -181,6 +179,12 @@ public class ManualComputation {
         return result;
     }
 
+    /**
+     * Loads the state from the specified {@code InputStream}.
+     *
+     * @param stream InputStream containing state info.
+     * @return Collection of {@link InMemoryStorage} objects, containing desired state.
+     */
     @SuppressWarnings("unchecked")
     private static Map<String, InMemoryStorage> loadStateFrom(final InputStream stream) {
         return ((Map<String, Map<String, String>>) new Yaml().loadAll(stream).iterator().next())

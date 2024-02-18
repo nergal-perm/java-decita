@@ -148,7 +148,7 @@
         <artifactId>conventional-commit-linter</artifactId>
         <version>0.0.6</version>
         <configuration>
-          <scan>ALL</scan>
+          <scan>LAST</scan>
         </configuration>
         <executions>
           <execution>

@@ -11,6 +11,6 @@ currentPlayer:
 ---
 sample-table:
   text: "the world is not enough"
-  outcome: "false"
+  outcome: "text"
 hello-world:
-  outcome: "world"
+  outcome: "hello"

@@ -1,0 +1,16 @@
+data:
+  is-stored: "false"
+welcome:
+  text: "World"
+market:
+  shop: 2
+  bar: 1
+  farm: 10
+currentPlayer:
+  name: "Eugene"
+---
+sample-table:
+  text: "the world is not enough"
+  outcome: "false"
+hello-world:
+  outcome: "world"

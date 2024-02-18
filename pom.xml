@@ -141,28 +141,6 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.github.volodya-lombrozo</groupId>
-        <artifactId>conventional-commit-linter</artifactId>
-        <version>0.0.6</version>
-        <configuration>
-          <scan>LAST</scan>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>
-                scan
-              </goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
   <profiles>
     <profile>
       <id>qulice</id>

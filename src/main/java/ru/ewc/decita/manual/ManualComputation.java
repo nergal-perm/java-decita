@@ -67,6 +67,8 @@ public class ManualComputation {
         this(null, null);
     }
 
+    //@todo #78 Initialize ManualComputation with paths to tables and state
+
     /**
      * Ctor.
      *
@@ -143,15 +145,25 @@ public class ManualComputation {
     @SneakyThrows
     public Map<String, Locator> currentState() {
         final InputStream stream = Files.newInputStream(new File(this.state).toPath());
-        final Map<String, InMemoryStorage> collect = new Yaml()
-            .<Map<String, Map<String, String>>>load(stream)
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
+        final Map<String, InMemoryStorage> collect = loadStateFrom(stream);
         final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
         locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
         locators.putAll(collect);
         return locators;
+    }
+
+    /**
+     * Computes the decision for a specified table.
+     *
+     * @param table Name of the tables to make a decision against.
+     * @return The collection of outcomes from the specified table.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    Map<String, String> decideFor(final String table) throws DecitaException {
+        return new ComputationContext(
+            this.tablesAsLocators(),
+            this.currentState()
+        ).decisionFor(table);
     }
 
     /**
@@ -169,18 +181,11 @@ public class ManualComputation {
         return result;
     }
 
-    /**
-     * Computes the decision for a specified table.
-     *
-     * @param table Name of the tables to make a decision against.
-     * @return The collection of outcomes from the specified table.
-     * @throws DecitaException If the table could not be found or computed.
-     */
-    Map<String, String> decideFor(final String table) throws DecitaException {
-        return new ComputationContext(
-            this.tablesAsLocators(),
-            this.currentState()
-        ).decisionFor(table);
+    @SuppressWarnings("unchecked")
+    private static Map<String, InMemoryStorage> loadStateFrom(final InputStream stream) {
+        return ((Map<String, Map<String, String>>) new Yaml().loadAll(stream).iterator().next())
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
     }
-
 }

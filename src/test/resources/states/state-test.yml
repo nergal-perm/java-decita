@@ -8,3 +8,7 @@ market:
   farm: 10
 currentPlayer:
   name: "Eugene"
+---
+sample-table:
+  text: "the world is not enough"
+  outcome: "false"

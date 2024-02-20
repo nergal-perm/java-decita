@@ -34,8 +34,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -48,8 +48,18 @@ import ru.ewc.decita.manual.ManualComputation;
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 class StateBasedTest {
+    /**
+     * The soft assertions to gather all the failures.
+     */
+    private SoftAssertions softly;
+
+    @BeforeEach
+    void setUp() {
+        this.softly = new SoftAssertions();
+    }
+
     @SneakyThrows
-    public static Stream<TestData> readFileNames() {
+    static Stream<TestData> readFileNames() {
         return Files.walk(Paths.get(ManualComputation.uriFrom(getFinalPathTo("states"))))
             .filter(Files::isRegularFile)
             .map(path -> path.toFile().getAbsolutePath())
@@ -66,7 +76,6 @@ class StateBasedTest {
             .filter(Objects::nonNull);
     }
 
-    // @todo #78 Make SoftAssertions in state-based tests and gather failure data
     @SneakyThrows
     @ParameterizedTest(name = "{0}")
     @MethodSource("readFileNames")
@@ -75,12 +84,12 @@ class StateBasedTest {
             .tablePath(getFinalPathTo("tables"))
             .statePath(test.file);
         for (final String table : test.expectations.keySet()) {
-            MatcherAssert.assertThat(
-                String.format("%nTable '%s'", table),
-                target.decideFor(table),
-                Matchers.equalTo(test.expectations.get(table))
-            );
+            this.softly
+                .assertThat(target.decideFor(table))
+                .describedAs(String.format("Table '%s'", table))
+                .isEqualTo(test.expectations.get(table));
         }
+        this.softly.assertAll();
     }
 
     @SuppressWarnings("unchecked")

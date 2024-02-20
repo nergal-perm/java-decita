@@ -5,6 +5,14 @@
 
 ## Instructions
 
+### Releasing
+
+To create a new commit with a new version, run the following `npx` command (you need to have Node.js installed): 
+
+```shell
+npx @dwmkerr/standard-version --package-files pom.xml --bumpFiles pom.xml
+```
+
 ### Manual testing
 
 Run the following Maven command from the project root:

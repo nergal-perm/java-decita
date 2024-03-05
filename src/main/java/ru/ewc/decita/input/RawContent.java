@@ -26,10 +26,12 @@ package ru.ewc.decita.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.ewc.decita.AlwaysTrueCondition;
 import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.EqualsCondition;
 import ru.ewc.decita.Rule;
+import ru.ewc.decita.SingleCondition;
 
 /**
  * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
@@ -88,10 +90,7 @@ public final class RawContent {
             final Rule rule = new Rule();
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
-                    new EqualsCondition(
-                        coordinateFrom(condition[0]),
-                        coordinateFrom(condition[column])
-                    )
+                    fullConditionFrom(condition, column)
                 );
             }
             for (final String[] outcome : this.outcomes) {
@@ -103,6 +102,26 @@ public final class RawContent {
             rules.add(rule);
         }
         return new DecisionTable(rules);
+    }
+
+    /**
+     * Creates a {@link SingleCondition} based on a string representation.
+     *
+     * @param condition The string array of a condition base values for every rule.
+     * @param rule The column index of the condition 'base value'.
+     * @return A concrete {@link SingleCondition} based on given string representation.
+     */
+    private static SingleCondition fullConditionFrom(final String[] condition, final int rule) {
+        final SingleCondition result;
+        if (condition[rule].equals("===")) {
+            result = new AlwaysTrueCondition();
+        } else {
+            result = new EqualsCondition(
+                coordinateFrom(condition[0]),
+                coordinateFrom(condition[rule])
+            );
+        }
+        return result;
     }
 
     /**

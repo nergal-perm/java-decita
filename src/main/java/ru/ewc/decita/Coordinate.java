@@ -37,6 +37,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public final class Coordinate {
     /**
+     * A constant value {@link Coordinate} that points to the "true" value.
+     */
+    public static final Coordinate TRUE = new Coordinate(Locator.CONSTANT_VALUES, "true");
+
+    /**
      * String identifier of the concrete {@link Locator} responsible for retrieving the value.
      */
     private String locator;

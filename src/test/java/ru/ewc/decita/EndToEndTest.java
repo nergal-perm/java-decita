@@ -52,7 +52,11 @@ class EndToEndTest {
                 Locator.CONSTANT_VALUES, new ConstantLocator(),
                 "data", new InMemoryStorage(
                     Map.of("is-stored", "true")
-                ))
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Katie")
+                )
+            )
         );
         final Map<String, String> actual = context.decisionFor("sample-table");
         MatcherAssert.assertThat(

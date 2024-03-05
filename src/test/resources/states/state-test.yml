@@ -1,5 +1,5 @@
 data:
-  is-stored: "false"
+  is-stored: "true"
 welcome:
   text: "World"
 market:
@@ -7,10 +7,10 @@ market:
   bar: 1
   farm: 10
 currentPlayer:
-  name: "Eugene"
+  name: "Katie"
 ---
 sample-table:
-  text: "the world is not enough"
-  outcome: "false"
+  text: "hello world"
+  outcome: "true"
 hello-world:
-  outcome: "world"
+  outcome: "hello"

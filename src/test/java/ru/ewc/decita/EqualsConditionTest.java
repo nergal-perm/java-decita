@@ -27,6 +27,8 @@ package ru.ewc.decita;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decita.conditions.Condition;
+import ru.ewc.decita.conditions.EqualsCondition;
 
 /**
  * Tests for a single {@link Condition}.

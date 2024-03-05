@@ -22,7 +22,11 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decita;
+package ru.ewc.decita.conditions;
+
+import ru.ewc.decita.ComputationContext;
+import ru.ewc.decita.Coordinate;
+import ru.ewc.decita.DecitaException;
 
 /**
  * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute

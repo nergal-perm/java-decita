@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
+import ru.ewc.decita.conditions.Condition;
 
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check

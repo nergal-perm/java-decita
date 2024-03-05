@@ -26,12 +26,12 @@ package ru.ewc.decita.input;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.ewc.decita.AlwaysTrueCondition;
 import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
-import ru.ewc.decita.EqualsCondition;
 import ru.ewc.decita.Rule;
-import ru.ewc.decita.SingleCondition;
+import ru.ewc.decita.conditions.AlwaysTrueCondition;
+import ru.ewc.decita.conditions.Condition;
+import ru.ewc.decita.conditions.EqualsCondition;
 
 /**
  * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
@@ -105,14 +105,14 @@ public final class RawContent {
     }
 
     /**
-     * Creates a {@link SingleCondition} based on a string representation.
+     * Creates a {@link Condition} based on a string representation.
      *
      * @param condition The string array of a condition base values for every rule.
      * @param rule The column index of the condition 'base value'.
-     * @return A concrete {@link SingleCondition} based on given string representation.
+     * @return A concrete {@link Condition} based on given string representation.
      */
-    private static SingleCondition fullConditionFrom(final String[] condition, final int rule) {
-        final SingleCondition result;
+    private static Condition fullConditionFrom(final String[] condition, final int rule) {
+        final Condition result;
         if (condition[rule].equals("===")) {
             result = new AlwaysTrueCondition();
         } else {

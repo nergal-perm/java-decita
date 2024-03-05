@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decita;
+package ru.ewc.decita.conditions;
+
+import ru.ewc.decita.Coordinate;
 
 /**
  * I represent a {@link Condition}  that is always true.

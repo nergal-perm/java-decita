@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.ewc.decita;
+package ru.ewc.decita.conditions;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import ru.ewc.decita.Coordinate;
 
 /**
  * I am a specific {@link Condition} that checks if my right part exactly equals my left one.

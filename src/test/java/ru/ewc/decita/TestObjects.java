@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import ru.ewc.decita.conditions.Condition;
+import ru.ewc.decita.conditions.EqualsCondition;
 
 /**
  * I hold different preconfigured objects for unit-tests.

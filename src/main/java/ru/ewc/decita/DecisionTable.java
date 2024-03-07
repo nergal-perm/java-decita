@@ -51,8 +51,19 @@ public final class DecisionTable implements Locator {
      * @param rules A collection of {@link Rule}s for this table.
      */
     public DecisionTable(final Iterable<Rule> rules) {
+        this(rules, new Rule().withOutcome("outcome", "undefined"));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param rules A collection of {@link Rule}s for this table.
+     * @param elserule The special {@link Rule} that gets satisfied only if no other {@link Rule} is
+     *  satisfied.
+     */
+    public DecisionTable(final Iterable<Rule> rules, final Rule elserule) {
         this.rules = rules;
-        this.elserule = new Rule().withOutcome("outcome", "undefined");
+        this.elserule = elserule;
     }
 
     @Override

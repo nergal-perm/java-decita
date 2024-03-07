@@ -68,6 +68,30 @@ class EndToEndTest {
         );
     }
 
+    @Test
+    void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
+        final ComputationContext context = new ComputationContext(
+            new PlainTextContentReader(tablesDirectory(), ".csv", ";").allTables(),
+            Map.of(
+                Locator.CONSTANT_VALUES, new ConstantLocator(),
+                "data", new InMemoryStorage(
+                    Map.of("is-stored", "false")
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Katie")
+                )
+            )
+        );
+        final Map<String, String> actual = context.decisionFor("sample-table");
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.allOf(
+                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),
+                Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
+            )
+        );
+    }
+
     private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),

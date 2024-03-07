@@ -101,7 +101,18 @@ public final class RawContent {
             }
             rules.add(rule);
         }
-        return new DecisionTable(rules);
+        final Rule elserule = new Rule();
+        if (this.outcomes[0].length > this.conditions[0].length) {
+            for (final String[] outcome : this.outcomes) {
+                elserule.withOutcome(
+                    outcome[0],
+                    outcome[this.conditions[0].length]
+                );
+            }
+        } else {
+            elserule.withOutcome("outcome", "undefined");
+        }
+        return new DecisionTable(rules, elserule);
     }
 
     /**

@@ -1,5 +1,5 @@
 hello-world::outcome;constant::hello;constant::world
-currentPlayer::name;===;constant::Eugene
+market::shop;===;constant::2
 ---
 outcome;true;false;else
 text;hello world;the world is not enough;no rule satisfied

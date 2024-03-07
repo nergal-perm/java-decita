@@ -36,19 +36,19 @@ public final class InMemoryStorage implements Locator {
     /**
      * Simple key-value storage.
      */
-    private final Map<String, String> storage;
+    private final Map<String, Object> storage;
 
     /**
      * Ctor.
      *
      * @param storage The pre-filled key-value storage to start with.
      */
-    public InMemoryStorage(final Map<String, String> storage) {
+    public InMemoryStorage(final Map<String, Object> storage) {
         this.storage = storage;
     }
 
     @Override
     public String fragmentBy(final String fragment, final ComputationContext context) {
-        return this.storage.getOrDefault(fragment, "undefined");
+        return this.storage.getOrDefault(fragment, "undefined").toString();
     }
 }

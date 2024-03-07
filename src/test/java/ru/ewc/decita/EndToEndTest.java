@@ -53,8 +53,8 @@ class EndToEndTest {
                 "data", new InMemoryStorage(
                     Map.of("is-stored", "true")
                 ),
-                "currentPlayer", new InMemoryStorage(
-                    Map.of("name", "Katie")
+                "market", new InMemoryStorage(
+                    Map.of("shop", 2)
                 )
             )
         );
@@ -75,10 +75,10 @@ class EndToEndTest {
             Map.of(
                 Locator.CONSTANT_VALUES, new ConstantLocator(),
                 "data", new InMemoryStorage(
-                    Map.of("is-stored", "false")
+                    Map.of("is-stored", false)
                 ),
-                "currentPlayer", new InMemoryStorage(
-                    Map.of("name", "Katie")
+                "market", new InMemoryStorage(
+                    Map.of("shop", 3)
                 )
             )
         );

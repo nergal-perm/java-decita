@@ -187,7 +187,7 @@ public class ManualComputation {
      */
     @SuppressWarnings("unchecked")
     private static Map<String, InMemoryStorage> loadStateFrom(final InputStream stream) {
-        return ((Map<String, Map<String, String>>) new Yaml().loadAll(stream).iterator().next())
+        return ((Map<String, Map<String, Object>>) new Yaml().loadAll(stream).iterator().next())
             .entrySet()
             .stream()
             .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));

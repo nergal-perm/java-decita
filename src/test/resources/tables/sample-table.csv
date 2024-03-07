@@ -1,5 +1,5 @@
 hello-world::outcome;constant::hello;constant::world
 currentPlayer::name;===;constant::Eugene
 ---
-outcome;true;false
-text;hello world;the world is not enough
+outcome;true;false;else
+text;hello world;the world is not enough;no rule satisfied

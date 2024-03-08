@@ -24,18 +24,19 @@
 
 package ru.ewc.decita;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import ru.ewc.decita.conditions.AlwaysTrueCondition;
 import ru.ewc.decita.conditions.Condition;
 import ru.ewc.decita.conditions.EqualsCondition;
+import ru.ewc.decita.conditions.NotCondition;
 
 /**
  * I hold different preconfigured objects for unit-tests.
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class TestObjects {
     /**
      * Ctor.
@@ -49,22 +50,8 @@ public final class TestObjects {
      *
      * @return A prefilled {@link ComputationContext}.
      */
-    static ComputationContext defaultContext() {
+    public static ComputationContext defaultContext() {
         return new ComputationContext(defaultLocators());
-    }
-
-    /**
-     * Creates the {@link ComputationContext} filled with both required {@link Locator}s and
-     * {@link Locator}s passed in as an argument.
-     *
-     * @param locators A collection of {@link Locator}'s to add to context.
-     * @return An instance of {@link ComputationContext} filled with specified {@link Locator}s
-     *  along with the required ones.
-     */
-    static ComputationContext contextWithLocators(final Map<String, Locator> locators) {
-        final Map<String, Locator> updated = new HashMap<>(locators);
-        updated.putAll(defaultLocators());
-        return new ComputationContext(updated);
     }
 
     /**
@@ -72,7 +59,7 @@ public final class TestObjects {
      *
      * @return A simple and always true {@link Condition}.
      */
-    static Condition alwaysTrueConstantCondition() {
+    public static Condition alwaysTrueConstantCondition() {
         return new EqualsCondition(valueTrue(), valueTrue());
     }
 
@@ -81,7 +68,7 @@ public final class TestObjects {
      *
      * @return The concrete value {@link Coordinate}.
      */
-    static Coordinate valueTrue() {
+    public static Coordinate valueTrue() {
         return new Coordinate(Locator.CONSTANT_VALUES, "true");
     }
 
@@ -91,7 +78,7 @@ public final class TestObjects {
      *
      * @return A {@link Coordinate} of the always true {@link Condition}.
      */
-    static Coordinate alwaysTrueConditionCoordinate() {
+    public static Coordinate alwaysTrueConditionCoordinate() {
         return new Coordinate("always_true", "outcome");
     }
 
@@ -103,7 +90,7 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsTrueRule() {
         return new Rule()
-            .withCondition(alwaysTrueConstantCondition())
+            .withCondition(new AlwaysTrueCondition())
             .withOutcome("outcome", "Hello");
     }
 
@@ -115,40 +102,8 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsFalseRule() {
         return new Rule()
-            .withCondition(
-                new EqualsCondition(
-                    alwaysTrueConditionCoordinate(),
-                    new Coordinate(Locator.CONSTANT_VALUES, "false")
-                )
-            )
+            .withCondition(new NotCondition(new AlwaysTrueCondition()))
             .withOutcome("outcome", "World");
-    }
-
-    /**
-     * Convenience method to get a simple {@link Rule} list that can be used to populate a
-     * {@link DecisionTable}.
-     *
-     * @return A list of {@link Rule}s.
-     */
-    static List<Rule> rulesList() {
-        final List<Rule> rules = new ArrayList<>(2);
-        rules.add(alwaysTrueEqualsTrueRule());
-        rules.add(alwaysTrueEqualsFalseRule());
-        return rules;
-    }
-
-    /**
-     * Convenience method to create {@link Condition}s pointing to 'hello-world'
-     * {@link DecisionTable} computation result.
-     *
-     * @param expected The name of the table's computation field.
-     * @return A {@link Condition} pointing to 'hello-world' table result.
-     */
-    static Condition helloWorldOutcomeIs(final String expected) {
-        return new EqualsCondition(
-            new Coordinate("hello-world", "outcome"),
-            new Coordinate(Locator.CONSTANT_VALUES, expected)
-        );
     }
 
     /**

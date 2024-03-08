@@ -37,7 +37,7 @@ import ru.ewc.decita.DecitaException;
  * @since 0.1
  */
 @EqualsAndHashCode
-public abstract class SingleCondition implements Condition {
+public abstract class BinaryCondition implements Condition {
     /**
      * Left-side {@link Coordinate}.
      */
@@ -54,7 +54,7 @@ public abstract class SingleCondition implements Condition {
      * @param left Left-side {@link Coordinate}.
      * @param right Right-side {@link Coordinate}.
      */
-    protected SingleCondition(final Coordinate left, final Coordinate right) {
+    protected BinaryCondition(final Coordinate left, final Coordinate right) {
         this.left = left;
         this.right = right;
     }

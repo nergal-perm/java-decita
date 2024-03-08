@@ -31,7 +31,7 @@ import ru.ewc.decita.Coordinate;
  * I am a specific {@link Condition} that checks if my right part exactly equals my left one.
  * @since 0.2
  */
-public class EqualsCondition extends SingleCondition {
+public class EqualsCondition extends BinaryCondition {
     /**
      * Ctor.
      *

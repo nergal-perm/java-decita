@@ -52,9 +52,18 @@ public interface Condition {
     boolean isEvaluated();
 
     /**
+     * Checks if this {@link Condition} resolves to {@code true}.
+     *
+     * @return True, if it does.
+     */
+    boolean isSatisfied();
+
+    /**
      * Checks if this Condition resolves to {@code false}, meaning it is not satisfied.
      *
-     * @return True, if this Condition resolves to {@code false}.
+     * @return True, if this Condition is already computed and resolves to {@code false}.
      */
-    boolean isNotSatisfied();
+    default boolean isNotSatisfied() {
+        return this.isEvaluated() && !this.isSatisfied();
+    }
 }

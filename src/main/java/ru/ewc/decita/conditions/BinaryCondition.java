@@ -72,8 +72,8 @@ public abstract class BinaryCondition implements Condition {
     }
 
     @Override
-    public final boolean isNotSatisfied() {
-        return this.isEvaluated() && !this.isSatisfied();
+    public final boolean isSatisfied() {
+        return this.isEvaluated() && this.comparisonFor().matches(this.left);
     }
 
     /**
@@ -90,14 +90,5 @@ public abstract class BinaryCondition implements Condition {
      */
     protected final Coordinate rightPart() {
         return this.right;
-    }
-
-    /**
-     * Checks if this {@link Condition} resolves to {@code true}.
-     *
-     * @return True, if it does.
-     */
-    private boolean isSatisfied() {
-        return this.isEvaluated() && this.comparisonFor().matches(this.left);
     }
 }

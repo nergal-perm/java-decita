@@ -25,45 +25,39 @@
 package ru.ewc.decita.conditions;
 
 import ru.ewc.decita.ComputationContext;
-import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecitaException;
 
 /**
- * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute
- * the result of such an assertion and answer it to the computation engine.
+ * I represent a negation, i.e. a {@link Condition} that is satisfied when its base
+ * {@link Condition} is not.
  *
- * @since 0.1
+ * @since 0.3
  */
-public interface Condition {
+public final class NotCondition extends UnaryCondition {
     /**
-     * Evaluates all the parts of the {@link Condition} and provides the result of that evaluation.
+     * Ctor.
      *
-     * @param context The {@link ComputationContext} to evaluate {@link Condition} in.
-     * @return Whether the {@link Condition} stands true.
-     * @throws DecitaException If the evaluation cannot be performed.
+     * @param delegate The base {@link Condition} to compute against.
      */
-    boolean evaluate(ComputationContext context) throws DecitaException;
+    public NotCondition(final Condition delegate) {
+        super(delegate);
+    }
 
-    /**
-     * Checks if all the parts of the Condition are resolved and point to the constant values.
-     *
-     * @return True, if both parts of the Condition are evaluated.
-     */
-    boolean isEvaluated();
+    @Override
+    public boolean evaluate(final ComputationContext context) throws DecitaException {
+        if (!this.baseCondition().isEvaluated()) {
+            this.baseCondition().evaluate(context);
+        }
+        return this.isSatisfied();
+    }
 
-    /**
-     * Checks if this {@link Condition} resolves to {@code true}.
-     *
-     * @return True, if it does.
-     */
-    boolean isSatisfied();
+    @Override
+    public boolean isEvaluated() {
+        return this.baseCondition().isEvaluated();
+    }
 
-    /**
-     * Checks if this Condition resolves to {@code false}, meaning it is not satisfied.
-     *
-     * @return True, if this Condition is already computed and resolves to {@code false}.
-     */
-    default boolean isNotSatisfied() {
-        return this.isEvaluated() && !this.isSatisfied();
+    @Override
+    public boolean isSatisfied() {
+        return !this.baseCondition().isSatisfied();
     }
 }

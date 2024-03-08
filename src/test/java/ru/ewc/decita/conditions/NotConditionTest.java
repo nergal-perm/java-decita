@@ -22,57 +22,24 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decita;
+package ru.ewc.decita.conditions;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import ru.ewc.decita.conditions.Condition;
-import ru.ewc.decita.conditions.EqualsCondition;
 
 /**
- * Tests for a single {@link Condition}.
+ * Unit tests for {@link NotCondition}.
  *
- * @since 0.1
+ * @since 0.3
  */
-class EqualsConditionTest {
+class NotConditionTest {
     @Test
-    void testInstantiating() {
-        final Condition target = TestObjects.alwaysTrueConstantCondition();
+    void shouldNegateBaseCondition() {
+        final Condition base = new AlwaysTrueCondition();
         MatcherAssert.assertThat(
-            target,
-            Matchers.notNullValue()
-        );
-    }
-
-    @Test
-    void testEvaluatingToTrue() throws DecitaException {
-        final Condition target = TestObjects.alwaysTrueConstantCondition();
-        MatcherAssert.assertThat(
-            target.evaluate(TestObjects.defaultContext()),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void testNotComputedCondition() {
-        final Condition target = new EqualsCondition(
-            TestObjects.alwaysTrueConditionCoordinate(),
-            TestObjects.valueTrue()
-        );
-        MatcherAssert.assertThat(
-            target.isEvaluated(),
+            new NotCondition(base).isSatisfied(),
             Matchers.is(false)
-        );
-    }
-
-    @Test
-    void testBecomeComputedAfterEvaluation() throws DecitaException {
-        final Condition target = TestObjects.alwaysTrueConstantCondition();
-        target.evaluate(TestObjects.defaultContext());
-        MatcherAssert.assertThat(
-            target.isEvaluated(),
-            Matchers.is(true)
         );
     }
 }

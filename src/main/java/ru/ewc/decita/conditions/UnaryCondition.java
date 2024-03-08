@@ -21,29 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package ru.ewc.decita.conditions;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import ru.ewc.decita.Coordinate;
-
 /**
- * I am a specific {@link Condition} that checks if my right part exactly equals my left one.
- * @since 0.2
+ * I represent an unary {@link Condition} that adds some checks to the provided base
+ * {@link Condition}.
+ *
+ * @since 0.3
  */
-public class EqualsCondition extends BinaryCondition {
+public abstract class UnaryCondition implements Condition {
+    /**
+     * The base {@link Condition} to compute against.
+     */
+    private final Condition delegate;
+
     /**
      * Ctor.
      *
-     * @param left The {@link Coordinate} that is its left part.
-     * @param right The {@link Coordinate} that is its right part.
+     * @param delegate The base {@link Condition} to compute against.
      */
-    public EqualsCondition(final Coordinate left, final Coordinate right) {
-        super(left, right);
+    protected UnaryCondition(final Condition delegate) {
+        this.delegate = delegate;
     }
 
-    @Override
-    protected final Matcher<Coordinate> comparisonFor() {
-        return Matchers.equalTo(this.rightPart());
+    /**
+     * Provides access to the base {@link Condition}.
+     *
+     * @return The base {@link Condition}.
+     */
+    protected Condition baseCondition() {
+        return this.delegate;
     }
 }

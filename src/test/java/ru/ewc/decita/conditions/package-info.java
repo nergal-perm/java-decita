@@ -21,29 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.ewc.decita.conditions;
-
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import ru.ewc.decita.Coordinate;
 
 /**
- * I am a specific {@link Condition} that checks if my right part exactly equals my left one.
- * @since 0.2
+ * Unit-tests for conditions.
  */
-public class EqualsCondition extends BinaryCondition {
-    /**
-     * Ctor.
-     *
-     * @param left The {@link Coordinate} that is its left part.
-     * @param right The {@link Coordinate} that is its right part.
-     */
-    public EqualsCondition(final Coordinate left, final Coordinate right) {
-        super(left, right);
-    }
-
-    @Override
-    protected final Matcher<Coordinate> comparisonFor() {
-        return Matchers.equalTo(this.rightPart());
-    }
-}
+package ru.ewc.decita.conditions;

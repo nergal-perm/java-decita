@@ -7,7 +7,7 @@ market:
   bar: 1
   farm: 10
 currentPlayer:
-  name: "Katie"
+  name: "Eugene"
 ---
 sample-table:
   text: "hello world"

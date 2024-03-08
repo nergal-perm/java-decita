@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import lombok.EqualsAndHashCode;
+import ru.ewc.decita.conditions.Condition;
 
 /**
  * I am a simple data structure describing the position of the required value. My responsibility is
@@ -63,16 +64,20 @@ public final class Coordinate {
     }
 
     /**
-     * Locates the required value in the provided {@link ComputationContext}.
+     * Locates the required value in the provided {@link ComputationContext}. Always return the same
+     * object with updated fields (not a new instance) because there could be many references to
+     * this instance, i.e. the same {@link Coordinate} could be used in many {@link Condition}s.
      *
      * @param context Provided {@link ComputationContext}.
      * @return A constant value {@link Coordinate}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
-        final String located = context.valueFor(this.locator, this.fragment, context);
-        this.locator = Locator.CONSTANT_VALUES;
-        this.fragment = located;
+        if (!this.isComputed()) {
+            final String located = context.valueFor(this.locator, this.fragment, context);
+            this.locator = Locator.CONSTANT_VALUES;
+            this.fragment = located;
+        }
         return this;
     }
 

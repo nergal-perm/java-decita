@@ -55,6 +55,9 @@ class EndToEndTest {
                 ),
                 "market", new InMemoryStorage(
                     Map.of("shop", 2)
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Eugene")
                 )
             )
         );
@@ -79,6 +82,9 @@ class EndToEndTest {
                 ),
                 "market", new InMemoryStorage(
                     Map.of("shop", 3)
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Eugene")
                 )
             )
         );

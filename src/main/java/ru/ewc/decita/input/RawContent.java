@@ -90,7 +90,7 @@ public final class RawContent {
             final Rule rule = new Rule();
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
-                    fullConditionFrom(condition, column)
+                    fullConditionFrom(coordinateFrom(condition[0]), condition[column])
                 );
             }
             for (final String[] outcome : this.outcomes) {
@@ -118,19 +118,16 @@ public final class RawContent {
     /**
      * Creates a {@link Condition} based on a string representation.
      *
-     * @param condition The string array of a condition base values for every rule.
-     * @param rule The column index of the condition 'base value'.
+     * @param base The base {@link Coordinate} for the condition.
+     * @param argument String representation of a condition.
      * @return A concrete {@link Condition} based on given string representation.
      */
-    private static Condition fullConditionFrom(final String[] condition, final int rule) {
+    private static Condition fullConditionFrom(final Coordinate base, final String argument) {
         final Condition result;
-        if (condition[rule].equals("===")) {
+        if (argument.equals("===")) {
             result = new AlwaysTrueCondition();
         } else {
-            result = new EqualsCondition(
-                coordinateFrom(condition[0]),
-                coordinateFrom(condition[rule])
-            );
+            result = new EqualsCondition(base, coordinateFrom(argument));
         }
         return result;
     }

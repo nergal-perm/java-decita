@@ -29,9 +29,9 @@ import java.util.List;
 import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.Rule;
-import ru.ewc.decita.conditions.AlwaysTrueCondition;
 import ru.ewc.decita.conditions.Condition;
 import ru.ewc.decita.conditions.EqualsCondition;
+import ru.ewc.decita.conditions.NotCondition;
 
 /**
  * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
@@ -124,8 +124,11 @@ public final class RawContent {
      */
     private static Condition fullConditionFrom(final Coordinate base, final String argument) {
         final Condition result;
-        if (argument.equals("===")) {
-            result = new AlwaysTrueCondition();
+        final char operation = argument.charAt(0);
+        if (operation == '~') {
+            result = new EqualsCondition(base, base);
+        } else if (operation == '!') {
+            result = new NotCondition(fullConditionFrom(base, argument.substring(1)));
         } else {
             result = new EqualsCondition(base, coordinateFrom(argument));
         }

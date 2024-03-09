@@ -31,6 +31,8 @@ import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.Rule;
 import ru.ewc.decita.conditions.Condition;
 import ru.ewc.decita.conditions.EqualsCondition;
+import ru.ewc.decita.conditions.GreaterThanCondition;
+import ru.ewc.decita.conditions.LessThanCondition;
 import ru.ewc.decita.conditions.NotCondition;
 
 /**
@@ -129,6 +131,10 @@ public final class RawContent {
             result = new EqualsCondition(base, base);
         } else if (operation == '!') {
             result = new NotCondition(fullConditionFrom(base, argument.substring(1)));
+        } else if (operation == '>') {
+            result = new GreaterThanCondition(base, coordinateFrom(argument.substring(1)));
+        } else if (operation == '<') {
+            result = new LessThanCondition(base, coordinateFrom(argument.substring(1)));
         } else {
             result = new EqualsCondition(base, coordinateFrom(argument));
         }

@@ -36,11 +36,16 @@ import ru.ewc.decita.conditions.Condition;
  * @since 0.1
  */
 @EqualsAndHashCode
-public final class Coordinate {
+public final class Coordinate implements Comparable<Coordinate> {
     /**
      * A constant value {@link Coordinate} that points to the "true" value.
      */
     public static final Coordinate TRUE = new Coordinate(Locator.CONSTANT_VALUES, "true");
+
+    /**
+     * A regular expression for a number.
+     */
+    public static final String NUMBER_REGEXP = "-?\\d+(\\.\\d+)?";
 
     /**
      * String identifier of the concrete {@link Locator} responsible for retrieving the value.
@@ -88,5 +93,28 @@ public final class Coordinate {
      */
     public boolean isComputed() {
         return Locator.CONSTANT_VALUES.equals(this.locator);
+    }
+
+    @Override
+    public int compareTo(final Coordinate other) {
+        final int result;
+        if (this.isNumber() && other.isNumber()) {
+            result = Double.compare(
+                Double.parseDouble(this.fragment),
+                Double.parseDouble(other.fragment)
+            );
+        } else {
+            throw new IllegalArgumentException("Cannot compare strings");
+        }
+        return result;
+    }
+
+    /**
+     * Tests if the fragment is a number.
+     *
+     * @return True, if the fragment is a number.
+     */
+    private boolean isNumber() {
+        return this.fragment.matches(Coordinate.NUMBER_REGEXP);
     }
 }

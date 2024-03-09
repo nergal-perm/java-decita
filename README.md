@@ -52,3 +52,33 @@ another-table:
 All the expected values should be Strings.
 
 Example of the state with expectation could be found in [state-test.yml](https://github.com/nergal-perm/java-decita/blob/master/src/test/resources/states/state-test.yml).
+
+## Decision table DSL (CSV format)
+
+For the decision table to be processed, it should be in CSV format with semicolon (`;`) as a separator.
+The columns of the table represent rules, except for the first one, which contains the "base" of each
+condition. The rows in the first section (before `---`) represent the conditions, and the rows in the second
+section (after `---`) represent the outcomes.
+
+Every value in the conditions section should refer to a specific data fragment, which can be located
+by its description, called `Coordinate`. Coordinates consist of two parts: `Locator` - that is the
+name of the data domain, and `Identifier` - that is the name of the data fragment. Those parts are separated
+by `::`. For example, value `ui_button_create::enabled` refers to the `enabled` fragment of the
+`ui_button_create` locator.
+
+For the constant values, the `Locator` part can be omitted, so the value `5` refers to a constant value `5`.
+For the sake of completeness, the `Locator` part for constant values is `constant`, so it is possible to
+write `constant::5` instead of just `5` (but it is not necessary).
+
+The table cells in the conditions section should contain the condition description, consisting of 
+the logical operator (if any), followed by the comparison operator (if any), followed by the value.
+
+If the comparison operator is omitted, it is assumed to be `==`, which means that the "base" value of 
+the condition should be equal to the cell value for the condition to be true. Other comparison operators
+are `>` and `<`.
+
+The logical operators are used to modify the condition itself. The operator `~` means "any", so it is
+effectively means that the condition is always true. The operator `!` means "not", so it negates the
+specified condition.
+
+

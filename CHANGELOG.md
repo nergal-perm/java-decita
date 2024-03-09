@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/nergal-perm/java-decita/compare/v0.2.3...v0.3.0) (2024-03-09)
+
+
+### Features
+
+* ability to explicitly specify Else-rule in tables ([ee97a7b](https://github.com/nergal-perm/java-decita/commit/ee97a7ba64689eea256e340ab0cb68ca5d152b22)), closes [#86](https://github.com/nergal-perm/java-decita/issues/86)
+* ability to mark specific conditions as irrelevant to the rule ([5179248](https://github.com/nergal-perm/java-decita/commit/51792489aba83dcd2e84d2db2d0c6f14252bd509)), closes [#83](https://github.com/nergal-perm/java-decita/issues/83)
+* Implemented in-cell condition negation ([c6aae65](https://github.com/nergal-perm/java-decita/commit/c6aae6509cf70cc6fd66b3099e9d67cd058141bb)), closes [#90](https://github.com/nergal-perm/java-decita/issues/90) [#87](https://github.com/nergal-perm/java-decita/issues/87)
+* LessThan and GreaterThan conditions ([7e1bd9b](https://github.com/nergal-perm/java-decita/commit/7e1bd9b3150c5ca44c5c17c26a597e14871ba38c)), closes [#88](https://github.com/nergal-perm/java-decita/issues/88)
+* The constant values in tables can be stated without the `constant::` qualifier ([a12e9c0](https://github.com/nergal-perm/java-decita/commit/a12e9c08981ef295fea0139a3b344051bd8db6f0)), closes [#54](https://github.com/nergal-perm/java-decita/issues/54)
+
+
+### Bug Fixes
+
+* it is possible to describe state with Strings, Boolean and Numbers in yaml files ([4deafa0](https://github.com/nergal-perm/java-decita/commit/4deafa096e26473afe71d514ce1b7ccab307505c))
+
 ### 0.2.3 (2024-02-20)
 
 

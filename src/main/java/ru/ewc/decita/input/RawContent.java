@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.Locator;
 import ru.ewc.decita.Rule;
 import ru.ewc.decita.conditions.Condition;
 import ru.ewc.decita.conditions.EqualsCondition;
@@ -142,13 +143,21 @@ public final class RawContent {
     }
 
     /**
-     * Creates a {@link Coordinate} based on a string representation.
+     * Creates a {@link Coordinate} based on a string representation. The provided string can
+     * reference to a constant value or to some {@link Locator}'s value. In the latter case, the
+     * string should be in the format "locator::fragment".
      *
      * @param coordinate String representation of a coordinate.
      * @return A concrete {@link Coordinate} based on given string representation.
      */
     private static Coordinate coordinateFrom(final String coordinate) {
-        final String[] split = coordinate.split("::");
-        return new Coordinate(split[0], split[1]);
+        final Coordinate result;
+        if (coordinate.contains("::")) {
+            final String[] split = coordinate.split("::");
+            result = new Coordinate(split[0], split[1]);
+        } else {
+            result = new Coordinate(Locator.CONSTANT_VALUES, coordinate);
+        }
+        return result;
     }
 }

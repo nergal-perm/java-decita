@@ -39,9 +39,9 @@ class RawContentTest {
     void shouldParseDifferentConditions() {
         final RawContent target = new RawContent(
             new String[][]{
-                {"constant::10", "!>constant::5", "<constant::20"},
-                {"constant::20", "!<constant::30", "~"},
-                {"constant::true", "constant::false", "!constant::false"},
+                {"10", "!>5", "<20"},
+                {"20", "!<30", "~"},
+                {"true", "false", "!false"},
             },
             new String[][]{{"outcome", "false", "true", "else"}},
             "sample-table"

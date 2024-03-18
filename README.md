@@ -13,6 +13,54 @@ To create a new commit with a new version, run the following `npx` command (you 
 npx @dwmkerr/standard-version --package-files pom.xml --bumpFiles pom.xml
 ```
 
+### Adding as a dependency
+
+First of all, add the following repository to your `pom.xml`:
+
+```xml
+ <repositories>
+    <!-- any existing repositories here-->
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/nergal-perm/java-decita</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+Then, add the following dependency to your `pom.xml`:
+
+```xml
+<dependencies>
+    <!--  any existing dependencies here-->
+    <dependency>
+        <groupId>ru.ewc.decita</groupId>
+        <artifactId>decita</artifactId>
+        <version>0.3.0</version>
+    </dependency>
+</dependencies>
+```
+
+Provide the GitHub authorization details to your `settings.xml` (usually located in `~/.m2/`). 
+Replace `GITHUB_USER` with your GitHub username and `GITHUB_TOKEN` with your GitHub token (that 
+should be a personal access token (classic) with at least `read:packages` scope).
+
+```xml
+<servers>
+    <!-- any existing servers here-->
+    <server>
+        <id>decita-read</id>
+        <username>GITHUB_USER</username>
+        <password>GITHUB_TOKEN</password>
+    </server>
+</servers>
+```
+
+After that run `mvn clean compile` to build your project with a new dependency installed.
+
+
 ### Manual testing
 
 Run the following Maven command from the project root:

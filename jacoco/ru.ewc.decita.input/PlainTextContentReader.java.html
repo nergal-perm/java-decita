@@ -74,21 +74,22 @@ public final class PlainTextContentReader implements ContentReader {
 <span class="fc" id="L74">    }</span>
 
     @Override
+    @SuppressWarnings(&quot;PMD.AvoidAccessToStaticMembersViaThis&quot;)
     public List&lt;RawContent&gt; readAllTables() {
         List&lt;RawContent&gt; contents;
-<span class="fc" id="L79">        try (Stream&lt;Path&gt; files = Files.walk(Paths.get(this.folder))) {</span>
-<span class="fc" id="L80">            contents = this.contentsOf(files);</span>
-<span class="nc" id="L81">        } catch (final IOException exception) {</span>
-<span class="nc" id="L82">            contents = Collections.emptyList();</span>
-<span class="fc" id="L83">        }</span>
-<span class="fc" id="L84">        return contents;</span>
+<span class="fc" id="L80">        try (Stream&lt;Path&gt; files = Files.walk(Paths.get(this.folder))) {</span>
+<span class="fc" id="L81">            contents = this.contentsOf(files);</span>
+<span class="nc" id="L82">        } catch (final IOException exception) {</span>
+<span class="nc" id="L83">            contents = Collections.emptyList();</span>
+<span class="fc" id="L84">        }</span>
+<span class="fc" id="L85">        return contents;</span>
     }
 
     @Override
     public Map&lt;String, Locator&gt; allTables() {
-<span class="fc" id="L89">        return this.readAllTables()</span>
-<span class="fc" id="L90">            .stream()</span>
-<span class="fc" id="L91">            .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable));</span>
+<span class="fc" id="L90">        return this.readAllTables()</span>
+<span class="fc" id="L91">            .stream()</span>
+<span class="fc" id="L92">            .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable));</span>
     }
 
     /**
@@ -99,11 +100,11 @@ public final class PlainTextContentReader implements ContentReader {
      *  {@link DecisionTable}.
      */
     private List&lt;RawContent&gt; contentsOf(final Stream&lt;Path&gt; files) {
-<span class="fc" id="L102">        return files.filter(Files::isRegularFile)</span>
-<span class="fc" id="L103">            .filter(path -&gt; path.getFileName().toString().endsWith(this.extension))</span>
-<span class="fc" id="L104">            .map(Path::toString)</span>
-<span class="fc" id="L105">            .map(this::readContentFromFile)</span>
-<span class="fc" id="L106">            .collect(Collectors.toList());</span>
+<span class="fc" id="L103">        return files.filter(Files::isRegularFile)</span>
+<span class="fc" id="L104">            .filter(path -&gt; path.getFileName().toString().endsWith(this.extension))</span>
+<span class="fc" id="L105">            .map(Path::toString)</span>
+<span class="fc" id="L106">            .map(this::readContentFromFile)</span>
+<span class="fc" id="L107">            .collect(Collectors.toList());</span>
     }
 
     /**
@@ -113,12 +114,12 @@ public final class PlainTextContentReader implements ContentReader {
      * @return The file's contents in a format suitable for constructing {@link DecisionTable}s.
      */
     private RawContent readContentFromFile(final String file) {
-<span class="fc" id="L116">        final Path path = Path.of(file);</span>
-<span class="fc" id="L117">        final List&lt;String&gt; contents = contentsOf(path);</span>
-<span class="fc" id="L118">        return new RawContent(</span>
-<span class="fc" id="L119">            this.conditionsFrom(contents),</span>
-<span class="fc" id="L120">            this.outcomesFrom(contents),</span>
-<span class="fc" id="L121">            path.getFileName().toString().replace(this.extension, &quot;&quot;)</span>
+<span class="fc" id="L117">        final Path path = Path.of(file);</span>
+<span class="fc" id="L118">        final List&lt;String&gt; contents = contentsOf(path);</span>
+<span class="fc" id="L119">        return new RawContent(</span>
+<span class="fc" id="L120">            this.conditionsFrom(contents),</span>
+<span class="fc" id="L121">            this.outcomesFrom(contents),</span>
+<span class="fc" id="L122">            path.getFileName().toString().replace(this.extension, &quot;&quot;)</span>
         );
     }
 
@@ -129,7 +130,7 @@ public final class PlainTextContentReader implements ContentReader {
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Conditions.
      */
     private String[][] outcomesFrom(final List&lt;String&gt; contents) {
-<span class="fc" id="L132">        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));</span>
+<span class="fc" id="L133">        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));</span>
     }
 
     /**
@@ -139,7 +140,7 @@ public final class PlainTextContentReader implements ContentReader {
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Outcomes.
      */
     private String[][] conditionsFrom(final List&lt;String&gt; contents) {
-<span class="fc" id="L142">        return this.toArray(contents.subList(0, separatorIndex(contents)));</span>
+<span class="fc" id="L143">        return this.toArray(contents.subList(0, separatorIndex(contents)));</span>
     }
 
     /**
@@ -149,7 +150,7 @@ public final class PlainTextContentReader implements ContentReader {
      * @return An {@code Integer} corresponding to the separating line index.
      */
     private static int separatorIndex(final List&lt;String&gt; contents) {
-<span class="fc" id="L152">        return contents.indexOf(&quot;---&quot;);</span>
+<span class="fc" id="L153">        return contents.indexOf(&quot;---&quot;);</span>
     }
 
     /**
@@ -160,12 +161,12 @@ public final class PlainTextContentReader implements ContentReader {
      * @return A 2D-array of Strings
      */
     private String[][] toArray(final List&lt;String&gt; lines) {
-<span class="fc" id="L163">        final int width = lines.get(0).split(this.delimiter).length;</span>
-<span class="fc" id="L164">        final String[][] result = new String[lines.size()][width];</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">        for (int idx = 0; idx &lt; lines.size(); idx = idx + 1) {</span>
-<span class="fc" id="L166">            result[idx] = lines.get(idx).split(this.delimiter);</span>
+<span class="fc" id="L164">        final int width = lines.get(0).split(this.delimiter).length;</span>
+<span class="fc" id="L165">        final String[][] result = new String[lines.size()][width];</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        for (int idx = 0; idx &lt; lines.size(); idx = idx + 1) {</span>
+<span class="fc" id="L167">            result[idx] = lines.get(idx).split(this.delimiter);</span>
         }
-<span class="fc" id="L168">        return result;</span>
+<span class="fc" id="L169">        return result;</span>
     }
 
     /**
@@ -177,11 +178,11 @@ public final class PlainTextContentReader implements ContentReader {
     private static List&lt;String&gt; contentsOf(final Path file) {
         List&lt;String&gt; strings;
         try {
-<span class="fc" id="L180">            strings = Files.readAllLines(file, StandardCharsets.UTF_8);</span>
-<span class="nc" id="L181">        } catch (final IOException exception) {</span>
-<span class="nc" id="L182">            strings = Collections.emptyList();</span>
-<span class="fc" id="L183">        }</span>
-<span class="fc" id="L184">        return strings;</span>
+<span class="fc" id="L181">            strings = Files.readAllLines(file, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L182">        } catch (final IOException exception) {</span>
+<span class="nc" id="L183">            strings = Collections.emptyList();</span>
+<span class="fc" id="L184">        }</span>
+<span class="fc" id="L185">        return strings;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import lombok.EqualsAndHashCode;
+import ru.ewc.decita.conditions.Condition;
 
 /**
  * I am a simple data structure describing the position of the required value. My responsibility is
@@ -34,8 +35,18 @@ import lombok.EqualsAndHashCode;
  *
  * @since 0.1
  */
-<span class="pc bpc" id="L37" title="13 of 20 branches missed.">@EqualsAndHashCode</span>
-public final class Coordinate {
+<span class="pc bpc" id="L38" title="12 of 20 branches missed.">@EqualsAndHashCode</span>
+public final class Coordinate implements Comparable&lt;Coordinate&gt; {
+    /**
+     * A constant value {@link Coordinate} that points to the &quot;true&quot; value.
+     */
+<span class="fc" id="L43">    public static final Coordinate TRUE = new Coordinate(Locator.CONSTANT_VALUES, &quot;true&quot;);</span>
+
+    /**
+     * A regular expression for a number.
+     */
+    public static final String NUMBER_REGEXP = &quot;-?\\d+(\\.\\d+)?&quot;;
+
     /**
      * String identifier of the concrete {@link Locator} responsible for retrieving the value.
      */
@@ -52,23 +63,27 @@ public final class Coordinate {
      * @param locator The {@link Locator} identifier.
      * @param fragment The value's identifier.
      */
-<span class="fc" id="L55">    public Coordinate(final String locator, final String fragment) {</span>
-<span class="fc" id="L56">        this.locator = locator;</span>
-<span class="fc" id="L57">        this.fragment = fragment;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L66">    public Coordinate(final String locator, final String fragment) {</span>
+<span class="fc" id="L67">        this.locator = locator;</span>
+<span class="fc" id="L68">        this.fragment = fragment;</span>
+<span class="fc" id="L69">    }</span>
 
     /**
-     * Locates the required value in the provided {@link ComputationContext}.
+     * Locates the required value in the provided {@link ComputationContext}. Always return the same
+     * object with updated fields (not a new instance) because there could be many references to
+     * this instance, i.e. the same {@link Coordinate} could be used in many {@link Condition}s.
      *
      * @param context Provided {@link ComputationContext}.
      * @return A constant value {@link Coordinate}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
-<span class="fc" id="L68">        final String located = context.valueFor(this.locator, this.fragment, context);</span>
-<span class="fc" id="L69">        this.locator = Locator.CONSTANT_VALUES;</span>
-<span class="fc" id="L70">        this.fragment = located;</span>
-<span class="fc" id="L71">        return this;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (!this.isComputed()) {</span>
+<span class="fc" id="L82">            final String located = context.valueFor(this.locator, this.fragment, context);</span>
+<span class="fc" id="L83">            this.locator = Locator.CONSTANT_VALUES;</span>
+<span class="fc" id="L84">            this.fragment = located;</span>
+        }
+<span class="fc" id="L86">        return this;</span>
     }
 
     /**
@@ -77,7 +92,30 @@ public final class Coordinate {
      * @return True, if {@link Coordinate} points to a constant value.
      */
     public boolean isComputed() {
-<span class="fc" id="L80">        return Locator.CONSTANT_VALUES.equals(this.locator);</span>
+<span class="fc" id="L95">        return Locator.CONSTANT_VALUES.equals(this.locator);</span>
+    }
+
+    @Override
+    public int compareTo(final Coordinate other) {
+        final int result;
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">        if (this.isNumber() &amp;&amp; other.isNumber()) {</span>
+<span class="fc" id="L102">            result = Double.compare(</span>
+<span class="fc" id="L103">                Double.parseDouble(this.fragment),</span>
+<span class="fc" id="L104">                Double.parseDouble(other.fragment)</span>
+            );
+        } else {
+<span class="fc" id="L107">            throw new IllegalArgumentException(&quot;Cannot compare strings&quot;);</span>
+        }
+<span class="fc" id="L109">        return result;</span>
+    }
+
+    /**
+     * Tests if the fragment is a number.
+     *
+     * @return True, if the fragment is a number.
+     */
+    private boolean isNumber() {
+<span class="fc" id="L118">        return this.fragment.matches(Coordinate.NUMBER_REGEXP);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

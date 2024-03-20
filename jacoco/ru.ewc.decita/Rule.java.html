@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
+import ru.ewc.decita.conditions.Condition;
 
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
@@ -36,17 +37,17 @@ import lombok.EqualsAndHashCode;
  *
  * @since 0.1
  */
-<span class="nc bnc" id="L39" title="All 20 branches missed.">@EqualsAndHashCode</span>
-<span class="fc" id="L40">public final class Rule {</span>
+<span class="nc bnc" id="L40" title="All 20 branches missed.">@EqualsAndHashCode</span>
+<span class="fc" id="L41">public final class Rule {</span>
     /**
      * The rule's {@link Condition}s.
      */
-<span class="fc" id="L44">    private final List&lt;Condition&gt; conditions = new ArrayList&lt;&gt;(5);</span>
+<span class="fc" id="L45">    private final List&lt;Condition&gt; conditions = new ArrayList&lt;&gt;(5);</span>
 
     /**
      * The rule's outcomes.
      */
-<span class="fc" id="L49">    private final Map&lt;String, String&gt; outcomes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L50">    private final Map&lt;String, String&gt; outcomes = new HashMap&lt;&gt;();</span>
 
     /**
      * Adds a {@link Condition} to this rule.
@@ -55,8 +56,8 @@ import lombok.EqualsAndHashCode;
      * @return Itself, in order to implement fluent API.
      */
     public Rule withCondition(final Condition condition) {
-<span class="fc" id="L58">        this.conditions.add(condition);</span>
-<span class="fc" id="L59">        return this;</span>
+<span class="fc" id="L59">        this.conditions.add(condition);</span>
+<span class="fc" id="L60">        return this;</span>
     }
 
     /**
@@ -67,8 +68,8 @@ import lombok.EqualsAndHashCode;
      * @return Itself, in order to implement fluent API.
      */
     public Rule withOutcome(final String outcome, final String value) {
-<span class="fc" id="L70">        this.outcomes.put(outcome, value);</span>
-<span class="fc" id="L71">        return this;</span>
+<span class="fc" id="L71">        this.outcomes.put(outcome, value);</span>
+<span class="fc" id="L72">        return this;</span>
     }
 
     /**
@@ -78,7 +79,7 @@ import lombok.EqualsAndHashCode;
      * @return True if the rule is computed.
      */
     public boolean isComputed() {
-<span class="fc" id="L81">        return this.conditions.stream().allMatch(Condition::isEvaluated);</span>
+<span class="fc" id="L82">        return this.conditions.stream().allMatch(Condition::isEvaluated);</span>
     }
 
     /**
@@ -88,7 +89,7 @@ import lombok.EqualsAndHashCode;
      * @return True if the rule is dissatisfied.
      */
     public boolean isEliminated() {
-<span class="fc" id="L91">        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);</span>
+<span class="fc" id="L92">        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);</span>
     }
 
     /**
@@ -98,7 +99,7 @@ import lombok.EqualsAndHashCode;
      * @return True if the rule is satisfied.
      */
     public boolean isSatisfied() {
-<span class="pc bpc" id="L101" title="1 of 4 branches missed.">        return this.conditions.stream().allMatch(c -&gt; c.isEvaluated() &amp;&amp; !c.isNotSatisfied());</span>
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">        return this.conditions.stream().allMatch(c -&gt; c.isEvaluated() &amp;&amp; !c.isNotSatisfied());</span>
     }
 
     /**
@@ -108,12 +109,12 @@ import lombok.EqualsAndHashCode;
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
     public void check(final ComputationContext context) throws DecitaException {
-<span class="pc bpc" id="L111" title="1 of 4 branches missed.">        if (!this.isEliminated() || !this.isComputed()) {</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">            for (final Condition cond : this.conditions) {</span>
-<span class="fc" id="L113">                cond.evaluate(context);</span>
-<span class="fc" id="L114">            }</span>
+<span class="pc bpc" id="L112" title="1 of 4 branches missed.">        if (!this.isEliminated() || !this.isComputed()) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (final Condition cond : this.conditions) {</span>
+<span class="fc" id="L114">                cond.evaluate(context);</span>
+<span class="fc" id="L115">            }</span>
         }
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L117">    }</span>
 
     /**
      * Returns this rule outcomes.
@@ -121,7 +122,7 @@ import lombok.EqualsAndHashCode;
      * @return The simple dictionary, containing all this rule's outcomes.
      */
     public Map&lt;String, String&gt; outcome() {
-<span class="fc" id="L124">        return this.outcomes;</span>
+<span class="fc" id="L125">        return this.outcomes;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

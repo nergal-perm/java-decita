@@ -50,26 +50,37 @@ public final class DecisionTable implements Locator {
      *
      * @param rules A collection of {@link Rule}s for this table.
      */
-<span class="fc" id="L53">    public DecisionTable(final Iterable&lt;Rule&gt; rules) {</span>
-<span class="fc" id="L54">        this.rules = rules;</span>
-<span class="fc" id="L55">        this.elserule = new Rule().withOutcome(&quot;outcome&quot;, &quot;undefined&quot;);</span>
-<span class="fc" id="L56">    }</span>
+    public DecisionTable(final Iterable&lt;Rule&gt; rules) {
+<span class="fc" id="L54">        this(rules, new Rule().withOutcome(&quot;outcome&quot;, &quot;undefined&quot;));</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Ctor.
+     *
+     * @param rules A collection of {@link Rule}s for this table.
+     * @param elserule The special {@link Rule} that gets satisfied only if no other {@link Rule} is
+     *  satisfied.
+     */
+<span class="fc" id="L64">    public DecisionTable(final Iterable&lt;Rule&gt; rules, final Rule elserule) {</span>
+<span class="fc" id="L65">        this.rules = rules;</span>
+<span class="fc" id="L66">        this.elserule = elserule;</span>
+<span class="fc" id="L67">    }</span>
 
     @Override
     public String fragmentBy(final String fragment, final ComputationContext context)
         throws DecitaException {
-<span class="fc" id="L61">        return this.outcome(context).getOrDefault(fragment, &quot;undefined&quot;);</span>
+<span class="fc" id="L72">        return this.outcome(context).getOrDefault(fragment, &quot;undefined&quot;);</span>
     }
 
     @Override
     public Map&lt;String, String&gt; outcome(final ComputationContext context) throws DecitaException {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (final Rule rule : this.rules) {</span>
-<span class="fc" id="L67">            rule.check(context);</span>
-<span class="fc" id="L68">        }</span>
-<span class="fc" id="L69">        return StreamSupport.stream(this.rules.spliterator(), false)</span>
-<span class="fc" id="L70">            .filter(Rule::isSatisfied)</span>
-<span class="fc" id="L71">            .findFirst().orElse(this.elserule)</span>
-<span class="fc" id="L72">            .outcome();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (final Rule rule : this.rules) {</span>
+<span class="fc" id="L78">            rule.check(context);</span>
+<span class="fc" id="L79">        }</span>
+<span class="fc" id="L80">        return StreamSupport.stream(this.rules.spliterator(), false)</span>
+<span class="fc" id="L81">            .filter(Rule::isSatisfied)</span>
+<span class="fc" id="L82">            .findFirst().orElse(this.elserule)</span>
+<span class="fc" id="L83">            .outcome();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

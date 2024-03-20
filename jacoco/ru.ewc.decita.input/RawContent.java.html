@@ -28,8 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decita.Coordinate;
 import ru.ewc.decita.DecisionTable;
-import ru.ewc.decita.EqualsCondition;
+import ru.ewc.decita.Locator;
 import ru.ewc.decita.Rule;
+import ru.ewc.decita.conditions.Condition;
+import ru.ewc.decita.conditions.EqualsCondition;
+import ru.ewc.decita.conditions.GreaterThanCondition;
+import ru.ewc.decita.conditions.LessThanCondition;
+import ru.ewc.decita.conditions.NotCondition;
 
 /**
  * I am the unified source for building {@link DecisionTable}s. My main responsibility is to store
@@ -62,11 +67,11 @@ public final class RawContent {
      *  {@link DecisionTable}.
      * @param table Name of the source table.
      */
-<span class="fc" id="L65">    public RawContent(final String[][] conditions, final String[][] outcomes, final String table) {</span>
-<span class="fc" id="L66">        this.table = table;</span>
-<span class="fc" id="L67">        this.conditions = conditions.clone();</span>
-<span class="fc" id="L68">        this.outcomes = outcomes.clone();</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc" id="L70">    public RawContent(final String[][] conditions, final String[][] outcomes, final String table) {</span>
+<span class="fc" id="L71">        this.table = table;</span>
+<span class="fc" id="L72">        this.conditions = conditions.clone();</span>
+<span class="fc" id="L73">        this.outcomes = outcomes.clone();</span>
+<span class="fc" id="L74">    }</span>
 
     /**
      * Answers the table name.
@@ -74,7 +79,7 @@ public final class RawContent {
      * @return The table name.
      */
     public String tableName() {
-<span class="fc" id="L77">        return this.table;</span>
+<span class="fc" id="L82">        return this.table;</span>
     }
 
     /**
@@ -83,37 +88,77 @@ public final class RawContent {
      * @return The {@link DecisionTable} created from the source file.
      */
     public DecisionTable asDecisionTable() {
-<span class="fc" id="L86">        final List&lt;Rule&gt; rules = new ArrayList&lt;&gt;(this.conditions[0].length - 1);</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (int column = 1; column &lt; this.conditions[0].length; column += 1) {</span>
-<span class="fc" id="L88">            final Rule rule = new Rule();</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">            for (final String[] condition : this.conditions) {</span>
-<span class="fc" id="L90">                rule.withCondition(</span>
-                    new EqualsCondition(
-<span class="fc" id="L92">                        coordinateFrom(condition[0]),</span>
-<span class="fc" id="L93">                        coordinateFrom(condition[column])</span>
-                    )
+<span class="fc" id="L91">        final List&lt;Rule&gt; rules = new ArrayList&lt;&gt;(this.conditions[0].length - 1);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (int column = 1; column &lt; this.conditions[0].length; column += 1) {</span>
+<span class="fc" id="L93">            final Rule rule = new Rule();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            for (final String[] condition : this.conditions) {</span>
+<span class="fc" id="L95">                rule.withCondition(</span>
+<span class="fc" id="L96">                    fullConditionFrom(coordinateFrom(condition[0]), condition[column])</span>
                 );
             }
-<span class="fc bfc" id="L97" title="All 2 branches covered.">            for (final String[] outcome : this.outcomes) {</span>
-<span class="fc" id="L98">                rule.withOutcome(</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            for (final String[] outcome : this.outcomes) {</span>
+<span class="fc" id="L100">                rule.withOutcome(</span>
                     outcome[0],
                     outcome[column]
                 );
             }
-<span class="fc" id="L103">            rules.add(rule);</span>
+<span class="fc" id="L105">            rules.add(rule);</span>
         }
-<span class="fc" id="L105">        return new DecisionTable(rules);</span>
+<span class="fc" id="L107">        final Rule elserule = new Rule();</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (this.outcomes[0].length &gt; this.conditions[0].length) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            for (final String[] outcome : this.outcomes) {</span>
+<span class="fc" id="L110">                elserule.withOutcome(</span>
+                    outcome[0],
+                    outcome[this.conditions[0].length]
+                );
+            }
+        } else {
+<span class="fc" id="L116">            elserule.withOutcome(&quot;outcome&quot;, &quot;undefined&quot;);</span>
+        }
+<span class="fc" id="L118">        return new DecisionTable(rules, elserule);</span>
     }
 
     /**
-     * Creates a {@link Coordinate} based on a string representation.
+     * Creates a {@link Condition} based on a string representation.
+     *
+     * @param base The base {@link Coordinate} for the condition.
+     * @param argument String representation of a condition.
+     * @return A concrete {@link Condition} based on given string representation.
+     */
+    private static Condition fullConditionFrom(final Coordinate base, final String argument) {
+        final Condition result;
+<span class="fc" id="L130">        final char operation = argument.charAt(0);</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (operation == '~') {</span>
+<span class="fc" id="L132">            result = new EqualsCondition(base, base);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        } else if (operation == '!') {</span>
+<span class="fc" id="L134">            result = new NotCondition(fullConditionFrom(base, argument.substring(1)));</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        } else if (operation == '&gt;') {</span>
+<span class="fc" id="L136">            result = new GreaterThanCondition(base, coordinateFrom(argument.substring(1)));</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        } else if (operation == '&lt;') {</span>
+<span class="fc" id="L138">            result = new LessThanCondition(base, coordinateFrom(argument.substring(1)));</span>
+        } else {
+<span class="fc" id="L140">            result = new EqualsCondition(base, coordinateFrom(argument));</span>
+        }
+<span class="fc" id="L142">        return result;</span>
+    }
+
+    /**
+     * Creates a {@link Coordinate} based on a string representation. The provided string can
+     * reference to a constant value or to some {@link Locator}'s value. In the latter case, the
+     * string should be in the format &quot;locator::fragment&quot;.
      *
      * @param coordinate String representation of a coordinate.
      * @return A concrete {@link Coordinate} based on given string representation.
      */
     private static Coordinate coordinateFrom(final String coordinate) {
-<span class="fc" id="L115">        final String[] split = coordinate.split(&quot;::&quot;);</span>
-<span class="fc" id="L116">        return new Coordinate(split[0], split[1]);</span>
+        final Coordinate result;
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        if (coordinate.contains(&quot;::&quot;)) {</span>
+<span class="fc" id="L156">            final String[] split = coordinate.split(&quot;::&quot;);</span>
+<span class="fc" id="L157">            result = new Coordinate(split[0], split[1]);</span>
+<span class="fc" id="L158">        } else {</span>
+<span class="fc" id="L159">            result = new Coordinate(Locator.CONSTANT_VALUES, coordinate);</span>
+        }
+<span class="fc" id="L161">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

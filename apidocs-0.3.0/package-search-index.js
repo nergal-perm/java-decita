@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.ewc.decita"},{"l":"ru.ewc.decita.conditions"},{"l":"ru.ewc.decita.input"},{"l":"ru.ewc.decita.manual"}];updateSearchResults();

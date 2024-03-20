@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ManualComputation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita.manual</a> &gt; <span class="el_source">ManualComputation.java</span></div><h1>ManualComputation.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita.manual;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.SneakyThrows;
+import org.yaml.snakeyaml.Yaml;
+import ru.ewc.decita.ComputationContext;
+import ru.ewc.decita.ConstantLocator;
+import ru.ewc.decita.DecisionTable;
+import ru.ewc.decita.DecitaException;
+import ru.ewc.decita.InMemoryStorage;
+import ru.ewc.decita.Locator;
+import ru.ewc.decita.input.PlainTextContentReader;
+
+/**
+ * I am a unique instance of a {@link DecisionTable} computation.
+ *
+ * @since 0.2.2
+ */
+@SuppressWarnings(&quot;PMD.ProhibitPublicStaticMethods&quot;)
+public class ManualComputation {
+    /**
+     * An instance of object that reads all the tables from disk.
+     */
+    private final PlainTextContentReader tables;
+
+    /**
+     * A URI pointing to a state yaml file.
+     */
+    private final URI state;
+
+    /**
+     * Default Ctor.
+     */
+    public ManualComputation() {
+<span class="fc" id="L67">        this(null, null);</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * Ctor.
+     *
+     * @param tables Reader that can read tables data from the file system.
+     * @param state Path to yaml describing the current system's state.
+     */
+<span class="fc" id="L76">    private ManualComputation(final PlainTextContentReader tables, final URI state) {</span>
+<span class="fc" id="L77">        this.tables = tables;</span>
+<span class="fc" id="L78">        this.state = state;</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Converts a string representation of the file system path to a correct URI.
+     *
+     * @param path File system path as a String.
+     * @return URI that corresponds to a given path.
+     */
+    public static URI uriFrom(final String path) {
+<span class="fc" id="L88">        final StringBuilder result = new StringBuilder(&quot;file:/&quot;);</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (path.charAt(0) == '/') {</span>
+<span class="fc" id="L90">            result.append(path.replace('\\', '/').substring(1));</span>
+        } else {
+<span class="nc" id="L92">            result.append(path.replace('\\', '/'));</span>
+        }
+<span class="fc" id="L94">        return URI.create(result.toString());</span>
+    }
+
+    /**
+     * Reads all the tables from disk in a format suitable to construct {@link ComputationContext}.
+     *
+     * @return A dictionary of {@link DecisionTable}s.
+     */
+    public Map&lt;String, Locator&gt; tablesAsLocators() {
+        final Map&lt;String, Locator&gt; result;
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (this.tables == null) {</span>
+<span class="nc" id="L105">            result = Collections.emptyMap();</span>
+        } else {
+<span class="fc" id="L107">            result = this.tables.allTables();</span>
+        }
+<span class="fc" id="L109">        return result;</span>
+    }
+
+    /**
+     * Creates a copy of this instance with a new path to state yaml.
+     *
+     * @param path Path to a file that holds the current state's description.
+     * @return A new instance of {@link ManualComputation}.
+     */
+    public ManualComputation statePath(final String path) {
+<span class="fc" id="L119">        return new ManualComputation(</span>
+            this.tables,
+<span class="fc" id="L121">            uriFrom(path)</span>
+        );
+    }
+
+    /**
+     * Creates a copy of this instance with a new path to tables folder.
+     *
+     * @param path Path to a folder containing all the decision tables.
+     * @return A new instance of {@link ManualComputation}.
+     */
+    public ManualComputation tablePath(final String path) {
+<span class="fc" id="L132">        return new ManualComputation(</span>
+<span class="fc" id="L133">            new PlainTextContentReader(uriFrom(path), &quot;.csv&quot;, &quot;;&quot;),</span>
+            this.state
+        );
+    }
+
+    /**
+     * Converts yaml data read from input stream to a correct {@link InMemoryStorage} object.
+     *
+     * @return The collection of {@link InMemoryStorage} objects.
+     */
+<span class="nc" id="L143">    @SneakyThrows</span>
+    public Map&lt;String, Locator&gt; currentState() {
+<span class="fc" id="L145">        try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {</span>
+<span class="fc" id="L146">            final Map&lt;String, InMemoryStorage&gt; collect = loadStateFrom(stream);</span>
+<span class="fc" id="L147">            final Map&lt;String, Locator&gt; locators = new HashMap&lt;&gt;(collect.size() + 1);</span>
+<span class="fc" id="L148">            locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());</span>
+<span class="fc" id="L149">            locators.putAll(collect);</span>
+<span class="fc" id="L150">            return locators;</span>
+        }
+    }
+
+    /**
+     * Computes the decision for a specified table.
+     *
+     * @param table Name of the tables to make a decision against.
+     * @return The collection of outcomes from the specified table.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    public Map&lt;String, String&gt; decideFor(final String table) throws DecitaException {
+<span class="fc" id="L162">        return new ComputationContext(</span>
+<span class="fc" id="L163">            this.tablesAsLocators(),</span>
+<span class="fc" id="L164">            this.currentState()</span>
+<span class="fc" id="L165">        ).decisionFor(table);</span>
+    }
+
+    /**
+     * Returns a complete set of all the table names, read from the user-specified folder.
+     *
+     * @return Set of Strings, representing decision table names.
+     */
+    Set&lt;String&gt; tableNames() {
+        final Set&lt;String&gt; result;
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (this.tables == null) {</span>
+<span class="nc" id="L176">            result = Collections.emptySet();</span>
+        } else {
+<span class="nc" id="L178">            result = this.tablesAsLocators().keySet();</span>
+        }
+<span class="nc" id="L180">        return result;</span>
+    }
+
+    /**
+     * Loads the state from the specified {@code InputStream}.
+     *
+     * @param stream InputStream containing state info.
+     * @return Collection of {@link InMemoryStorage} objects, containing desired state.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;String, InMemoryStorage&gt; loadStateFrom(final InputStream stream) {
+<span class="fc" id="L191">        return ((Map&lt;String, Map&lt;String, Object&gt;&gt;) new Yaml().loadAll(stream).iterator().next())</span>
+<span class="fc" id="L192">            .entrySet()</span>
+<span class="fc" id="L193">            .stream()</span>
+<span class="fc" id="L194">            .collect(Collectors.toMap(Map.Entry::getKey, e -&gt; new InMemoryStorage(e.getValue())));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

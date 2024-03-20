@@ -65,7 +65,7 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     * @return The simple dictionary of the table's outcomes.</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     * @throws DecitaException If any of the {@link Rule}s cannot be checked.</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">default</strong> Map&lt;String, String&gt; outcome(<a name="ComputationContext" href="../../../ru/ewc/decita/ComputationContext.html#ComputationContext">ComputationContext</a> context) <strong class="jxr_keyword">throws</strong> <a name="DecitaException" href="../../../ru/ewc/decita/DecitaException.html#DecitaException">DecitaException</a> {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">default</strong> Map&lt;String, String&gt; outcome(<strong class="jxr_keyword">final</strong> <a name="ComputationContext" href="../../../ru/ewc/decita/ComputationContext.html#ComputationContext">ComputationContext</a> context) <strong class="jxr_keyword">throws</strong> <a name="DecitaException" href="../../../ru/ewc/decita/DecitaException.html#DecitaException">DecitaException</a> {
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          <strong class="jxr_keyword">return</strong> Collections.singletonMap(<span class="jxr_string">"outcome"</span>, <span class="jxr_string">"undefined"</span>);
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      }
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  }

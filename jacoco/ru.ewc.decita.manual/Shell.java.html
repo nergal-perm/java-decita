@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Shell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita.manual</a> &gt; <span class="el_source">Shell.java</span></div><h1>Shell.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package ru.ewc.decita.manual;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import lombok.SneakyThrows;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import ru.ewc.decita.DecitaException;
+
+/**
+ * I am the shell for manual library testing. My main responsibility is to hide Java complexities
+ * behind a simple interface.
+ *
+ * @since 0.2.2
+ */
+public final class Shell {
+    /**
+     * Set of predefined autocompletion options, contains all available commands.
+     */
+<span class="nc" id="L51">    public static final Set&lt;String&gt; COMMANDS = Set.of(&quot;tables&quot;, &quot;decide&quot;, &quot;state&quot;);</span>
+
+    /**
+     * Object holding current terminal.
+     */
+    private final Terminal terminal;
+
+    /**
+     * Object that reads the user's input.
+     */
+    private LineReader reader;
+
+    /**
+     * Object that can write anything to console.
+     */
+    private final PrintWriter writer;
+
+    /**
+     * An instance of a manual computation.
+     */
+    private ManualComputation computation;
+
+    /**
+     * Ctor.
+     *
+     * @throws IOException If the terminal could not be created.
+     */
+<span class="nc" id="L78">    private Shell() throws IOException {</span>
+<span class="nc" id="L79">        this.terminal = TerminalBuilder.terminal();</span>
+<span class="nc" id="L80">        this.writer = this.terminal.writer();</span>
+<span class="nc" id="L81">        this.reader = this.buildReader();</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * The method to run a simplified manual testing utility.
+     *
+     * @param args Collection of String arguments to initialize Shell.
+     * @throws IOException If the command line terminal could not be created.
+     */
+    @SuppressWarnings(&quot;PMD.ProhibitPublicStaticMethods&quot;)
+    public static void main(final String[] args) throws IOException {
+<span class="nc" id="L92">        new Shell().commandsCycle();</span>
+<span class="nc" id="L93">    }</span>
+
+    /**
+     * Creates and runs the infinite cycle of handling user input.
+     */
+    private void commandsCycle() {
+        String line;
+        while (true) {
+<span class="nc" id="L101">            line = this.reader.readLine(&quot;Decita manual &gt; &quot;).trim();</span>
+<span class="nc bnc" id="L102" title="All 4 branches missed.">            if (&quot;quit&quot;.equalsIgnoreCase(line) || &quot;exit&quot;.equalsIgnoreCase(line)) {</span>
+<span class="nc" id="L103">                break;</span>
+            }
+            try {
+<span class="nc" id="L106">                this.performCommand(this.reader.getParser().parse(line, 0));</span>
+<span class="nc" id="L107">            } catch (final DecitaException exception) {</span>
+<span class="nc" id="L108">                this.writer.printf(&quot;An error encountered: %s%n&quot;, exception.getMessage());</span>
+<span class="nc" id="L109">            }</span>
+        }
+<span class="nc" id="L111">    }</span>
+
+    /**
+     * The method to run a single user's command.
+     *
+     * @param parsed Structure holding the parsed user input.
+     */
+    private void performCommand(final ParsedLine parsed) {
+<span class="nc" id="L119">        final String command = parsed.words().get(0);</span>
+<span class="nc" id="L120">        final String param = extractParameterFrom(parsed);</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">        switch (command) {</span>
+            case &quot;tables&quot;:
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (param == null) {</span>
+<span class="nc" id="L124">                    this.writer.println(&quot;Please give me a path to tables folder...&quot;);</span>
+                } else {
+<span class="nc" id="L126">                    this.pointToSources(param);</span>
+                }
+<span class="nc" id="L128">                break;</span>
+            case &quot;state&quot;:
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                if (param == null) {</span>
+<span class="nc" id="L131">                    this.writer.println(&quot;Please give me a path to current state file...&quot;);</span>
+                } else {
+<span class="nc" id="L133">                    this.loadState(param);</span>
+                }
+<span class="nc" id="L135">                break;</span>
+            case &quot;decide&quot;:
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                if (param == null) {</span>
+<span class="nc" id="L138">                    this.writer.println(&quot;Please give me a table name...&quot;);</span>
+                } else {
+<span class="nc" id="L140">                    this.decideFor(param);</span>
+                }
+<span class="nc" id="L142">                break;</span>
+            default:
+                break;
+        }
+<span class="nc" id="L146">    }</span>
+
+    /**
+     * Store a path to decision tables folder for following computations.
+     *
+     * @param path The path to decision tables.
+     */
+    private void pointToSources(final String path) {
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (this.computation == null) {</span>
+<span class="nc" id="L155">            this.computation = new ManualComputation();</span>
+        }
+<span class="nc" id="L157">        this.computation = this.computation.tablePath(path);</span>
+<span class="nc" id="L158">        this.reader = this.buildReader();</span>
+<span class="nc" id="L159">        this.writer.printf(&quot;Let's import tables from %s%n&quot;, path);</span>
+<span class="nc" id="L160">    }</span>
+
+    /**
+     * Computes a new completion set, including all the loaded table names.
+     *
+     * @return An instance of {@link StringsCompleter} with all the available commands and tables
+     */
+    private StringsCompleter commandsAndTableNames() {
+        final Set&lt;String&gt; result;
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (this.computation == null) {</span>
+<span class="nc" id="L170">            result = new HashSet&lt;&gt;();</span>
+        } else {
+<span class="nc" id="L172">            result = new HashSet&lt;&gt;(this.computation.tableNames());</span>
+        }
+<span class="nc" id="L174">        result.addAll(Shell.COMMANDS);</span>
+<span class="nc" id="L175">        return new StringsCompleter(result);</span>
+    }
+
+    /**
+     * Loads the computational state from a user-specified file.
+     *
+     * @param path Path to the yaml file, containing desired state.
+     */
+<span class="nc" id="L183">    @SneakyThrows</span>
+    private void loadState(final String path) {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (this.computation == null) {</span>
+<span class="nc" id="L186">            this.computation = new ManualComputation();</span>
+        }
+<span class="nc" id="L188">        this.computation = this.computation.statePath(path);</span>
+<span class="nc" id="L189">        this.writer.printf(&quot;Let's use state from %s%n&quot;, path);</span>
+<span class="nc" id="L190">    }</span>
+
+    /**
+     * Method that resolves the decision table in a specific Computation context.
+     *
+     * @param table The name of the table to resolve.
+     */
+<span class="nc" id="L197">    @SneakyThrows</span>
+    private void decideFor(final String table) {
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (this.computation == null) {</span>
+<span class="nc" id="L200">            this.writer.println(&quot;Please set me up using 'tables' and 'state' commands...&quot;);</span>
+        } else {
+<span class="nc" id="L202">            this.writer.printf(&quot;%n--== %s ==--%n&quot;, table.toUpperCase(Locale.getDefault()));</span>
+<span class="nc" id="L203">            this.computation.decideFor(table).forEach(</span>
+<span class="nc" id="L204">                (key, value) -&gt; this.writer.printf(&quot;%s : %s%n&quot;, key, value)</span>
+            );
+<span class="nc" id="L206">            this.writer.println();</span>
+        }
+<span class="nc" id="L208">    }</span>
+
+    /**
+     * Extracts a single parameter for the user command.
+     *
+     * @param parsed The structure holding the parsed user command.
+     * @return A single String parameter entered by user.
+     */
+    private static String extractParameterFrom(final ParsedLine parsed) {
+        final String param;
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (parsed.words().size() &gt; 1) {</span>
+<span class="nc" id="L219">            param = parsed.words().get(1).replace(&quot;\\&quot;, &quot;\\\\&quot;);</span>
+        } else {
+<span class="nc" id="L221">            param = null;</span>
+        }
+<span class="nc" id="L223">        return param;</span>
+    }
+
+    /**
+     * Builds a terminal with escaping line parser.
+     *
+     * @return An instance of a preconfigured line parser.
+     */
+    private LineReader buildReader() {
+<span class="nc" id="L232">        return LineReaderBuilder</span>
+<span class="nc" id="L233">            .builder()</span>
+<span class="nc" id="L234">            .terminal(this.terminal)</span>
+<span class="nc" id="L235">            .completer(this.commandsAndTableNames())</span>
+<span class="nc" id="L236">            .parser(new DefaultParser().escapeChars(new char['\\']))</span>
+<span class="nc" id="L237">            .build();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

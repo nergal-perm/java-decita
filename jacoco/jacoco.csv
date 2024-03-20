@@ -1,13 +1,21 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Java Decision Tables,ru.ewc.decita,DecisionTable,0,51,0,2,0,12,0,4,0,3
-Java Decision Tables,ru.ewc.decita,SingleCondition,92,60,24,10,1,11,16,10,3,6
+Java Decision Tables,ru.ewc.decita.manual,ManualComputation,25,144,4,2,7,31,4,10,1,10
+Java Decision Tables,ru.ewc.decita.manual,Shell,287,0,24,0,67,0,25,0,12,0
+Java Decision Tables,ru.ewc.decita,DecisionTable,0,56,0,2,0,14,0,5,0,4
 Java Decision Tables,ru.ewc.decita,Rule,83,83,22,8,1,16,14,12,2,9
-Java Decision Tables,ru.ewc.decita,EqualsCondition,0,9,0,0,0,3,0,2,0,2
 Java Decision Tables,ru.ewc.decita,ConstantLocator,0,5,0,0,0,2,0,2,0,2
 Java Decision Tables,ru.ewc.decita,DecitaException,4,0,0,0,2,0,1,0,1,0
 Java Decision Tables,ru.ewc.decita,ComputationContext,12,41,1,1,2,10,1,5,0,5
-Java Decision Tables,ru.ewc.decita,Coordinate,46,67,13,7,0,10,10,5,1,4
+Java Decision Tables,ru.ewc.decita,Coordinate,44,106,13,13,0,19,10,11,1,7
 Java Decision Tables,ru.ewc.decita,Locator,4,0,0,0,1,0,1,0,1,0
 Java Decision Tables,ru.ewc.decita,InMemoryStorage,0,13,0,0,0,4,0,2,0,2
-Java Decision Tables,ru.ewc.decita.input,RawContent,0,125,0,6,0,19,0,7,0,4
+Java Decision Tables,ru.ewc.decita.conditions,GreaterThanCondition,0,9,0,0,0,3,0,2,0,2
+Java Decision Tables,ru.ewc.decita.conditions,NotCondition,0,28,0,4,0,7,0,6,0,4
+Java Decision Tables,ru.ewc.decita.conditions,AlwaysTrueCondition,0,5,0,0,0,2,0,1,0,1
+Java Decision Tables,ru.ewc.decita.conditions,UnaryCondition,0,9,0,0,0,4,0,2,0,2
+Java Decision Tables,ru.ewc.decita.conditions,Condition,0,10,0,4,0,1,0,3,0,1
+Java Decision Tables,ru.ewc.decita.conditions,LessThanCondition,0,9,0,0,0,3,0,2,0,2
+Java Decision Tables,ru.ewc.decita.conditions,BinaryCondition,92,50,23,7,1,10,15,8,3,5
+Java Decision Tables,ru.ewc.decita.conditions,EqualsCondition,0,9,0,0,0,3,0,2,0,2
+Java Decision Tables,ru.ewc.decita.input,RawContent,0,249,0,20,0,38,0,15,0,5
 Java Decision Tables,ru.ewc.decita.input,PlainTextContentReader,6,154,0,2,4,34,0,13,0,12

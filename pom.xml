@@ -34,7 +34,7 @@
     <version>0.67.0</version>
   </parent>
 
-  <groupId>ru.ewc</groupId>
+  <groupId>io.github.nergal-perm</groupId>
   <artifactId>java-decita</artifactId>
   <version>0.3.0</version>
   <packaging>jar</packaging>
@@ -161,6 +161,52 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>newSonatype</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jcabi-sources</id>
+                <configuration>
+                  <forceCreation>true</forceCreation>
+                </configuration>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jcabi-javadoc</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <additionalOptions>${javadoc.opts}</additionalOptions>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.4.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <tokenAuth>true</tokenAuth>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>qulice</id>
       <build>

@@ -5,6 +5,24 @@
 
 ## Instructions
 
+### Publishing a site
+
+First of all, the site should be built with the following Maven command:
+
+```shell
+mvn clean verify site -Pjacoco && mvn site:site site:stage -Psite
+```
+
+Then I `rsync` the newly created `target/staging` folder to another copy of the repository (which has
+the `gh-pages` branch checked out) with the following command (run from the project root):
+
+```shell
+rsync -avz --delete target/staging/* ../java-decita-gh-pages/
+```
+
+After that, I 'cd' to the repository's copy, commit and push the changes to the `gh-pages` branch.
+Done!
+
 ### Releasing
 
 To create a new commit with a new version, run the following `npx` command (you need to have Node.js installed): 

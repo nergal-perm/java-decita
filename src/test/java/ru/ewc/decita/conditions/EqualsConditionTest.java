@@ -35,11 +35,12 @@ import ru.ewc.decita.TestObjects;
  *
  * @since 0.1
  */
-class EqualsConditionTest {
+final class EqualsConditionTest {
     @Test
     void testInstantiating() {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
         MatcherAssert.assertThat(
+            "The condition is instantiated",
             target,
             Matchers.notNullValue()
         );
@@ -49,6 +50,7 @@ class EqualsConditionTest {
     void testEvaluatingToTrue() throws DecitaException {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
         MatcherAssert.assertThat(
+            "The 'always true' condition evaluates to true",
             target.evaluate(TestObjects.defaultContext()),
             Matchers.is(true)
         );
@@ -61,6 +63,7 @@ class EqualsConditionTest {
             TestObjects.valueTrue()
         );
         MatcherAssert.assertThat(
+            "The condition is not yet evaluated right after creation",
             target.isEvaluated(),
             Matchers.is(false)
         );
@@ -71,6 +74,7 @@ class EqualsConditionTest {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
         target.evaluate(TestObjects.defaultContext());
         MatcherAssert.assertThat(
+            "The condition is evaluated after the first evaluation",
             target.isEvaluated(),
             Matchers.is(true)
         );

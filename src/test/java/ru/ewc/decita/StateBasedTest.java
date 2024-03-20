@@ -130,6 +130,7 @@ class StateBasedTest {
      * @since 0.2.3
      */
     @Getter
+    @SuppressWarnings("PMD.TestClassWithoutTestCases")
     public static class TestData {
         /**
          * Path to the file containing state and expectations.

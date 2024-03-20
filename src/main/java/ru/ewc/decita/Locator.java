@@ -57,7 +57,7 @@ public interface Locator {
      * @return The simple dictionary of the table's outcomes.
      * @throws DecitaException If any of the {@link Rule}s cannot be checked.
      */
-    default Map<String, String> outcome(ComputationContext context) throws DecitaException {
+    default Map<String, String> outcome(final ComputationContext context) throws DecitaException {
         return Collections.singletonMap("outcome", "undefined");
     }
 }

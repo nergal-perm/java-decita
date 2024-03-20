@@ -33,11 +33,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.3
  */
-class NotConditionTest {
+final class NotConditionTest {
     @Test
     void shouldNegateBaseCondition() {
         final Condition base = new AlwaysTrueCondition();
         MatcherAssert.assertThat(
+            "The negated 'always true' condition resolves to 'false'",
             new NotCondition(base).isSatisfied(),
             Matchers.is(false)
         );

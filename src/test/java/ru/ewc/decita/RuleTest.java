@@ -33,11 +33,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-class RuleTest {
+final class RuleTest {
     @Test
     void testNotEliminatedAfterCreation() {
         final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
         MatcherAssert.assertThat(
+            "The rule is not eliminated right after creation",
             target.isEliminated(),
             Matchers.is(false)
         );
@@ -48,10 +49,12 @@ class RuleTest {
         final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
         target.check(TestObjects.defaultContext());
         MatcherAssert.assertThat(
+            "The rule is computed after evaluation",
             target.isComputed(),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            "The rule is not eliminated after evaluation if it resolves to 'true'",
             target.isEliminated(),
             Matchers.is(false)
         );
@@ -62,10 +65,12 @@ class RuleTest {
         final Rule target = TestObjects.alwaysTrueEqualsFalseRule();
         target.check(TestObjects.defaultContext());
         MatcherAssert.assertThat(
+            "The rule is computed after evaluation",
             target.isComputed(),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            "The rule is eliminated after evaluation if it resolves to 'false'",
             target.isEliminated(),
             Matchers.is(true)
         );

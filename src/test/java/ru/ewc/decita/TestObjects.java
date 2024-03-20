@@ -36,7 +36,7 @@ import ru.ewc.decita.conditions.NotCondition;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+@SuppressWarnings({"PMD.ProhibitPublicStaticMethods", "PMD.TestClassWithoutTestCases"})
 public final class TestObjects {
     /**
      * Ctor.

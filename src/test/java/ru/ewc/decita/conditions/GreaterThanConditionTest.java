@@ -37,7 +37,7 @@ import ru.ewc.decita.TestObjects;
  *
  * @since 0.3
  */
-class GreaterThanConditionTest {
+final class GreaterThanConditionTest {
     /**
      * The context for the tests.
      */

@@ -33,11 +33,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-class CoordinateTest {
+final class CoordinateTest {
     @Test
     void testAlreadyComputed() {
-        final Coordinate target = TestObjects.valueTrue();
+        final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
         MatcherAssert.assertThat(
+            "The constant coordinate is already computed",
             target.isComputed(),
             Matchers.is(true)
         );
@@ -47,6 +48,7 @@ class CoordinateTest {
     void testIsNotYetComputed() {
         final Coordinate target = new Coordinate("always_true", "outcome");
         MatcherAssert.assertThat(
+            "The non-constant coordinate is not computed right after creation",
             target.isComputed(),
             Matchers.is(false)
         );
@@ -58,6 +60,7 @@ class CoordinateTest {
         final ComputationContext context = TestObjects.defaultContext();
         target.locateIn(context);
         MatcherAssert.assertThat(
+            "Locating the coordinate means computing its constant value",
             target.isComputed(),
             Matchers.is(true)
         );

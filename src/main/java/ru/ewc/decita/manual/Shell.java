@@ -99,7 +99,7 @@ public final class Shell {
         String line;
         while (true) {
             line = this.reader.readLine("Decita manual > ").trim();
-            if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
+            if ("quit".equalsIgnoreCase(line) || "exit".equalsIgnoreCase(line)) {
                 break;
             }
             try {

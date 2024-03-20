@@ -34,7 +34,7 @@ import ru.ewc.decita.TestObjects;
  *
  * @since 0.3
  */
-class RawContentTest {
+final class RawContentTest {
     @Test
     void shouldParseDifferentConditions() {
         final RawContent target = new RawContent(
@@ -47,6 +47,7 @@ class RawContentTest {
             "sample-table"
         );
         MatcherAssert.assertThat(
+            "The decision table is parsed correctly",
             target.asDecisionTable().outcome(TestObjects.defaultContext()),
             Matchers.is(Map.of("outcome", "true"))
         );

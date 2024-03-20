@@ -142,12 +142,13 @@ public class ManualComputation {
      */
     @SneakyThrows
     public Map<String, Locator> currentState() {
-        final InputStream stream = Files.newInputStream(new File(this.state).toPath());
-        final Map<String, InMemoryStorage> collect = loadStateFrom(stream);
-        final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
-        locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
-        locators.putAll(collect);
-        return locators;
+        try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {
+            final Map<String, InMemoryStorage> collect = loadStateFrom(stream);
+            final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
+            locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
+            locators.putAll(collect);
+            return locators;
+        }
     }
 
     /**

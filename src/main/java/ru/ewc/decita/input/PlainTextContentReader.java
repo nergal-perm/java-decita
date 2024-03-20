@@ -74,6 +74,7 @@ public final class PlainTextContentReader implements ContentReader {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public List<RawContent> readAllTables() {
         List<RawContent> contents;
         try (Stream<Path> files = Files.walk(Paths.get(this.folder))) {

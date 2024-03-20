@@ -87,7 +87,7 @@
   <ciManagement>
     <system>github</system>
     <url>https://github.com/nergal-perm/java-decita/actions</url>
-  </ciManagement><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin></plugins></build>
+  </ciManagement>
   <scm>
     <connection>scm:git:github.com:nergal-perm/java-decita.git</connection>
     <developerConnection>scm:git:github.com:nergal-perm/java-decita.git</developerConnection>
@@ -147,6 +147,19 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <profiles>
     <profile>
       <id>qulice</id>
@@ -155,7 +168,7 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.22.0</version>
+            <version>0.22.2</version>
             <configuration>
               <license>file:${basedir}/LICENSE</license>
             </configuration>

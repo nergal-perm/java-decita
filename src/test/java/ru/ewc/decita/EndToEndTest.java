@@ -38,7 +38,7 @@ import ru.ewc.decita.input.PlainTextContentReader;
  *
  * @since 0.1
  */
-class EndToEndTest {
+final class EndToEndTest {
     /**
      * Constant for the table outcome field.
      */
@@ -63,6 +63,7 @@ class EndToEndTest {
         );
         final Map<String, String> actual = context.decisionFor("sample-table");
         MatcherAssert.assertThat(
+            "The table is computed correctly",
             actual,
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true")),
@@ -90,6 +91,7 @@ class EndToEndTest {
         );
         final Map<String, String> actual = context.decisionFor("sample-table");
         MatcherAssert.assertThat(
+            "The table is computed correctly",
             actual,
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),

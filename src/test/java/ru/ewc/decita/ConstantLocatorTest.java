@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * Tests for the {@link ConstantLocator} class.
  * @since 0.1
  */
-class ConstantLocatorTest {
+final class ConstantLocatorTest {
     /**
      * Simple instantiation test.
      */
@@ -40,6 +40,7 @@ class ConstantLocatorTest {
     void shouldInstantiate() {
         final Locator target = new ConstantLocator();
         MatcherAssert.assertThat(
+            "The constant locator is instantiated",
             target,
             Matchers.not(Matchers.nullValue())
         );
@@ -50,6 +51,7 @@ class ConstantLocatorTest {
         final Locator target = new ConstantLocator();
         final String actual = target.fragmentBy("true", TestObjects.defaultContext());
         MatcherAssert.assertThat(
+            "The constant locator should find boolean values",
             actual,
             Matchers.is("true")
         );
@@ -60,6 +62,7 @@ class ConstantLocatorTest {
         final Locator target = new ConstantLocator();
         final String actual = target.fragmentBy("test value", TestObjects.defaultContext());
         MatcherAssert.assertThat(
+            "The constant locator should find string values",
             actual,
             Matchers.is("test value")
         );

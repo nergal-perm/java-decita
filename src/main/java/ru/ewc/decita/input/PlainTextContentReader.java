@@ -31,11 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import ru.ewc.decita.DecisionTable;
-import ru.ewc.decita.Locator;
+import ru.ewc.decita.Locators;
 
 /**
  * I am the specific {@link ContentReader} that knows how to read CSV-files. My main responsibility
@@ -74,8 +73,23 @@ public final class PlainTextContentReader implements ContentReader {
     }
 
     @Override
+    public Locators allTables() {
+        return new Locators(
+            this.readAllTables()
+                .stream()
+                .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable))
+        );
+    }
+
+    /**
+     * Reads all the source data and returns the unified storage object, capable of transforming
+     * data into {@link DecisionTable}s.
+     *
+     * @return A collection of objects, representing the contents of {@link DecisionTable}s data
+     *  sources.
+     */
     @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    public List<RawContent> readAllTables() {
+    private List<RawContent> readAllTables() {
         List<RawContent> contents;
         try (Stream<Path> files = Files.walk(Paths.get(this.folder))) {
             contents = this.contentsOf(files);
@@ -83,13 +97,6 @@ public final class PlainTextContentReader implements ContentReader {
             contents = Collections.emptyList();
         }
         return contents;
-    }
-
-    @Override
-    public Map<String, Locator> allTables() {
-        return this.readAllTables()
-            .stream()
-            .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable));
     }
 
     /**
@@ -104,7 +111,7 @@ public final class PlainTextContentReader implements ContentReader {
             .filter(path -> path.getFileName().toString().endsWith(this.extension))
             .map(Path::toString)
             .map(this::readContentFromFile)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**

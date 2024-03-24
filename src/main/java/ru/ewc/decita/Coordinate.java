@@ -79,7 +79,7 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
         if (!this.isComputed()) {
-            final String located = context.valueFor(this.locator, this.fragment, context);
+            final String located = context.valueFor(this.locator, this.fragment);
             this.locator = Locator.CONSTANT_VALUES;
             this.fragment = located;
         }

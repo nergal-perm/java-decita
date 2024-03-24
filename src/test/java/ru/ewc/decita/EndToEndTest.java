@@ -54,15 +54,17 @@ final class EndToEndTest {
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
         final ComputationContext context = FACADE.contextExtendedWith(
-            Map.of(
-                "data", new InMemoryStorage(
-                    Map.of("is-stored", "true")
-                ),
-                "market", new InMemoryStorage(
-                    Map.of("shop", 2)
-                ),
-                "currentPlayer", new InMemoryStorage(
-                    Map.of("name", "Eugene")
+            new Locators(
+                Map.of(
+                    "data", new InMemoryStorage(
+                        Map.of("is-stored", "true")
+                    ),
+                    "market", new InMemoryStorage(
+                        Map.of("shop", 2)
+                    ),
+                    "currentPlayer", new InMemoryStorage(
+                        Map.of("name", "Eugene")
+                    )
                 )
             )
         );
@@ -80,15 +82,17 @@ final class EndToEndTest {
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
         final ComputationContext context = FACADE.contextExtendedWith(
-            Map.of(
-                "data", new InMemoryStorage(
-                    Map.of("is-stored", false)
-                ),
-                "market", new InMemoryStorage(
-                    Map.of("shop", 3)
-                ),
-                "currentPlayer", new InMemoryStorage(
-                    Map.of("name", "Eugene")
+            new Locators(
+                Map.of(
+                    "data", new InMemoryStorage(
+                        Map.of("is-stored", false)
+                    ),
+                    "market", new InMemoryStorage(
+                        Map.of("shop", 3)
+                    ),
+                    "currentPlayer", new InMemoryStorage(
+                        Map.of("name", "Eugene")
+                    )
                 )
             )
         );

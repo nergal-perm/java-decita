@@ -111,10 +111,12 @@ public final class TestObjects {
      *
      * @return A collection of required {@link Locator}s.
      */
-    private static Map<String, Locator> defaultLocators() {
-        return Map.of(
-            "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
-            Locator.CONSTANT_VALUES, new ConstantLocator()
+    private static Locators defaultLocators() {
+        return new Locators(
+            Map.of(
+                "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
+                Locator.CONSTANT_VALUES, new ConstantLocator()
+            )
         );
     }
 

@@ -29,18 +29,20 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.yaml.snakeyaml.Yaml;
 import ru.ewc.decita.ComputationContext;
-import ru.ewc.decita.ConstantLocator;
 import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.DecitaException;
+import ru.ewc.decita.DecitaFacade;
 import ru.ewc.decita.InMemoryStorage;
 import ru.ewc.decita.Locator;
+import ru.ewc.decita.Locators;
+import ru.ewc.decita.input.ContentReader;
 import ru.ewc.decita.input.PlainTextContentReader;
 
 /**
@@ -53,7 +55,7 @@ public class ManualComputation {
     /**
      * An instance of object that reads all the tables from disk.
      */
-    private final PlainTextContentReader tables;
+    private final ContentReader tables;
 
     /**
      * A URI pointing to a state yaml file.
@@ -64,7 +66,7 @@ public class ManualComputation {
      * Default Ctor.
      */
     public ManualComputation() {
-        this(null, null);
+        this(() -> new Locators(Map.of()), null);
     }
 
     /**
@@ -73,7 +75,7 @@ public class ManualComputation {
      * @param tables Reader that can read tables data from the file system.
      * @param state Path to yaml describing the current system's state.
      */
-    private ManualComputation(final PlainTextContentReader tables, final URI state) {
+    private ManualComputation(final ContentReader tables, final URI state) {
         this.tables = tables;
         this.state = state;
     }
@@ -99,14 +101,8 @@ public class ManualComputation {
      *
      * @return A dictionary of {@link DecisionTable}s.
      */
-    public Map<String, Locator> tablesAsLocators() {
-        final Map<String, Locator> result;
-        if (this.tables == null) {
-            result = Collections.emptyMap();
-        } else {
-            result = this.tables.allTables();
-        }
-        return result;
+    public Locators tablesAsLocators() {
+        return this.tables.allTables();
     }
 
     /**
@@ -141,13 +137,9 @@ public class ManualComputation {
      * @return The collection of {@link InMemoryStorage} objects.
      */
     @SneakyThrows
-    public Map<String, Locator> currentState() {
+    public Locators currentState() {
         try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {
-            final Map<String, InMemoryStorage> collect = loadStateFrom(stream);
-            final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
-            locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
-            locators.putAll(collect);
-            return locators;
+            return Locators.CONSTANT.mergedWith(stateFrom(stream));
         }
     }
 
@@ -159,10 +151,8 @@ public class ManualComputation {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decideFor(final String table) throws DecitaException {
-        return new ComputationContext(
-            this.tablesAsLocators(),
-            this.currentState()
-        ).decisionFor(table);
+        final DecitaFacade facade = new DecitaFacade(this::tablesAsLocators);
+        return facade.contextExtendedWith(this.currentState()).decisionFor(table);
     }
 
     /**
@@ -175,7 +165,7 @@ public class ManualComputation {
         if (this.tables == null) {
             result = Collections.emptySet();
         } else {
-            result = this.tablesAsLocators().keySet();
+            result = this.tablesAsLocators().names();
         }
         return result;
     }
@@ -184,13 +174,24 @@ public class ManualComputation {
      * Loads the state from the specified {@code InputStream}.
      *
      * @param stream InputStream containing state info.
-     * @return Collection of {@link InMemoryStorage} objects, containing desired state.
+     * @return Collection of {@link Locator} objects, containing desired state.
      */
     @SuppressWarnings("unchecked")
-    private static Map<String, InMemoryStorage> loadStateFrom(final InputStream stream) {
-        return ((Map<String, Map<String, Object>>) new Yaml().loadAll(stream).iterator().next())
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> new InMemoryStorage(e.getValue())));
+    private static Locators stateFrom(final InputStream stream) {
+        return new Locators(
+            ((Map<String, Map<String, Object>>) new Yaml().loadAll(stream).iterator().next())
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entryToLocator()))
+        );
+    }
+
+    /**
+     * Converts a {@link Map.Entry} to a {@link Locator} object.
+     *
+     *@return A function that converts a {@link Map.Entry} to a {@link Locator} object.
+     */
+    private static Function<Map.Entry<String, Map<String, Object>>, Locator> entryToLocator() {
+        return e -> new InMemoryStorage(e.getValue());
     }
 }

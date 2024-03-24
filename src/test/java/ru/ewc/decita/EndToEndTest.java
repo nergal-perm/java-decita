@@ -44,9 +44,16 @@ final class EndToEndTest {
      */
     public static final String OUTCOME = "outcome";
 
+    /**
+     * The facade for the Decita library.
+     */
+    public static final DecitaFacade FACADE = new DecitaFacade(
+        new PlainTextContentReader(tablesDirectory(), ".csv", ";")::allTables
+    );
+
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
-        final ComputationContext context = defaultContext().extendedWith(
+        final ComputationContext context = FACADE.contextExtendedWith(
             Map.of(
                 "data", new InMemoryStorage(
                     Map.of("is-stored", "true")
@@ -72,7 +79,7 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
-        final ComputationContext context = defaultContext().extendedWith(
+        final ComputationContext context = FACADE.contextExtendedWith(
             Map.of(
                 "data", new InMemoryStorage(
                     Map.of("is-stored", false)
@@ -93,13 +100,6 @@ final class EndToEndTest {
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
             )
-        );
-    }
-
-    private static ComputationContext defaultContext() {
-        return new ComputationContext(
-            new PlainTextContentReader(tablesDirectory(), ".csv", ";").allTables(),
-            Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
         );
     }
 

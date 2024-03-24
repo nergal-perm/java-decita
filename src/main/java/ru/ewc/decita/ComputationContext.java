@@ -24,8 +24,6 @@
 
 package ru.ewc.decita;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,23 +41,6 @@ public final class ComputationContext {
     /**
      * Ctor.
      *
-     * @param locators A single dictionary of predefined (required) locators, or an array of such
-     *  dictionaries.
-     */
-    @SafeVarargs
-    public ComputationContext(final Map<String, Locator>... locators) {
-        this(new Locators(
-            Arrays.stream(locators).reduce(
-                new HashMap<>(), (acc, map) -> {
-                    acc.putAll(map);
-                    return acc;
-                }
-            )));
-    }
-
-    /**
-     * Ctor.
-     *
      * @param locators The {@link Locators} instance to use.
      */
     public ComputationContext(final Locators locators) {
@@ -67,28 +48,15 @@ public final class ComputationContext {
     }
 
     /**
-     * Extends the current {@link ComputationContext} with additional {@link Locator}s.
-     *
-     * @param additional A dictionary of additional {@link Locator}s to add.
-     * @return The new {@link ComputationContext} with extended set of {@link Locator}s.
-     */
-    public ComputationContext extendedWith(final Map<String, Locator> additional) {
-        return new ComputationContext(this.collection.mergedWith(new Locators(additional)));
-    }
-
-    /**
      * Finds a {@link Coordinate}'s value using internal set of {@link Locator}'s.
      *
      * @param locator String identifier of the {@link Locator} to use.
      * @param fragment String identifier of the value to find.
-     * @param context The {@link ComputationContext} to get the value.
      * @return The {@code String} value containing requested state.
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public String valueFor(
-        final String locator, final String fragment, final ComputationContext context)
-        throws DecitaException {
-        return this.collection.locatorFor(locator).fragmentBy(fragment, context);
+    public String valueFor(final String locator, final String fragment) throws DecitaException {
+        return this.collection.locatorFor(locator).fragmentBy(fragment, this);
     }
 
     /**

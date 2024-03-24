@@ -35,12 +35,6 @@ import java.util.function.Supplier;
  */
 public final class DecitaFacade {
     /**
-     * The constant {@link Locator} that provides the constant values.
-     */
-    public static final Map<String, Locator> CONSTANT_LOCATOR =
-        Map.of(Locator.CONSTANT_VALUES, new ConstantLocator());
-
-    /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
     private final Supplier<Map<String, Locator>> tables;
@@ -58,11 +52,19 @@ public final class DecitaFacade {
     /**
      * Creates a new {@link ComputationContext} with the provided {@link Locator}s.
      *
-     * @param locators A single dictionary of additional locators, or an array of such dictionaries.
+     * @param locators A wrapper around a set of additional locators.
      * @return A new {@link ComputationContext} with the provided {@link Locator}s.
      */
-    public ComputationContext contextExtendedWith(final Map<String, Locator> locators) {
-        return new ComputationContext(this.tables.get(), DecitaFacade.CONSTANT_LOCATOR)
-            .extendedWith(locators);
+    public ComputationContext contextExtendedWith(final Locators locators) {
+        return new ComputationContext(this.defaultLocators().mergedWith(locators));
+    }
+
+    /**
+     * Returns a new {@link ComputationContext} with the default {@link Locator}s.
+     *
+     * @return A set of base {@link Locator}s.
+     */
+    private Locators defaultLocators() {
+        return new Locators(this.tables.get()).mergedWith(Locators.CONSTANT);
     }
 }

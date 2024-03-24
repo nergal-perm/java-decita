@@ -36,6 +36,13 @@ import java.util.Map;
  */
 public final class Locators {
     /**
+     * The constant {@link Locator} that can be used in the {@link ComputationContext}.
+     */
+    public static final Locators CONSTANT = new Locators(
+        Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
+    );
+
+    /**
      * The {@link Locator}s to be managed by this instance.
      */
     private final Map<String, Locator> collection;

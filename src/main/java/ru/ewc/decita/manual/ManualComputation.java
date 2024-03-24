@@ -39,8 +39,10 @@ import ru.ewc.decita.ComputationContext;
 import ru.ewc.decita.ConstantLocator;
 import ru.ewc.decita.DecisionTable;
 import ru.ewc.decita.DecitaException;
+import ru.ewc.decita.DecitaFacade;
 import ru.ewc.decita.InMemoryStorage;
 import ru.ewc.decita.Locator;
+import ru.ewc.decita.Locators;
 import ru.ewc.decita.input.PlainTextContentReader;
 
 /**
@@ -141,13 +143,13 @@ public class ManualComputation {
      * @return The collection of {@link InMemoryStorage} objects.
      */
     @SneakyThrows
-    public Map<String, Locator> currentState() {
+    public Locators currentState() {
         try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {
             final Map<String, InMemoryStorage> collect = loadStateFrom(stream);
             final Map<String, Locator> locators = new HashMap<>(collect.size() + 1);
             locators.put(Locator.CONSTANT_VALUES, new ConstantLocator());
             locators.putAll(collect);
-            return locators;
+            return new Locators(locators);
         }
     }
 
@@ -159,10 +161,8 @@ public class ManualComputation {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decideFor(final String table) throws DecitaException {
-        return new ComputationContext(
-            this.tablesAsLocators(),
-            this.currentState()
-        ).decisionFor(table);
+        final DecitaFacade facade = new DecitaFacade(this::tablesAsLocators);
+        return facade.contextExtendedWith(this.currentState()).decisionFor(table);
     }
 
     /**

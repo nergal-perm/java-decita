@@ -24,7 +24,6 @@
 
 package ru.ewc.decita;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -37,17 +36,16 @@ public final class DecitaFacade {
     /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
-    private final Supplier<Map<String, Locator>> tables;
+    private final Supplier<Locators> tables;
 
     /**
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
-    public DecitaFacade(final Supplier<Map<String, Locator>> tables) {
+    public DecitaFacade(final Supplier<Locators> tables) {
         this.tables = tables;
     }
-    // @todo #96 Wrap Map<String, Locator> into a dedicated class responsible for merging Locators
 
     /**
      * Creates a new {@link ComputationContext} with the provided {@link Locator}s.
@@ -65,6 +63,6 @@ public final class DecitaFacade {
      * @return A set of base {@link Locator}s.
      */
     private Locators defaultLocators() {
-        return new Locators(this.tables.get()).mergedWith(Locators.CONSTANT);
+        return this.tables.get().mergedWith(Locators.CONSTANT);
     }
 }

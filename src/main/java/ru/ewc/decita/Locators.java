@@ -26,6 +26,7 @@ package ru.ewc.decita;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * I am the collection of {@link Locator}s used to populate the {@link ComputationContext}s. My main
@@ -76,5 +77,9 @@ public final class Locators {
         final Map<String, Locator> merged = new HashMap<>(this.collection);
         merged.putAll(additional.collection);
         return new Locators(merged);
+    }
+
+    public Set<String> names() {
+        return this.collection.keySet();
     }
 }

@@ -31,11 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import ru.ewc.decita.DecisionTable;
-import ru.ewc.decita.Locator;
+import ru.ewc.decita.Locators;
 
 /**
  * I am the specific {@link ContentReader} that knows how to read CSV-files. My main responsibility
@@ -74,10 +73,12 @@ public final class PlainTextContentReader implements ContentReader {
     }
 
     @Override
-    public Map<String, Locator> allTables() {
-        return this.readAllTables()
-            .stream()
-            .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable));
+    public Locators allTables() {
+        return new Locators(
+            this.readAllTables()
+                .stream()
+                .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable))
+        );
     }
 
     /**

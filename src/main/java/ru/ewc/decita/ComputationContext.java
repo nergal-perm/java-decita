@@ -36,9 +36,9 @@ import java.util.Map;
  */
 public final class ComputationContext {
     /**
-     * The set of all the available {@link Locator}s.
+     * The instance of {@link Locators} that provides the required {@link Locator}s.
      */
-    private final Map<String, Locator> locators;
+    private final Locators collection;
 
     /**
      * Ctor.
@@ -48,12 +48,22 @@ public final class ComputationContext {
      */
     @SafeVarargs
     public ComputationContext(final Map<String, Locator>... locators) {
-        this.locators = Arrays.stream(locators).reduce(
-            new HashMap<>(), (acc, map) -> {
-                acc.putAll(map);
-                return acc;
-            }
-        );
+        this(new Locators(
+            Arrays.stream(locators).reduce(
+                new HashMap<>(), (acc, map) -> {
+                    acc.putAll(map);
+                    return acc;
+                }
+            )));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param locators The {@link Locators} instance to use.
+     */
+    public ComputationContext(final Locators locators) {
+        this.collection = locators;
     }
 
     /**
@@ -63,7 +73,7 @@ public final class ComputationContext {
      * @return The new {@link ComputationContext} with extended set of {@link Locator}s.
      */
     public ComputationContext extendedWith(final Map<String, Locator> additional) {
-        return new ComputationContext(this.locators, additional);
+        return new ComputationContext(this.collection.mergedWith(new Locators(additional)));
     }
 
     /**
@@ -78,7 +88,7 @@ public final class ComputationContext {
     public String valueFor(
         final String locator, final String fragment, final ComputationContext context)
         throws DecitaException {
-        return this.locatorFor(locator).fragmentBy(fragment, context);
+        return this.collection.locatorFor(locator).fragmentBy(fragment, context);
     }
 
     /**
@@ -89,22 +99,6 @@ public final class ComputationContext {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decisionFor(final String name) throws DecitaException {
-        return this.locatorFor(name).outcome(this);
-    }
-
-    /**
-     * Returns a concrete {@link Locator} if it's found in an instance storage.
-     *
-     * @param locator The String identifier of the required {@link Locator}.
-     * @return The instance of {@link Locator}.
-     * @throws DecitaException If the specified {@link Locator} is missing.
-     */
-    private Locator locatorFor(final String locator) throws DecitaException {
-        if (this.locators.containsKey(locator)) {
-            return this.locators.get(locator);
-        }
-        throw new DecitaException(
-            String.format("Locator '%s' not found in computation context", locator)
-        );
+        return this.collection.locatorFor(name).outcome(this);
     }
 }

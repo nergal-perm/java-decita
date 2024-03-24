@@ -23,7 +23,6 @@
  */
 package ru.ewc.decita.input;
 
-import java.util.List;
 import java.util.Map;
 import ru.ewc.decita.ComputationContext;
 import ru.ewc.decita.DecisionTable;
@@ -37,15 +36,6 @@ import ru.ewc.decita.Locator;
  * @since 0.2
  */
 public interface ContentReader {
-    /**
-     * Reads all the source data and returns the unified storage object, capable of transforming
-     * data into {@link DecisionTable}s.
-     *
-     * @return A collection of objects, representing the contents of {@link DecisionTable}s data
-     *  sources.
-     */
-    List<RawContent> readAllTables();
-
     /**
      * Reads all the source data and returns the {@link Locator}s collection, that can be used to
      * initialize the {@link ComputationContext}.

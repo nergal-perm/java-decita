@@ -25,7 +25,7 @@
 package ru.ewc.decita;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,11 +49,21 @@ public final class ComputationContext {
     @SafeVarargs
     public ComputationContext(final Map<String, Locator>... locators) {
         this.locators = Arrays.stream(locators).reduce(
-            (result, locatorMap) -> {
-                result.putAll(locatorMap);
-                return result;
+            new HashMap<>(), (acc, map) -> {
+                acc.putAll(map);
+                return acc;
             }
-        ).orElse(Collections.emptyMap());
+        );
+    }
+
+    /**
+     * Extends the current {@link ComputationContext} with additional {@link Locator}s.
+     *
+     * @param additional A dictionary of additional {@link Locator}s to add.
+     * @return The new {@link ComputationContext} with extended set of {@link Locator}s.
+     */
+    public ComputationContext extendedWith(final Map<String, Locator> additional) {
+        return new ComputationContext(this.locators, additional);
     }
 
     /**

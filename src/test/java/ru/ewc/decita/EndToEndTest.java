@@ -53,22 +53,20 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
-        final ComputationContext context = FACADE.contextExtendedWith(
-            new Locators(
-                Map.of(
-                    "data", new InMemoryStorage(
-                        Map.of("is-stored", "true")
-                    ),
-                    "market", new InMemoryStorage(
-                        Map.of("shop", 2)
-                    ),
-                    "currentPlayer", new InMemoryStorage(
-                        Map.of("name", "Eugene")
-                    )
+        final Locators state = new Locators(
+            Map.of(
+                "data", new InMemoryStorage(
+                    Map.of("is-stored", "true")
+                ),
+                "market", new InMemoryStorage(
+                    Map.of("shop", 2)
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Eugene")
                 )
             )
         );
-        final Map<String, String> actual = context.decisionFor("sample-table");
+        final Map<String, String> actual = FACADE.decisionFor("sample-table", state);
         MatcherAssert.assertThat(
             "The table is computed correctly",
             actual,
@@ -81,22 +79,20 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
-        final ComputationContext context = FACADE.contextExtendedWith(
-            new Locators(
-                Map.of(
-                    "data", new InMemoryStorage(
-                        Map.of("is-stored", false)
-                    ),
-                    "market", new InMemoryStorage(
-                        Map.of("shop", 3)
-                    ),
-                    "currentPlayer", new InMemoryStorage(
-                        Map.of("name", "Eugene")
-                    )
+        final Locators state = new Locators(
+            Map.of(
+                "data", new InMemoryStorage(
+                    Map.of("is-stored", false)
+                ),
+                "market", new InMemoryStorage(
+                    Map.of("shop", 3)
+                ),
+                "currentPlayer", new InMemoryStorage(
+                    Map.of("name", "Eugene")
                 )
             )
         );
-        final Map<String, String> actual = context.decisionFor("sample-table");
+        final Map<String, String> actual = FACADE.decisionFor("sample-table", state);
         MatcherAssert.assertThat(
             "The table is computed correctly",
             actual,

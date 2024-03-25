@@ -24,6 +24,7 @@
 
 package ru.ewc.decita;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -48,13 +49,20 @@ public final class DecitaFacade {
     }
 
     /**
-     * Creates a new {@link ComputationContext} with the provided {@link Locator}s.
+     * Decides on the outcome of the table with the given name.
      *
-     * @param locators A wrapper around a set of additional locators.
-     * @return A new {@link ComputationContext} with the provided {@link Locator}s.
+     * @param table The name of the table to decide on.
+     * @param request The request to decide on.
+     * @return The outcome of the decision.
      */
-    public ComputationContext contextExtendedWith(final Locators locators) {
-        return new ComputationContext(this.defaultLocators().mergedWith(locators));
+    public Map<String, String> decisionFor(final String table, final Locators request) {
+        final Locator locator = this.tables.get().locatorFor(table);
+        if (locator instanceof DecisionTable) {
+            return locator.outcome(
+                new ComputationContext(this.defaultLocators().mergedWith(request))
+            );
+        }
+        throw new DecitaException("The table with the name %s is not found.".formatted(table));
     }
 
     /**

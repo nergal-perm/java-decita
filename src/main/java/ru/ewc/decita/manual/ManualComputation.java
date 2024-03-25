@@ -152,7 +152,7 @@ public class ManualComputation {
      */
     public Map<String, String> decideFor(final String table) throws DecitaException {
         final DecitaFacade facade = new DecitaFacade(this::tablesAsLocators);
-        return facade.contextExtendedWith(this.currentState()).decisionFor(table);
+        return facade.decisionFor(table, this.currentState());
     }
 
     /**

@@ -28,6 +28,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,20 @@ final class EndToEndTest {
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
             )
         );
+    }
+
+    @Test
+    void shouldThrowIfSeveralRulesResolveToTrue() {
+        final Locators state = new Locators(
+            Map.of(
+                "data", new InMemoryStorage(
+                    Map.of("value", 1)
+                )
+            )
+        );
+        Assertions.assertThatThrownBy(() -> FACADE.decisionFor("multiple-rules", state))
+            .isInstanceOf(DecitaException.class)
+            .hasMessageContaining("Multiple rules are satisfied");
     }
 
     private static URI tablesDirectory() {

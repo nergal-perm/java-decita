@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import java.util.Map;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -77,9 +78,20 @@ public final class DecisionTable implements Locator {
         for (final Rule rule : this.rules) {
             rule.check(context);
         }
-        return StreamSupport.stream(this.rules.spliterator(), false)
-            .filter(Rule::isSatisfied)
+        if (this.satisfiedRules().count() > 1) {
+            throw new DecitaException("Multiple rules are satisfied");
+        }
+        return this.satisfiedRules()
             .findFirst().orElse(this.elserule)
             .outcome();
+    }
+
+    /**
+     * Converts the collection of {@link Rule}s into a {@link Stream}.
+     *
+     * @return A {@link Stream} of {@link Rule}s.
+     */
+    private Stream<Rule> satisfiedRules() {
+        return StreamSupport.stream(this.rules.spliterator(), false).filter(Rule::isSatisfied);
     }
 }

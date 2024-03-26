@@ -24,8 +24,6 @@
 
 package ru.ewc.decita;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -36,39 +34,29 @@ import java.util.Map;
  */
 public final class ComputationContext {
     /**
-     * The set of all the available {@link Locator}s.
+     * The instance of {@link Locators} that provides the required {@link Locator}s.
      */
-    private final Map&lt;String, Locator&gt; locators;
+    private final Locators collection;
 
     /**
      * Ctor.
      *
-     * @param locators A single dictionary of predefined (required) locators, or an array of such
-     *  dictionaries.
+     * @param locators The {@link Locators} instance to use.
      */
-    @SafeVarargs
-<span class="fc" id="L50">    public ComputationContext(final Map&lt;String, Locator&gt;... locators) {</span>
-<span class="fc" id="L51">        this.locators = Arrays.stream(locators).reduce(</span>
-            (result, locatorMap) -&gt; {
-<span class="fc" id="L53">                result.putAll(locatorMap);</span>
-<span class="fc" id="L54">                return result;</span>
-            }
-<span class="fc" id="L56">        ).orElse(Collections.emptyMap());</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L46">    public ComputationContext(final Locators locators) {</span>
+<span class="fc" id="L47">        this.collection = locators;</span>
+<span class="fc" id="L48">    }</span>
 
     /**
      * Finds a {@link Coordinate}'s value using internal set of {@link Locator}'s.
      *
      * @param locator String identifier of the {@link Locator} to use.
      * @param fragment String identifier of the value to find.
-     * @param context The {@link ComputationContext} to get the value.
      * @return The {@code String} value containing requested state.
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
-    public String valueFor(
-        final String locator, final String fragment, final ComputationContext context)
-        throws DecitaException {
-<span class="fc" id="L71">        return this.locatorFor(locator).fragmentBy(fragment, context);</span>
+    public String valueFor(final String locator, final String fragment) throws DecitaException {
+<span class="fc" id="L59">        return this.collection.locatorFor(locator).fragmentBy(fragment, this);</span>
     }
 
     /**
@@ -79,23 +67,7 @@ public final class ComputationContext {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map&lt;String, String&gt; decisionFor(final String name) throws DecitaException {
-<span class="fc" id="L82">        return this.locatorFor(name).outcome(this);</span>
-    }
-
-    /**
-     * Returns a concrete {@link Locator} if it's found in an instance storage.
-     *
-     * @param locator The String identifier of the required {@link Locator}.
-     * @return The instance of {@link Locator}.
-     * @throws DecitaException If the specified {@link Locator} is missing.
-     */
-    private Locator locatorFor(final String locator) throws DecitaException {
-<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (this.locators.containsKey(locator)) {</span>
-<span class="fc" id="L94">            return this.locators.get(locator);</span>
-        }
-<span class="nc" id="L96">        throw new DecitaException(</span>
-<span class="nc" id="L97">            String.format(&quot;Locator '%s' not found in computation context&quot;, locator)</span>
-        );
+<span class="nc" id="L70">        return this.collection.locatorFor(name).outcome(this);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

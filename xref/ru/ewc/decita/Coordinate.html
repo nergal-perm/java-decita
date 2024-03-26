@@ -87,7 +87,7 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> <a name="Coordinate" href="../../../ru/ewc/decita/Coordinate.html#Coordinate">Coordinate</a> locateIn(<strong class="jxr_keyword">final</strong> <a name="ComputationContext" href="../../../ru/ewc/decita/ComputationContext.html#ComputationContext">ComputationContext</a> context) <strong class="jxr_keyword">throws</strong> <a name="DecitaException" href="../../../ru/ewc/decita/DecitaException.html#DecitaException">DecitaException</a> {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">if</strong> (!<strong class="jxr_keyword">this</strong>.isComputed()) {
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              <strong class="jxr_keyword">final</strong> String located = context.valueFor(<strong class="jxr_keyword">this</strong>.locator, <strong class="jxr_keyword">this</strong>.fragment, context);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              <strong class="jxr_keyword">final</strong> String located = context.valueFor(<strong class="jxr_keyword">this</strong>.locator, <strong class="jxr_keyword">this</strong>.fragment);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>              <strong class="jxr_keyword">this</strong>.locator = Locator.CONSTANT_VALUES;
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>              <strong class="jxr_keyword">this</strong>.fragment = located;
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          }

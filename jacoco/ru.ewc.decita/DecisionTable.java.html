@@ -25,6 +25,7 @@
 package ru.ewc.decita;
 
 import java.util.Map;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -51,8 +52,8 @@ public final class DecisionTable implements Locator {
      * @param rules A collection of {@link Rule}s for this table.
      */
     public DecisionTable(final Iterable&lt;Rule&gt; rules) {
-<span class="fc" id="L54">        this(rules, new Rule().withOutcome(&quot;outcome&quot;, &quot;undefined&quot;));</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L55">        this(rules, new Rule().withOutcome(&quot;outcome&quot;, &quot;undefined&quot;));</span>
+<span class="fc" id="L56">    }</span>
 
     /**
      * Ctor.
@@ -61,26 +62,37 @@ public final class DecisionTable implements Locator {
      * @param elserule The special {@link Rule} that gets satisfied only if no other {@link Rule} is
      *  satisfied.
      */
-<span class="fc" id="L64">    public DecisionTable(final Iterable&lt;Rule&gt; rules, final Rule elserule) {</span>
-<span class="fc" id="L65">        this.rules = rules;</span>
-<span class="fc" id="L66">        this.elserule = elserule;</span>
-<span class="fc" id="L67">    }</span>
+<span class="fc" id="L65">    public DecisionTable(final Iterable&lt;Rule&gt; rules, final Rule elserule) {</span>
+<span class="fc" id="L66">        this.rules = rules;</span>
+<span class="fc" id="L67">        this.elserule = elserule;</span>
+<span class="fc" id="L68">    }</span>
 
     @Override
     public String fragmentBy(final String fragment, final ComputationContext context)
         throws DecitaException {
-<span class="fc" id="L72">        return this.outcome(context).getOrDefault(fragment, &quot;undefined&quot;);</span>
+<span class="fc" id="L73">        return this.outcome(context).getOrDefault(fragment, &quot;undefined&quot;);</span>
     }
 
     @Override
     public Map&lt;String, String&gt; outcome(final ComputationContext context) throws DecitaException {
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (final Rule rule : this.rules) {</span>
-<span class="fc" id="L78">            rule.check(context);</span>
-<span class="fc" id="L79">        }</span>
-<span class="fc" id="L80">        return StreamSupport.stream(this.rules.spliterator(), false)</span>
-<span class="fc" id="L81">            .filter(Rule::isSatisfied)</span>
-<span class="fc" id="L82">            .findFirst().orElse(this.elserule)</span>
-<span class="fc" id="L83">            .outcome();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        for (final Rule rule : this.rules) {</span>
+<span class="fc" id="L79">            rule.check(context);</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (this.satisfiedRules().count() &gt; 1) {</span>
+<span class="fc" id="L82">            throw new DecitaException(&quot;Multiple rules are satisfied&quot;);</span>
+        }
+<span class="fc" id="L84">        return this.satisfiedRules()</span>
+<span class="fc" id="L85">            .findFirst().orElse(this.elserule)</span>
+<span class="fc" id="L86">            .outcome();</span>
+    }
+
+    /**
+     * Converts the collection of {@link Rule}s into a {@link Stream}.
+     *
+     * @return A {@link Stream} of {@link Rule}s.
+     */
+    private Stream&lt;Rule&gt; satisfiedRules() {
+<span class="fc" id="L95">        return StreamSupport.stream(this.rules.spliterator(), false).filter(Rule::isSatisfied);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

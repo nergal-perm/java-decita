@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Locators.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java Decision Tables</a> &gt; <a href="index.source.html" class="el_package">ru.ewc.decita</a> &gt; <span class="el_source">Locators.java</span></div><h1>Locators.java</h1><pre class="source lang-java linenums">/*
+ * MIT License
+ *
+ * Copyright (c) 2023-2024 Eugene Terekhov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package ru.ewc.decita;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * I am the collection of {@link Locator}s used to populate the {@link ComputationContext}s. My main
+ * responsibility is to keep track of the {@link Locator}s, merge them together and provide the
+ * merged result.
+ *
+ * @since 0.3.1
+ */
+public final class Locators {
+    /**
+     * The constant {@link Locator} that can be used in the {@link ComputationContext}.
+     */
+<span class="fc" id="L42">    public static final Locators CONSTANT = new Locators(</span>
+<span class="fc" id="L43">        Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())</span>
+    );
+
+    /**
+     * The {@link Locator}s to be managed by this instance.
+     */
+    private final Map&lt;String, Locator&gt; collection;
+
+    /**
+     * Ctor.
+     *
+     * @param collection The {@link Locator}s to be managed by this instance.
+     */
+<span class="fc" id="L56">    public Locators(final Map&lt;String, Locator&gt; collection) {</span>
+<span class="fc" id="L57">        this.collection = collection;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Returns a concrete {@link Locator} if it's found in an instance storage.
+     *
+     * @param locator The String identifier of the required {@link Locator}.
+     * @return The instance of {@link Locator}.
+     * @throws DecitaException If the specified {@link Locator} is missing.
+     */
+    public Locator locatorFor(final String locator) throws DecitaException {
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (!this.collection.containsKey(locator)) {</span>
+<span class="nc" id="L69">            throw new DecitaException(</span>
+<span class="nc" id="L70">                String.format(&quot;Locator '%s' not found in computation context&quot;, locator)</span>
+            );
+        }
+<span class="fc" id="L73">        return this.collection.get(locator);</span>
+    }
+
+    public Locators mergedWith(final Locators additional) {
+<span class="fc" id="L77">        final Map&lt;String, Locator&gt; merged = new HashMap&lt;&gt;(this.collection);</span>
+<span class="fc" id="L78">        merged.putAll(additional.collection);</span>
+<span class="fc" id="L79">        return new Locators(merged);</span>
+    }
+
+    public Set&lt;String&gt; names() {
+<span class="nc" id="L83">        return this.collection.keySet();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/nergal-perm/java-decita/compare/v0.3.0...v0.3.1) (2024-03-26)
+
+
+### Features
+
+* ability to extend ComputationContext for each request ([70c93f6](https://github.com/nergal-perm/java-decita/commit/70c93f6e26f11ae065dc2e66897ece11d6d35a4f)), closes [#96](https://github.com/nergal-perm/java-decita/issues/96)
+* ability to use a fresh set of decision tables for each computation ([650c8b5](https://github.com/nergal-perm/java-decita/commit/650c8b5834e0d2045d483301f6ba7ca105936199)), closes [#96](https://github.com/nergal-perm/java-decita/issues/96)
+* complexity of decision making hidden behind the simple facade ([6d88f3c](https://github.com/nergal-perm/java-decita/commit/6d88f3c031e5deae6944ad456751332fae423cbd)), closes [#96](https://github.com/nergal-perm/java-decita/issues/96)
+* throwing exception if multiple rules are resolved to true ([4a77a28](https://github.com/nergal-perm/java-decita/commit/4a77a28bb418489862af4f3d20a8ef0a141103b5)), closes [#94](https://github.com/nergal-perm/java-decita/issues/94)
+
 ## [0.3.0](https://github.com/nergal-perm/java-decita/compare/v0.2.3...v0.3.0) (2024-03-09)
 
 

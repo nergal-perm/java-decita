@@ -139,7 +139,7 @@ public class ManualComputation {
     @SneakyThrows
     public Locators currentState() {
         try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {
-            return Locators.CONSTANT.mergedWith(stateFrom(stream));
+            return stateFrom(stream);
         }
     }
 

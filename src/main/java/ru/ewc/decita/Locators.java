@@ -44,6 +44,11 @@ public final class Locators {
     );
 
     /**
+     * The empty set of predefined {@link Locator}s that should be used to get data from a system.
+     */
+    public static final Locators EMPTY = new Locators(Map.of());
+
+    /**
      * The {@link Locator}s to be managed by this instance.
      */
     private final Map<String, Locator> collection;

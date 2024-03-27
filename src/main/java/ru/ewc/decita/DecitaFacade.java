@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  * I am the facade for the Decita library. My main responsibility is to provide a single entry point
  * for the library users.
  *
- * @since 0.3.0
+ * @since 0.3.1
  */
 public final class DecitaFacade {
     /**
@@ -40,12 +40,28 @@ public final class DecitaFacade {
     private final Supplier<Locators> tables;
 
     /**
+     * The basic set of {@link Locator} used to obtain data from the system.
+     */
+    private final Locators locators;
+
+    /**
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
     public DecitaFacade(final Supplier<Locators> tables) {
+        this(tables, Locators.EMPTY);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param tables The function that provides a fresh set of uncomputed decision tables.
+     * @param locators The basic set of {@link Locator} used to obtain data from the system.
+     */
+    public DecitaFacade(final Supplier<Locators> tables, final Locators locators) {
         this.tables = tables;
+        this.locators = locators;
     }
 
     /**
@@ -71,6 +87,8 @@ public final class DecitaFacade {
      * @return A set of base {@link Locator}s.
      */
     private Locators defaultLocators() {
-        return this.tables.get().mergedWith(Locators.CONSTANT);
+        return this.tables.get()
+            .mergedWith(this.locators)
+            .mergedWith(Locators.CONSTANT);
     }
 }

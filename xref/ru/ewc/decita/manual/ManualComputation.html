@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     @SneakyThrows
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">public</strong> <a name="Locators" href="../../../../ru/ewc/decita/Locators.html#Locators">Locators</a> currentState() {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         <strong class="jxr_keyword">try</strong> (InputStream stream = Files.newInputStream(<strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">this</strong>.state).toPath())) {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>             <strong class="jxr_keyword">return</strong> Locators.CONSTANT.mergedWith(stateFrom(stream));
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>             <strong class="jxr_keyword">return</strong> stateFrom(stream);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         }
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>     }
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 

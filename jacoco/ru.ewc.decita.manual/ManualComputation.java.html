@@ -139,7 +139,7 @@ public class ManualComputation {
 <span class="nc" id="L139">    @SneakyThrows</span>
     public Locators currentState() {
 <span class="fc" id="L141">        try (InputStream stream = Files.newInputStream(new File(this.state).toPath())) {</span>
-<span class="fc" id="L142">            return Locators.CONSTANT.mergedWith(stateFrom(stream));</span>
+<span class="fc" id="L142">            return stateFrom(stream);</span>
         }
     }
 

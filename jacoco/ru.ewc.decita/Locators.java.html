@@ -44,6 +44,11 @@ public final class Locators {
     );
 
     /**
+     * The empty set of predefined {@link Locator}s that should be used to get data from a system.
+     */
+<span class="fc" id="L49">    public static final Locators EMPTY = new Locators(Map.of());</span>
+
+    /**
      * The {@link Locator}s to be managed by this instance.
      */
     private final Map&lt;String, Locator&gt; collection;
@@ -53,9 +58,9 @@ public final class Locators {
      *
      * @param collection The {@link Locator}s to be managed by this instance.
      */
-<span class="fc" id="L56">    public Locators(final Map&lt;String, Locator&gt; collection) {</span>
-<span class="fc" id="L57">        this.collection = collection;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L61">    public Locators(final Map&lt;String, Locator&gt; collection) {</span>
+<span class="fc" id="L62">        this.collection = collection;</span>
+<span class="fc" id="L63">    }</span>
 
     /**
      * Returns a concrete {@link Locator} if it's found in an instance storage.
@@ -65,22 +70,22 @@ public final class Locators {
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public Locator locatorFor(final String locator) throws DecitaException {
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (!this.collection.containsKey(locator)) {</span>
-<span class="nc" id="L69">            throw new DecitaException(</span>
-<span class="nc" id="L70">                String.format(&quot;Locator '%s' not found in computation context&quot;, locator)</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (!this.collection.containsKey(locator)) {</span>
+<span class="nc" id="L74">            throw new DecitaException(</span>
+<span class="nc" id="L75">                String.format(&quot;Locator '%s' not found in computation context&quot;, locator)</span>
             );
         }
-<span class="fc" id="L73">        return this.collection.get(locator);</span>
+<span class="fc" id="L78">        return this.collection.get(locator);</span>
     }
 
     public Locators mergedWith(final Locators additional) {
-<span class="fc" id="L77">        final Map&lt;String, Locator&gt; merged = new HashMap&lt;&gt;(this.collection);</span>
-<span class="fc" id="L78">        merged.putAll(additional.collection);</span>
-<span class="fc" id="L79">        return new Locators(merged);</span>
+<span class="fc" id="L82">        final Map&lt;String, Locator&gt; merged = new HashMap&lt;&gt;(this.collection);</span>
+<span class="fc" id="L83">        merged.putAll(additional.collection);</span>
+<span class="fc" id="L84">        return new Locators(merged);</span>
     }
 
     public Set&lt;String&gt; names() {
-<span class="nc" id="L83">        return this.collection.keySet();</span>
+<span class="nc" id="L88">        return this.collection.keySet();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  * I am the facade for the Decita library. My main responsibility is to provide a single entry point
  * for the library users.
  *
- * @since 0.3.0
+ * @since 0.3.1
  */
 public final class DecitaFacade {
     /**
@@ -40,13 +40,29 @@ public final class DecitaFacade {
     private final Supplier&lt;Locators&gt; tables;
 
     /**
+     * The basic set of {@link Locator} used to obtain data from the system.
+     */
+    private final Locators locators;
+
+    /**
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
-<span class="fc" id="L47">    public DecitaFacade(final Supplier&lt;Locators&gt; tables) {</span>
-<span class="fc" id="L48">        this.tables = tables;</span>
-<span class="fc" id="L49">    }</span>
+    public DecitaFacade(final Supplier&lt;Locators&gt; tables) {
+<span class="fc" id="L53">        this(tables, Locators.EMPTY);</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Ctor.
+     *
+     * @param tables The function that provides a fresh set of uncomputed decision tables.
+     * @param locators The basic set of {@link Locator} used to obtain data from the system.
+     */
+<span class="fc" id="L62">    public DecitaFacade(final Supplier&lt;Locators&gt; tables, final Locators locators) {</span>
+<span class="fc" id="L63">        this.tables = tables;</span>
+<span class="fc" id="L64">        this.locators = locators;</span>
+<span class="fc" id="L65">    }</span>
 
     /**
      * Decides on the outcome of the table with the given name.
@@ -56,13 +72,13 @@ public final class DecitaFacade {
      * @return The outcome of the decision.
      */
     public Map&lt;String, String&gt; decisionFor(final String table, final Locators request) {
-<span class="fc" id="L59">        final Locator locator = this.tables.get().locatorFor(table);</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (locator instanceof DecisionTable) {</span>
-<span class="fc" id="L61">            return locator.outcome(</span>
-<span class="fc" id="L62">                new ComputationContext(this.defaultLocators().mergedWith(request))</span>
+<span class="fc" id="L75">        final Locator locator = this.tables.get().locatorFor(table);</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (locator instanceof DecisionTable) {</span>
+<span class="fc" id="L77">            return locator.outcome(</span>
+<span class="fc" id="L78">                new ComputationContext(this.defaultLocators().mergedWith(request))</span>
             );
         }
-<span class="nc" id="L65">        throw new DecitaException(&quot;The table with the name %s is not found.&quot;.formatted(table));</span>
+<span class="nc" id="L81">        throw new DecitaException(&quot;The table with the name %s is not found.&quot;.formatted(table));</span>
     }
 
     /**
@@ -71,7 +87,9 @@ public final class DecitaFacade {
      * @return A set of base {@link Locator}s.
      */
     private Locators defaultLocators() {
-<span class="fc" id="L74">        return this.tables.get().mergedWith(Locators.CONSTANT);</span>
+<span class="fc" id="L90">        return this.tables.get()</span>
+<span class="fc" id="L91">            .mergedWith(this.locators)</span>
+<span class="fc" id="L92">            .mergedWith(Locators.CONSTANT);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

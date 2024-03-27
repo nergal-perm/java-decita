@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/nergal-perm/java-decita/compare/v0.3.1...v0.3.2) (2024-03-27)
+
+
+### Bug Fixes
+
+* it is now possible to create facade with supplied Locators ([e819c2f](https://github.com/nergal-perm/java-decita/commit/e819c2fbf06af910ad0d978a859d60a114a3e28e))
+
 ### [0.3.1](https://github.com/nergal-perm/java-decita/compare/v0.3.0...v0.3.1) (2024-03-26)
 
 

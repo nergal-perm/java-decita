@@ -42,7 +42,7 @@
         <menu name="Info and Reports" inherit="top">
             <item name="Project Info" href="./project-info.html"/>
             <item name="Project Reports" href="./project-reports.html"/>
-            <item name="JavaDocs" href="./apidocs-0.3.1/"/>
+            <item name="JavaDocs" href="./apidocs-0.3.2/"/>
         </menu>
     </body>
 </project>

@@ -1,0 +1,21 @@
+request:
+  player: "O"
+  move: "A2"
+table:
+  currentPlayer: "O"
+cells:
+  A1: "X"
+  A2: "empty"
+  A3: "empty"
+  B1: "empty"
+  B2: "X"
+  B3: "empty"
+  C1: "empty"
+  C2: "empty"
+  C3: "X"
+---
+computed_move:
+  available: "false"
+game_state:
+  is_over: "true"
+  winner: "X"

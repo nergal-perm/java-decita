@@ -1,0 +1,12 @@
+request::move;A1;A2;A3;B1;B2;B3;C1;C2;C3
+cells::A1;empty;~;~;~;~;~;~;~;~
+cells::A2;~;empty;~;~;~;~;~;~;~
+cells::A3;~;~;empty;~;~;~;~;~;~
+cells::B1;~;~;~;empty;~;~;~;~;~
+cells::B2;~;~;~;~;empty;~;~;~;~
+cells::B3;~;~;~;~;~;empty;~;~;~
+cells::C1;~;~;~;~;~;~;empty;~;~
+cells::C2;~;~;~;~;~;~;~;empty;~
+cells::C3;~;~;~;~;~;~;~;~;empty
+---
+is_empty;true;true;true;true;true;true;true;true;true

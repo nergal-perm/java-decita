@@ -1,5 +1,0 @@
-player::is_current;true
-selected_cell::is_empty;true
-game_state::is_over;false
----
-available;true;false

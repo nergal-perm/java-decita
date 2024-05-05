@@ -56,7 +56,7 @@ import java.util.Map;
  *
  * @since 0.2
  */
-public final class InMemoryStorage implements Locator {
+public final class TestLocator implements Locator {
     /**
      * Simple key-value storage.
      */
@@ -67,7 +67,7 @@ public final class InMemoryStorage implements Locator {
      *
      * @param storage The pre-filled key-value storage to start with.
      */
-    public InMemoryStorage(final Map<String, Object> storage) {
+    public TestLocator(final Map<String, Object> storage) {
         this.storage = storage;
     }
 

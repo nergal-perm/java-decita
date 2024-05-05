@@ -80,13 +80,13 @@ final class EndToEndTest {
     void shouldComputeTheWholeTable() throws DecitaException {
         final Locators state = new Locators(
             Map.of(
-                "data", new InMemoryStorage(
+                "data", new TestLocator(
                     Map.of("is-stored", "true")
                 ),
-                "market", new InMemoryStorage(
+                "market", new TestLocator(
                     Map.of("shop", 2)
                 ),
-                "currentPlayer", new InMemoryStorage(
+                "currentPlayer", new TestLocator(
                     Map.of("name", "Eugene")
                 )
             )
@@ -106,13 +106,13 @@ final class EndToEndTest {
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
         final Locators state = new Locators(
             Map.of(
-                "data", new InMemoryStorage(
+                "data", new TestLocator(
                     Map.of("is-stored", false)
                 ),
-                "market", new InMemoryStorage(
+                "market", new TestLocator(
                     Map.of("shop", 3)
                 ),
-                "currentPlayer", new InMemoryStorage(
+                "currentPlayer", new TestLocator(
                     Map.of("name", "Eugene")
                 )
             )
@@ -132,7 +132,7 @@ final class EndToEndTest {
     void shouldThrowIfSeveralRulesResolveToTrue() {
         final Locators state = new Locators(
             Map.of(
-                "data", new InMemoryStorage(
+                "data", new TestLocator(
                     Map.of("value", 1)
                 )
             )

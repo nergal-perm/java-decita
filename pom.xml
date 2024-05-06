@@ -59,9 +59,13 @@
   </parent>
 
   <groupId>io.github.nergal-perm</groupId>
-  <artifactId>java-decita</artifactId>
-  <version>0.3.4-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <artifactId>java-decita-pom</artifactId>
+  <version>0.4.0-RC</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>java-decita</module>
+  </modules>
 
   <name>Java Decision Tables</name>
   <description>Decision Tables calculation engine</description>
@@ -137,30 +141,6 @@
     </site>
   </distributionManagement>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <version>2.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-matchers</artifactId>
-      <version>1.7.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>3.24.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -172,6 +152,12 @@
           <compilerArgs>
             <arg>-Xlint:-requires-automatic</arg>
           </compilerArgs>
+          <annotationProcessorPaths>
+            <annotationProcessorPath>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </annotationProcessorPath>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

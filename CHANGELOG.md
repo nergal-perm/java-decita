@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/nergal-perm/java-decita/compare/v0.3.3...v0.4.0) (2024-05-07)
+
+
+### Features
+
+* modularized the library ([9e730a3](https://github.com/nergal-perm/java-decita/commit/9e730a35388455eba78f77906ebdbb2fcff4c3a4)), closes [#101](https://github.com/nergal-perm/java-decita/issues/101)
+
 ### [0.3.3](https://github.com/nergal-perm/java-decita/compare/v0.3.2...v0.3.3) (2024-05-04)
 
 

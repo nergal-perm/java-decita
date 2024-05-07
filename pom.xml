@@ -36,7 +36,7 @@
 
   <groupId>io.github.nergal-perm</groupId>
   <artifactId>java-decita</artifactId>
-  <version>0.3.3</version>
+  <version>0.4.0</version>
   <packaging>jar</packaging>
 
   <name>Java Decision Tables</name>

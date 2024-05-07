@@ -141,7 +141,20 @@
     </site>
   </distributionManagement>
 
+  <properties>
+    <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
+  </properties>
+
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>${flatten-maven-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

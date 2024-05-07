@@ -22,13 +22,35 @@
  * SOFTWARE.
  */
 
+package ru.ewc.commands;
+
+import ru.ewc.decisions.api.ComputationContext;
+
 /**
- * Contains all the commands-related classes, i.e. everything that can change the computational
- * state.
+ * I am a simple Command, an intermediary class for testing purposes.
  *
  * @since 0.5.0
  */
-package ru.ewc.commands;
-// @todo #103 Implement a simple resolver that transforms an operation description into a command
+public class SimpleCommand {
+    /**
+     * The name of the table.
+     */
+    private final String name;
 
-// @todo #103 Implement a command description file reader that creates a command from a file
+    /**
+     * Ctor.
+     */
+    public SimpleCommand() {
+        this.name = "Tic-Tac-Toe";
+    }
+
+    /**
+     * I am a simple method that sets the value of the "name" fragment in the "table" Locator to
+     * "Tic-Tac-Toe".
+     *
+     * @param context The {@link ComputationContext} to work with.
+     */
+    public void perform(final ComputationContext context) {
+        context.setValueFor("table", "name", this.name);
+    }
+}

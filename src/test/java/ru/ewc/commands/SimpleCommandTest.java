@@ -22,13 +22,29 @@
  * SOFTWARE.
  */
 
+package ru.ewc.commands;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.api.ComputationContext;
+
 /**
- * Contains all the commands-related classes, i.e. everything that can change the computational
- * state.
+ * I am a test for the {@link SimpleCommand}.
  *
  * @since 0.5.0
  */
-package ru.ewc.commands;
-// @todo #103 Implement a simple resolver that transforms an operation description into a command
-
-// @todo #103 Implement a command description file reader that creates a command from a file
+final class SimpleCommandTest {
+    @Test
+    void shouldUpdateState() {
+        final SimpleCommand target = new SimpleCommand();
+        final ComputationContext context = TestObjects.defaultContext();
+        target.perform(context);
+        MatcherAssert.assertThat(
+            "Table name should be updated to 'Tic-Tac-Toe'",
+            context.valueFor("table", "name"),
+            Matchers.is("Tic-Tac-Toe")
+        );
+    }
+}

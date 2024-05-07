@@ -39,4 +39,9 @@ public final class ConstantLocator implements Locator {
     public String fragmentBy(final String fragment, final ComputationContext context) {
         return fragment;
     }
+
+    @Override
+    public void setFragmentValue(final String fragment, final String value) {
+        // no-op method, nothing changes
+    }
 }

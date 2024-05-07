@@ -73,4 +73,15 @@ public final class ComputationContext {
     public Map<String, String> decisionFor(final String name) throws DecitaException {
         return this.collection.locatorFor(name).outcome(this);
     }
+
+    /**
+     * Sets the value of the fragment in the context.
+     *
+     * @param locator The name of the locator to set the value of.
+     * @param fragment The name of the fragment to set the value of.
+     * @param value The value to set.
+     */
+    public void setValueFor(final String locator, final String fragment, final String value) {
+        this.collection.locatorFor(locator).setFragmentValue(fragment, value);
+    }
 }

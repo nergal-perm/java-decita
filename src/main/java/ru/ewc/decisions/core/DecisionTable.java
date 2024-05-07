@@ -77,6 +77,11 @@ public final class DecisionTable implements Locator {
     }
 
     @Override
+    public void setFragmentValue(final String fragment, final String value) {
+        // no-op method, nothing changes.
+    }
+
+    @Override
     public Map<String, String> outcome(final ComputationContext context) throws DecitaException {
         for (final Rule rule : this.rules) {
             rule.check(context);

@@ -53,6 +53,14 @@ public interface Locator {
     String fragmentBy(String fragment, ComputationContext context) throws DecitaException;
 
     /**
+     * Sets the value of the fragment in the context.
+     *
+     * @param fragment The name of the fragment to set the value of.
+     * @param value The value to set.
+     */
+    void setFragmentValue(String fragment, String value);
+
+    /**
      * Computes this table's outcomes by checking all of its {@link Rule}s.
      *
      * @param context The specific {@link ComputationContext} to make a decision in.

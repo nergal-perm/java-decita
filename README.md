@@ -10,7 +10,7 @@
 First of all, the site should be built with the following Maven command:
 
 ```shell
-mvn clean verify site -Pjacoco -pl java-decita && mvn site:site site:stage -Psite -pl java-decita
+mvn clean verify site -Pjacoco && mvn site:site site:stage -Psite
 ```
 
 Then I `rsync` the newly created `target/staging` folder to another copy of the repository (which has
@@ -28,13 +28,13 @@ Done!
 To create a new commit with a new version, run the following `npx` command (you need to have Node.js installed): 
 
 ```shell
-npx @dwmkerr/standard-version --package-files pom.xml --bumpFiles pom.xml ./java-decita/pom.xml
+npx @dwmkerr/standard-version --package-files pom.xml --bumpFiles pom.xml
 ```
 
 After that run the following Maven command to push the new version to the Maven Central:
 
 ```shell
-mvn clean deploy -Pjcabi-gpg -PnewSonatype -DskipTests -pl java-decita
+mvn clean deploy -Pjcabi-gpg -PnewSonatype
 ```
 
 The publishing process is still very manual, so it's needed to check out the 

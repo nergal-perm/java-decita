@@ -28,6 +28,3 @@
  * @since 0.2
  */
 package ru.ewc.decita.input;
-// @todo #23 File system Decision Tables should be prototypes for every computation.
-// It means that computing something once doesn't change the state of all the prototypes and the
-// next computation will use clean, uncomputed Coordinates.

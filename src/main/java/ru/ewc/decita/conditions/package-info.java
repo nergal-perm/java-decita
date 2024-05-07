@@ -27,7 +27,3 @@
  * conditions.
  */
 package ru.ewc.decita.conditions;
-
-// @todo #23 Implement something like ConditionsFactory and export only it and the Condition
-//  interface to the public API. This will allow to hide the implementation details and make the API
-//  more stable.

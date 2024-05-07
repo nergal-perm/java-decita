@@ -23,6 +23,6 @@
  */
 
 /**
- * Root package for all the engine's classes tests.
+ * Root package for all the engine's core classes.
  */
-package ru.ewc.decita;
+package ru.ewc.decita.core;

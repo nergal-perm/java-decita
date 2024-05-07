@@ -2,7 +2,7 @@
 <!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2023-2024 Eugene Terekhov
+  ~ Copyright (c) 2024 Eugene Terekhov
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -121,12 +121,10 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
-      <version>2.2</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
-      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -145,6 +143,15 @@
         <configuration>
           <source>17</source>
           <target>17</target>
+          <compilerArgs>
+            <arg>-Xlint:-requires-automatic</arg>
+          </compilerArgs>
+          <annotationProcessorPaths>
+            <annotationProcessorPath>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </annotationProcessorPath>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>
@@ -207,6 +214,10 @@
             <version>0.22.2</version>
             <configuration>
               <license>file:${basedir}/LICENSE</license>
+              <excludes>
+                <exclude>checkstyle:/src/main/java/module-info.java</exclude>
+                <exclude>duplicatefinder:.*</exclude>
+              </excludes>
             </configuration>
           </plugin>
         </plugins>

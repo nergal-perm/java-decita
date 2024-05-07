@@ -23,6 +23,7 @@
  */
 
 /**
- * Root package for all the engine's classes tests.
+ * Root package for all API classes, i.e. classes that are intended to be used by the clients of
+ * the engine.
  */
-package ru.ewc.decita;
+package ru.ewc.decita.api;

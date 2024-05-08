@@ -26,7 +26,6 @@ package ru.ewc.decisions.input;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.conditions.GreaterThanCondition;
@@ -93,7 +92,7 @@ public final class RawContent {
             final Rule rule = new Rule();
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
-                    fullConditionFrom(coordinateFrom(condition[0]), condition[column])
+                    fullConditionFrom(Coordinate.from(condition[0]), condition[column])
                 );
             }
             for (final String[] outcome : this.outcomes) {
@@ -133,30 +132,11 @@ public final class RawContent {
         } else if (operation == '!') {
             result = new NotCondition(fullConditionFrom(base, argument.substring(1)));
         } else if (operation == '>') {
-            result = new GreaterThanCondition(base, coordinateFrom(argument.substring(1)));
+            result = new GreaterThanCondition(base, Coordinate.from(argument.substring(1)));
         } else if (operation == '<') {
-            result = new LessThanCondition(base, coordinateFrom(argument.substring(1)));
+            result = new LessThanCondition(base, Coordinate.from(argument.substring(1)));
         } else {
-            result = new EqualsCondition(base, coordinateFrom(argument));
-        }
-        return result;
-    }
-
-    /**
-     * Creates a {@link Coordinate} based on a string representation. The provided string can
-     * reference to a constant value or to some {@link Locator}'s value. In the latter case, the
-     * string should be in the format "locator::fragment".
-     *
-     * @param coordinate String representation of a coordinate.
-     * @return A concrete {@link Coordinate} based on given string representation.
-     */
-    private static Coordinate coordinateFrom(final String coordinate) {
-        final Coordinate result;
-        if (coordinate.contains("::")) {
-            final String[] split = coordinate.split("::");
-            result = new Coordinate(split[0], split[1]);
-        } else {
-            result = new Coordinate(Locator.CONSTANT_VALUES, coordinate);
+            result = new EqualsCondition(base, Coordinate.from(argument));
         }
         return result;
     }

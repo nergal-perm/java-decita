@@ -39,6 +39,7 @@ import ru.ewc.decisions.conditions.Condition;
  * @since 0.1
  */
 @EqualsAndHashCode
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class Coordinate implements Comparable<Coordinate> {
     /**
      * A constant value {@link Coordinate} that points to the "true" value.
@@ -69,6 +70,25 @@ public final class Coordinate implements Comparable<Coordinate> {
     public Coordinate(final String locator, final String fragment) {
         this.locator = locator;
         this.fragment = fragment;
+    }
+
+    /**
+     * Creates a {@link Coordinate} based on a string representation. The provided string can
+     * reference to a constant value or to some {@link Locator}'s value. In the latter case, the
+     * string should be in the format "locator::fragment".
+     *
+     * @param coordinate String representation of a coordinate.
+     * @return A concrete {@link Coordinate} based on given string representation.
+     */
+    public static Coordinate from(final String coordinate) {
+        final Coordinate result;
+        if (coordinate.contains("::")) {
+            final String[] split = coordinate.split("::");
+            result = new Coordinate(split[0], split[1]);
+        } else {
+            result = new Coordinate(Locator.CONSTANT_VALUES, coordinate);
+        }
+        return result;
     }
 
     /**

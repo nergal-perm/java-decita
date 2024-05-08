@@ -103,9 +103,21 @@ public final class Coordinate implements Comparable<Coordinate> {
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
         if (!this.isComputed()) {
             final String located = context.valueFor(this.locator, this.fragment);
-            this.locator = Locator.CONSTANT_VALUES;
-            this.fragment = located;
+            this.turnToConstantWith(located);
         }
+        return this;
+    }
+
+    /**
+     * Updates the value of the {@link Coordinate} in the provided {@link ComputationContext}.
+     *
+     * @param context The {@link ComputationContext} to work with.
+     * @param value The value to set.
+     * @return The updated {@link Coordinate}.
+     */
+    public Coordinate updateIn(final ComputationContext context, final String value) {
+        context.setValueFor(this.locator, this.fragment, value);
+        this.turnToConstantWith(value);
         return this;
     }
 
@@ -140,4 +152,15 @@ public final class Coordinate implements Comparable<Coordinate> {
     private boolean isNumber() {
         return this.fragment.matches(Coordinate.NUMBER_REGEXP);
     }
+
+    /**
+     * Turns the {@link Coordinate} into a constant {@link Coordinate} with provided value.
+     *
+     * @param constant The constant value to set.
+     */
+    private void turnToConstantWith(final String constant) {
+        this.locator = Locator.CONSTANT_VALUES;
+        this.fragment = constant;
+    }
+
 }

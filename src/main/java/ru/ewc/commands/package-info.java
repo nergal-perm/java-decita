@@ -29,6 +29,4 @@
  * @since 0.5.0
  */
 package ru.ewc.commands;
-// @todo #103 Implement a simple resolver that transforms an operation description into a command
-
 // @todo #103 Implement a command description file reader that creates a command from a file

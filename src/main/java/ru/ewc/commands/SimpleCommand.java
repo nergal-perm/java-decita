@@ -25,6 +25,7 @@
 package ru.ewc.commands;
 
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.core.Coordinate;
 
 /**
  * I am a simple Command, an intermediary class for testing purposes.
@@ -33,15 +34,17 @@ import ru.ewc.decisions.api.ComputationContext;
  */
 public class SimpleCommand {
     /**
-     * The name of the table.
+     * The operation to perform.
      */
-    private final String name;
+    private final String operation;
 
     /**
      * Ctor.
+     *
+     * @param operation The {@code String} description of the operation to perform.
      */
-    public SimpleCommand() {
-        this.name = "Tic-Tac-Toe";
+    public SimpleCommand(final String operation) {
+        this.operation = operation;
     }
 
     /**
@@ -51,6 +54,8 @@ public class SimpleCommand {
      * @param context The {@link ComputationContext} to work with.
      */
     public void perform(final ComputationContext context) {
-        context.setValueFor("table", "name", this.name);
+        final Coordinate coordinate = Coordinate.from(this.operation.split("->")[0].trim());
+        final String value = this.operation.split("->")[1].trim();
+        coordinate.updateIn(context, value);
     }
 }

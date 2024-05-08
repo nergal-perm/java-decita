@@ -36,7 +36,7 @@ import ru.ewc.decisions.core.DecisionTable;
  *
  * @since 0.2
  */
-public interface ContentReader {
+public interface DecisionReader {
     /**
      * Reads all the source data and returns the {@link Locator}s collection, that can be used to
      * initialize the {@link ComputationContext}.

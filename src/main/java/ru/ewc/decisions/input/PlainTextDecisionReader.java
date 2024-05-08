@@ -38,13 +38,13 @@ import ru.ewc.decisions.api.Locators;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
- * I am the specific {@link ContentReader} that knows how to read CSV-files. My main responsibility
+ * I am the specific {@link DecisionReader} that knows how to read CSV-files. My main responsibility
  * is to perform file-system read operation and transform the file lines into a format suitable for
  * constructing {@link DecisionTable}s.
  *
  * @since 0.2
  */
-public final class PlainTextContentReader implements ContentReader {
+public final class PlainTextDecisionReader implements DecisionReader {
     /**
      * Path to a folder with source files.
      */
@@ -67,7 +67,7 @@ public final class PlainTextContentReader implements ContentReader {
      * @param extension The extension of source data files.
      * @param delimiter The symbol that separates CSV-record fields.
      */
-    public PlainTextContentReader(final URI dir, final String extension, final String delimiter) {
+    public PlainTextDecisionReader(final URI dir, final String extension, final String delimiter) {
         this.folder = dir;
         this.extension = extension;
         this.delimiter = delimiter;

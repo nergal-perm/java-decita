@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.DecitaFacade;
 import ru.ewc.decisions.api.Locators;
-import ru.ewc.decisions.input.PlainTextContentReader;
+import ru.ewc.decisions.input.PlainTextDecisionReader;
 
 /**
  * Full scenario tests.
@@ -52,7 +52,7 @@ final class EndToEndTest {
      * The facade for the Decita library.
      */
     public static final DecitaFacade FACADE = new DecitaFacade(
-        new PlainTextContentReader(tablesDirectory(), ".csv", ";")::allTables
+        new PlainTextDecisionReader(tablesDirectory(), ".csv", ";")::allTables
     );
 
     @Test

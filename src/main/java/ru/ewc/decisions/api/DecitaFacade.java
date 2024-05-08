@@ -28,7 +28,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.decisions.input.PlainTextContentReader;
+import ru.ewc.decisions.input.PlainTextDecisionReader;
 
 /**
  * I am the facade for the Decita library. My main responsibility is to provide a single entry point
@@ -65,7 +65,7 @@ public final class DecitaFacade {
      */
     @SuppressWarnings("unused")
     public DecitaFacade(final URI path, final String ext, final String delimiter) {
-        this(() -> new PlainTextContentReader(path, ext, delimiter).allTables(), Locators.EMPTY);
+        this(() -> new PlainTextDecisionReader(path, ext, delimiter).allTables(), Locators.EMPTY);
     }
 
     /**

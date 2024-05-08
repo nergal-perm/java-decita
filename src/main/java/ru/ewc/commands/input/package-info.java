@@ -23,9 +23,8 @@
  */
 
 /**
- * Contains all the commands-related classes, i.e. everything that can change the computational
- * state.
+ * Contains the classes that are responsible for the commands creation based on external input.
  *
  * @since 0.5.0
  */
-package ru.ewc.commands;
+package ru.ewc.commands.input;

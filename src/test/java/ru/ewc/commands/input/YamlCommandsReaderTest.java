@@ -22,10 +22,39 @@
  * SOFTWARE.
  */
 
+package ru.ewc.commands.input;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.api.ComputationContext;
+
 /**
- * Contains all the commands-related classes, i.e. everything that can change the computational
- * state.
+ * Tests for {@link YamlCommandsReader}.
  *
  * @since 0.5.0
  */
-package ru.ewc.commands;
+final class YamlCommandsReaderTest {
+    @Test
+    void shouldRead() {
+        final ComputationContext context = TestObjects.defaultContext();
+        final YamlCommandsReader reader = new YamlCommandsReader(commandsDirectory());
+        reader.read().forEach(command -> command.perform(context));
+        MatcherAssert.assertThat(
+            "Table name should be set according to description",
+            context.valueFor("table", "name"),
+            Matchers.equalTo("Machi-Koro")
+        );
+    }
+
+    private static URI commandsDirectory() {
+        return Path.of(
+            Paths.get("").toAbsolutePath().toString(),
+            "src/test/resources/commands"
+        ).toUri();
+    }
+}

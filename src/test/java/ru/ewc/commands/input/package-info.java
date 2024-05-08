@@ -23,9 +23,8 @@
  */
 
 /**
- * Contains all the commands-related classes, i.e. everything that can change the computational
- * state.
+ * The package contains classes that are responsible for reading the input data.
  *
  * @since 0.5.0
  */
-package ru.ewc.commands;
+package ru.ewc.commands.input;

@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.commands.SimpleCommand;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
 
@@ -41,9 +42,9 @@ import ru.ewc.decisions.api.ComputationContext;
 final class YamlCommandsReaderTest {
     @Test
     void shouldRead() {
-        final ComputationContext context = TestObjects.defaultContext();
         final YamlCommandsReader reader = new YamlCommandsReader(commandsDirectory());
-        reader.read().forEach(command -> command.perform(context));
+        final SimpleCommand command = reader.read().get(0);
+        final ComputationContext context = command.perform(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             context.valueFor("table", "name"),

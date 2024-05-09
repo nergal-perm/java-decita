@@ -24,7 +24,6 @@
 
 package ru.ewc.decisions;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
@@ -123,10 +122,8 @@ public final class TestObjects {
         return new Locators(
             Map.of(
                 "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
-                Locator.CONSTANT_VALUES, new ConstantLocator(),
-                "table", new InMemoryLocator(new HashMap<>(Map.of("id", "1")))
+                Locator.CONSTANT_VALUES, new ConstantLocator()
             )
         );
     }
-
 }

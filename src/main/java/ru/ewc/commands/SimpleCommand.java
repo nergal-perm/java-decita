@@ -52,10 +52,13 @@ public class SimpleCommand {
      * "Tic-Tac-Toe".
      *
      * @param context The {@link ComputationContext} to work with.
+     * @return An instance of updated {@link ComputationContext}.
      */
-    public void perform(final ComputationContext context) {
+    public ComputationContext perform(final ComputationContext context) {
+        final String locator = this.operation.split("::")[0].trim();
+        final ComputationContext target = context.extendWithEmpty(locator);
         final Coordinate coordinate = Coordinate.from(this.operation.split("->")[0].trim());
         final String value = this.operation.split("->")[1].trim();
-        coordinate.updateIn(context, value);
+        return coordinate.updateIn(target, value);
     }
 }

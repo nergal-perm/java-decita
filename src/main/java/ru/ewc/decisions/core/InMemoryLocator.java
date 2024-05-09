@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions;
+package ru.ewc.decisions.core;
 
+import java.util.HashMap;
 import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.Locator;
@@ -34,6 +35,7 @@ import ru.ewc.decisions.api.Locator;
  *
  * @since 0.2
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class InMemoryLocator implements Locator {
     /**
      * Simple key-value storage.
@@ -47,6 +49,15 @@ public final class InMemoryLocator implements Locator {
      */
     public InMemoryLocator(final Map<String, Object> storage) {
         this.storage = storage;
+    }
+
+    /**
+     * I am a simple method that creates an empty {@link InMemoryLocator}.
+     *
+     * @return An instance of {@link InMemoryLocator} with empty storage.
+     */
+    public static InMemoryLocator empty() {
+        return new InMemoryLocator(new HashMap<>());
     }
 
     @Override

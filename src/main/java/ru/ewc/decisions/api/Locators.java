@@ -83,4 +83,8 @@ public final class Locators {
         merged.putAll(additional.collection);
         return new Locators(merged);
     }
+
+    public boolean hasLocator(final String locator) {
+        return this.collection.containsKey(locator);
+    }
 }

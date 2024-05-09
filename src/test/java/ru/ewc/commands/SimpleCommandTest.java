@@ -38,23 +38,24 @@ import ru.ewc.decisions.api.ComputationContext;
 final class SimpleCommandTest {
     @Test
     void shouldCreateState() {
-        final ComputationContext context = TestObjects.defaultContext();
-        new SimpleCommand("table::name -> Tic-Tac-Toe").perform(context);
+        final ComputationContext actual = new SimpleCommand("table::name -> Tic-Tac-Toe")
+            .perform(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             "Table name should be updated to 'Tic-Tac-Toe'",
-            context.valueFor("table", "name"),
+            actual.valueFor("table", "name"),
             Matchers.is("Tic-Tac-Toe")
         );
     }
 
     @Test
     void shouldUpdateState() {
-        final ComputationContext context = TestObjects.defaultContext();
-        new SimpleCommand("table::name -> Tic-Tac-Toe").perform(context);
-        new SimpleCommand("table::name -> Machi-Koro").perform(context);
+        ComputationContext actual;
+        final ComputationContext initial = TestObjects.defaultContext();
+        actual = new SimpleCommand("table::name -> Tic-Tac-Toe").perform(initial);
+        actual = new SimpleCommand("table::name -> Machi-Koro").perform(actual);
         MatcherAssert.assertThat(
             "Table name should be updated to 'Machi-Koro'",
-            context.valueFor("table", "name"),
+            actual.valueFor("table", "name"),
             Matchers.is("Machi-Koro")
         );
     }

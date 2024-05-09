@@ -115,10 +115,10 @@ public final class Coordinate implements Comparable<Coordinate> {
      * @param value The value to set.
      * @return The updated {@link Coordinate}.
      */
-    public Coordinate updateIn(final ComputationContext context, final String value) {
+    public ComputationContext updateIn(final ComputationContext context, final String value) {
         context.setValueFor(this.locator, this.fragment, value);
         this.turnToConstantWith(value);
-        return this;
+        return context;
     }
 
     /**
@@ -162,5 +162,4 @@ public final class Coordinate implements Comparable<Coordinate> {
         this.locator = Locator.CONSTANT_VALUES;
         this.fragment = constant;
     }
-
 }

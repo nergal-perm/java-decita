@@ -1,1 +1,2 @@
-operation: "table::name -> Machi-Koro"
+operations:
+  - "table::name -> Machi-Koro"

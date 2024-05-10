@@ -24,8 +24,8 @@
 
 package ru.ewc.commands;
 
+import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.core.Coordinate;
 
 /**
  * I am a simple Command, an intermediary class for testing purposes.
@@ -36,15 +36,15 @@ public class SimpleCommand {
     /**
      * The operation to perform.
      */
-    private final String operation;
+    private final List<String> operations;
 
     /**
      * Ctor.
      *
-     * @param operation The {@code String} description of the operation to perform.
+     * @param operations The {@code String} description of the operations to perform.
      */
-    public SimpleCommand(final String operation) {
-        this.operation = operation;
+    public SimpleCommand(final List<String> operations) {
+        this.operations = operations;
     }
 
     /**
@@ -55,10 +55,17 @@ public class SimpleCommand {
      * @return An instance of updated {@link ComputationContext}.
      */
     public ComputationContext perform(final ComputationContext context) {
-        final String locator = this.operation.split("::")[0].trim();
-        final ComputationContext target = context.extendWithEmpty(locator);
-        final Coordinate coordinate = Coordinate.from(this.operation.split("->")[0].trim());
-        final String value = this.operation.split("->")[1].trim();
-        return coordinate.updateIn(target, value);
+        ComputationContext target = context;
+        for (final String description : this.operations) {
+            final String locator = description.split("::")[0].trim();
+            final String fragment = description
+                .split("::")[1].trim()
+                .split("->")[0].trim();
+            final String value = description.split("->")[1].trim();
+            target = target
+                .extendWithEmpty(locator)
+                .setValueFor(locator, fragment, value);
+        }
+        return target;
     }
 }

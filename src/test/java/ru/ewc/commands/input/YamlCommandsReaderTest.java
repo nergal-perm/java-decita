@@ -57,8 +57,24 @@ final class YamlCommandsReaderTest {
         final ComputationContext context = command.perform(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             "Table name should be set according to description",
-            context.valueFor("table", "name"),
+            tableName(context),
             Matchers.equalTo("Machi-Koro")
+        );
+    }
+
+    @Test
+    void shouldPerformSeveralOperations() {
+        final SimpleCommand command = this.command("see-the-flop");
+        final ComputationContext context = command.perform(TestObjects.defaultContext());
+        MatcherAssert.assertThat(
+            "Table name should be set according to description",
+            tableName(context),
+            Matchers.equalTo("Texas Hold'em")
+        );
+        MatcherAssert.assertThat(
+            "Table cards should be set",
+            context.valueFor("table", "flop"),
+            Matchers.equalTo("2c 3d 4h")
         );
     }
 
@@ -69,7 +85,7 @@ final class YamlCommandsReaderTest {
         context = this.command("set-max-players").perform(context);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
-            context.valueFor("table", "name"),
+            tableName(context),
             Matchers.equalTo("Machi-Koro")
         );
         MatcherAssert.assertThat(
@@ -77,6 +93,10 @@ final class YamlCommandsReaderTest {
             context.valueFor("table", "max-players"),
             Matchers.equalTo("5")
         );
+    }
+
+    private static String tableName(final ComputationContext context) {
+        return context.valueFor("table", "name");
     }
 
     private SimpleCommand command(final String command) {

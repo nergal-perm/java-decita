@@ -24,6 +24,7 @@
 
 package ru.ewc.commands;
 
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,7 @@ import ru.ewc.decisions.api.ComputationContext;
 final class SimpleCommandTest {
     @Test
     void shouldCreateState() {
-        final ComputationContext actual = new SimpleCommand("table::name -> Tic-Tac-Toe")
-            .perform(TestObjects.defaultContext());
+        final ComputationContext actual = ticTacToeTable().perform(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             "Table name should be updated to 'Tic-Tac-Toe'",
             actual.valueFor("table", "name"),
@@ -51,8 +51,8 @@ final class SimpleCommandTest {
     void shouldUpdateState() {
         ComputationContext actual;
         final ComputationContext initial = TestObjects.defaultContext();
-        actual = new SimpleCommand("table::name -> Tic-Tac-Toe").perform(initial);
-        actual = new SimpleCommand("table::name -> Machi-Koro").perform(actual);
+        actual = ticTacToeTable().perform(initial);
+        actual = machiKoroTable().perform(actual);
         MatcherAssert.assertThat(
             "Table name should be updated to 'Machi-Koro'",
             actual.valueFor("table", "name"),
@@ -60,4 +60,11 @@ final class SimpleCommandTest {
         );
     }
 
+    private static SimpleCommand machiKoroTable() {
+        return new SimpleCommand(List.of("table::name -> Machi-Koro"));
+    }
+
+    private static SimpleCommand ticTacToeTable() {
+        return new SimpleCommand(List.of("table::name -> Tic-Tac-Toe"));
+    }
 }

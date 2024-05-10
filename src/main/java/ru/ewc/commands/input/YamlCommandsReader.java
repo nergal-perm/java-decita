@@ -126,7 +126,7 @@ public class YamlCommandsReader {
      */
     private SimpleCommand readContentFromFile(final String file) throws IOException {
         final Path path = Path.of(file);
-        final Map<String, String> map = this.yaml.loadAs(Files.newInputStream(path), Map.class);
-        return new SimpleCommand(map.get("operation"));
+        final Map<String, List<String>> desc = this.yaml.load(Files.newInputStream(path));
+        return new SimpleCommand(desc.get("operations"));
     }
 }

@@ -78,12 +78,14 @@ public final class ComputationContext {
     /**
      * Sets the value of the fragment in the context.
      *
-     * @param locator The name of the locator to set the value of.
-     * @param fragment The name of the fragment to set the value of.
+     * @param loc The name of the locator to set the value of.
+     * @param frag The name of the fragment to set the value of.
      * @param value The value to set.
+     * @return The updated {@link ComputationContext} instance.
      */
-    public void setValueFor(final String locator, final String fragment, final String value) {
-        this.collection.locatorFor(locator).setFragmentValue(fragment, value);
+    public ComputationContext setValueFor(final String loc, final String frag, final String value) {
+        this.collection.locatorFor(loc).setFragmentValue(frag, value);
+        return this;
     }
 
     /**
@@ -93,11 +95,16 @@ public final class ComputationContext {
      * @return The new {@link ComputationContext} instance.
      */
     public ComputationContext extendWithEmpty(final String locator) {
-        ComputationContext result = this;
+        ComputationContext result = this.copy();
         if (!this.collection.hasLocator(locator)) {
             final Locators empty = new Locators(Map.of(locator, InMemoryLocator.empty()));
             result = new ComputationContext(this.collection.mergedWith(empty));
         }
         return result;
     }
+
+    private ComputationContext copy() {
+        return new ComputationContext(this.collection);
+    }
+
 }

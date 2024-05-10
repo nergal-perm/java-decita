@@ -109,19 +109,6 @@ public final class Coordinate implements Comparable<Coordinate> {
     }
 
     /**
-     * Updates the value of the {@link Coordinate} in the provided {@link ComputationContext}.
-     *
-     * @param context The {@link ComputationContext} to work with.
-     * @param value The value to set.
-     * @return The updated {@link Coordinate}.
-     */
-    public ComputationContext updateIn(final ComputationContext context, final String value) {
-        context.setValueFor(this.locator, this.fragment, value);
-        this.turnToConstantWith(value);
-        return context;
-    }
-
-    /**
      * Tests if {@link Coordinate} is already computed, i.e. its value is constant.
      *
      * @return True, if {@link Coordinate} points to a constant value.

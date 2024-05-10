@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.ewc.commands.SimpleCommand;
 import ru.ewc.decisions.TestObjects;
@@ -40,16 +41,46 @@ import ru.ewc.decisions.api.ComputationContext;
  * @since 0.5.0
  */
 final class YamlCommandsReaderTest {
+    /**
+     * The reader that reads all the commands descriptions.
+     */
+    private YamlCommandsReader reader;
+
+    @BeforeEach
+    void setUp() {
+        this.reader = new YamlCommandsReader(commandsDirectory());
+    }
+
     @Test
     void shouldRead() {
-        final YamlCommandsReader reader = new YamlCommandsReader(commandsDirectory());
-        final SimpleCommand command = reader.read().get(0);
+        final SimpleCommand command = this.command("set-table-name");
         final ComputationContext context = command.perform(TestObjects.defaultContext());
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             context.valueFor("table", "name"),
             Matchers.equalTo("Machi-Koro")
         );
+    }
+
+    @Test
+    void shouldReadSeveralCommands() {
+        ComputationContext context = this.command("set-table-name")
+            .perform(TestObjects.defaultContext());
+        context = this.command("set-max-players").perform(context);
+        MatcherAssert.assertThat(
+            "Table name should be set according to description",
+            context.valueFor("table", "name"),
+            Matchers.equalTo("Machi-Koro")
+        );
+        MatcherAssert.assertThat(
+            "Max players should be set according to description",
+            context.valueFor("table", "max-players"),
+            Matchers.equalTo("5")
+        );
+    }
+
+    private SimpleCommand command(final String command) {
+        return this.reader.commands().get(command);
     }
 
     private static URI commandsDirectory() {

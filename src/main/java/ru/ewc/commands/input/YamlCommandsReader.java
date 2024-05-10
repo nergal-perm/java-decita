@@ -26,11 +26,12 @@ package ru.ewc.commands.input;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -66,14 +67,14 @@ public class YamlCommandsReader {
     /**
      * I read the commands from the files in the folder.
      *
-     * @return The list of commands.
+     * @return The Map of commands with filenames as keys and Command objects as values.
      */
-    public List<SimpleCommand> read() {
-        List<SimpleCommand> commands;
+    public Map<String, SimpleCommand> commands() {
+        Map<String, SimpleCommand> commands;
         try (Stream<Path> files = Files.walk(Paths.get(this.folder))) {
             commands = this.contentsOf(files);
         } catch (final IOException exception) {
-            commands = Collections.emptyList();
+            commands = Collections.emptyMap();
         }
         return commands;
     }
@@ -84,10 +85,10 @@ public class YamlCommandsReader {
      * It then reads the content of each file and creates a SimpleCommand object from it.
      *
      * @param paths A Stream of Paths representing the files to be read.
-     * @return A List of SimpleCommand objects created from the contents of the files.
+     * @return A Map of SimpleCommand objects created from the content of the files.
      * @throws IOException If an I/O error occurs reading from the file.
      */
-    private List<SimpleCommand> contentsOf(final Stream<Path> paths) throws IOException {
+    private Map<String, SimpleCommand> contentsOf(final Stream<Path> paths) throws IOException {
         final List<String> files = paths
             .filter(Files::isRegularFile)
             .filter(
@@ -97,11 +98,19 @@ public class YamlCommandsReader {
                 })
             .map(Path::toString)
             .toList();
-        final List<SimpleCommand> commands = new ArrayList<>(files.size());
+        final Map<String, SimpleCommand> commands = new HashMap<>(files.size());
         for (final String file : files) {
-            commands.add(this.readContentFromFile(file));
+            commands.put(commandNameFrom(file), this.readContentFromFile(file));
         }
         return commands;
+    }
+
+    private static String commandNameFrom(final String file) {
+        final String separator = FileSystems.getDefault().getSeparator();
+        return file
+            .substring(file.lastIndexOf(separator) + 1)
+            .replaceAll(".yml", "")
+            .replaceAll(".yaml", "");
     }
 
     /**

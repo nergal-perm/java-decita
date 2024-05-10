@@ -108,6 +108,16 @@ public final class Coordinate implements Comparable<Coordinate> {
         return this;
     }
 
+    public String valueIn(final ComputationContext context) throws DecitaException {
+        return context.valueFor(this.locator, this.fragment);
+    }
+
+    public ComputationContext setValueInContext(final String val, final ComputationContext target) {
+        return target
+            .extendWithEmpty(this.locator)
+            .setValueFor(this.locator, this.fragment, val);
+    }
+
     /**
      * Tests if {@link Coordinate} is already computed, i.e. its value is constant.
      *

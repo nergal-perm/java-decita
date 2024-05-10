@@ -1,0 +1,4 @@
+operations:
+  - "cells::${request::move} -> ${request::player}"
+  - "table::currentPlayer -> ${table::nextPlayer}"
+  - "table::nextPlayer -> ${request::player}"

@@ -26,6 +26,7 @@ package ru.ewc.commands;
 
 import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.core.Coordinate;
 
 /**
  * I am a simple Command, an intermediary class for testing purposes.
@@ -57,15 +58,44 @@ public class SimpleCommand {
     public ComputationContext perform(final ComputationContext context) {
         ComputationContext target = context;
         for (final String description : this.operations) {
-            final String locator = description.split("::")[0].trim();
-            final String fragment = description
-                .split("::")[1].trim()
-                .split("->")[0].trim();
-            final String value = description.split("->")[1].trim();
-            target = target
-                .extendWithEmpty(locator)
-                .setValueFor(locator, fragment, value);
+            final Coordinate coordinate = SimpleCommand.resolveLeft(description, context);
+            final String value = SimpleCommand.resolveRight(description, context);
+            target = coordinate.setValueInContext(value, target);
         }
         return target;
+    }
+
+    private static Coordinate resolveLeft(final String desc, final ComputationContext context) {
+        return Coordinate.from(
+            SimpleCommand.resolve(
+                context,
+                desc.split("->")[0].trim()
+            )
+        );
+    }
+
+    private static String resolveRight(final String desc, final ComputationContext context) {
+        return Coordinate.from(
+            SimpleCommand.resolve(
+                context,
+                desc.split("->")[1].trim()
+            )
+        ).valueIn(context);
+    }
+
+    private static String resolve(final ComputationContext context, final String description) {
+        String result = description;
+        while (result.contains("${")) {
+            final String coord = SimpleCommand.extractInnerMostCoordinate(result);
+            final Coordinate coordinate = Coordinate.from(coord);
+            result = result.replace("${%s}".formatted(coord), coordinate.valueIn(context));
+        }
+        return result;
+    }
+
+    private static String extractInnerMostCoordinate(final String description) {
+        final int start = description.lastIndexOf("${");
+        final int end = description.indexOf('}');
+        return description.substring(start + 2, end);
     }
 }

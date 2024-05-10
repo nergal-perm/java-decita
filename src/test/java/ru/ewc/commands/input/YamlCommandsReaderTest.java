@@ -73,7 +73,7 @@ final class YamlCommandsReaderTest {
         );
         MatcherAssert.assertThat(
             "Table cards should be set",
-            context.valueFor("table", "flop"),
+            tableValueFor("flop", context),
             Matchers.equalTo("2c 3d 4h")
         );
     }
@@ -88,15 +88,47 @@ final class YamlCommandsReaderTest {
             tableName(context),
             Matchers.equalTo("Machi-Koro")
         );
+        final String fragment = "max-players";
         MatcherAssert.assertThat(
             "Max players should be set according to description",
-            context.valueFor("table", "max-players"),
+            tableValueFor(fragment, context),
             Matchers.equalTo("5")
         );
     }
 
+    @Test
+    void shouldMakeTictactoeMove() {
+        final ComputationContext initial = ticTacToeInitialContext();
+        final ComputationContext context = this.command("make-a-move").perform(initial);
+        MatcherAssert.assertThat(
+            "Cell A1 should contain X",
+            context.valueFor("cells", "A1"),
+            Matchers.equalTo("X")
+        );
+        MatcherAssert.assertThat(
+            "Current player should be O",
+            tableValueFor("currentPlayer", context),
+            Matchers.equalTo("O")
+        );
+        MatcherAssert.assertThat(
+            "Next player should be X",
+            tableValueFor("nextPlayer", context),
+            Matchers.equalTo("X")
+        );
+    }
+
+    private static ComputationContext ticTacToeInitialContext() {
+        return TestObjects.defaultContext()
+            .extendWithEmpty("table")
+            .extendWithEmpty("request")
+            .setValueFor("table", "nextPlayer", "O")
+            .setValueFor("table", "currentPlayer", "X")
+            .setValueFor("request", "move", "A1")
+            .setValueFor("request", "player", "X");
+    }
+
     private static String tableName(final ComputationContext context) {
-        return context.valueFor("table", "name");
+        return tableValueFor("name", context);
     }
 
     private SimpleCommand command(final String command) {
@@ -109,4 +141,9 @@ final class YamlCommandsReaderTest {
             "src/test/resources/commands"
         ).toUri();
     }
+
+    private static String tableValueFor(final String fragment, final ComputationContext context) {
+        return context.valueFor("table", fragment);
+    }
+
 }

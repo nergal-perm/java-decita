@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/nergal-perm/java-decita/compare/v0.4.0...v0.5.0) (2024-05-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Added new method to published interface for Locator
+
+### Features
+
+* **commands:** Implemented a simple Command Registry ([6753e05](https://github.com/nergal-perm/java-decita/commit/6753e0539a37313eac6a9d99d1d4775f51abce38)), closes [#107](https://github.com/nergal-perm/java-decita/issues/107)
+* **commands:** Implemented a simple description resolver ([8121f34](https://github.com/nergal-perm/java-decita/commit/8121f3420384441d8ea4f3c8aa1f0301a6569cc7)), closes [#109](https://github.com/nergal-perm/java-decita/issues/109)
+* **commands:** implemented a simple hard-coded command ([fa7ec52](https://github.com/nergal-perm/java-decita/commit/fa7ec52b698b919995db48e36f184588f78becd1)), closes [#104](https://github.com/nergal-perm/java-decita/issues/104)
+* **commands:** Implemented a simple operation resolver ([369c734](https://github.com/nergal-perm/java-decita/commit/369c734b3ae124adf63215610e12ed37b07980e6)), closes [#105](https://github.com/nergal-perm/java-decita/issues/105)
+* **commands:** Implemented the multiple operations in one command ([14878d6](https://github.com/nergal-perm/java-decita/commit/14878d67feb9385d4a42ae3d6a310a47bb9a4061)), closes [#108](https://github.com/nergal-perm/java-decita/issues/108)
+* **commands:** Made context extensible with new empty Locator ([c8b3b5d](https://github.com/nergal-perm/java-decita/commit/c8b3b5d2b43cf1b31a47c579a3d7e7bef6cabb04)), closes [#110](https://github.com/nergal-perm/java-decita/issues/110)
+* **commands:** Naive yaml command description reader ([894c17a](https://github.com/nergal-perm/java-decita/commit/894c17aa14fe652fee30526ef52b60e2063b1522)), closes [#106](https://github.com/nergal-perm/java-decita/issues/106)
+* extended Locator with ability to set values ([05d36c2](https://github.com/nergal-perm/java-decita/commit/05d36c28820f1084129a95008f79f9647e702038)), closes [#103](https://github.com/nergal-perm/java-decita/issues/103)
+
 ## [0.4.0](https://github.com/nergal-perm/java-decita/compare/v0.3.3...v0.4.0) (2024-05-07)
 
 

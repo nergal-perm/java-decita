@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/nergal-perm/java-decita/compare/v0.5.0...v0.5.1) (2024-05-11)
+
+
+### Bug Fixes
+
+* **commands:** exported the commands package ([0fd0ca6](https://github.com/nergal-perm/java-decita/commit/0fd0ca6785df6b3d4a908f71ff918c99da9b5d96))
+
 ## [0.5.0](https://github.com/nergal-perm/java-decita/compare/v0.4.0...v0.5.0) (2024-05-10)
 
 

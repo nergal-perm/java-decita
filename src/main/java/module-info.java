@@ -3,4 +3,5 @@ module java.decita.api {
     requires org.hamcrest;
     requires org.yaml.snakeyaml;
     exports ru.ewc.decisions.api;
+    exports ru.ewc.commands;
 }

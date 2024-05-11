@@ -106,4 +106,8 @@ public final class DecitaFacade {
             .mergedWith(this.locators)
             .mergedWith(Locators.CONSTANT);
     }
+
+    public ComputationContext merged(Locators state) {
+        return new ComputationContext(this.defaultLocators().mergedWith(state));
+    }
 }

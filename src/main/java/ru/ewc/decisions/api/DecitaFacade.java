@@ -96,6 +96,10 @@ public final class DecitaFacade {
         throw new DecitaException("The table with the name %s is not found.".formatted(table));
     }
 
+    public ComputationContext merged(final Locators state) {
+        return new ComputationContext(this.defaultLocators().mergedWith(state));
+    }
+
     /**
      * Returns a new {@link ComputationContext} with the default {@link Locator}s.
      *
@@ -105,9 +109,5 @@ public final class DecitaFacade {
         return this.tables.get()
             .mergedWith(this.locators)
             .mergedWith(Locators.CONSTANT);
-    }
-
-    public ComputationContext merged(Locators state) {
-        return new ComputationContext(this.defaultLocators().mergedWith(state));
     }
 }

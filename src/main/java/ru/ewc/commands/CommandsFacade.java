@@ -30,17 +30,41 @@ import ru.ewc.commands.input.YamlCommandsReader;
 import ru.ewc.decisions.api.DecitaFacade;
 import ru.ewc.decisions.api.Locators;
 
+/**
+ * I am a facade for the commands that are written in the YAML format.
+ *
+ * @since 0.5.1
+ */
 public class CommandsFacade {
+    /**
+     * The command registry.
+     */
     private final Map<String, SimpleCommand> commands;
 
+    /**
+     * The facade for the decisions.
+     */
     private final DecitaFacade decisions;
 
+    /**
+     * Ctor.
+     *
+     * @param folder The path to the folder with the commands descriptions.
+     * @param decisions The facade for the decisions.
+     */
     public CommandsFacade(final URI folder, final DecitaFacade decisions) {
         this.commands = new YamlCommandsReader(folder).commands();
         this.decisions = decisions;
     }
 
-    public void perform(String command, Locators state) {
+    /**
+     * I am a method that performs the command.
+     *
+     * @param command The command to perform.
+     * @param state The state of the locators.
+     */
+    @SuppressWarnings("unused")
+    public void perform(final String command, final Locators state) {
         this.commands.get(command).perform(this.decisions.merged(state));
     }
 }

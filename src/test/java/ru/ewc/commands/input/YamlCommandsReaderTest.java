@@ -54,7 +54,7 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldRead() {
         final SimpleCommand command = this.command("set-table-name");
-        final ComputationContext context = command.perform(TestObjects.defaultContext());
+        final ComputationContext context = command.perform(TestObjects.ticTacToeContext());
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             tableName(context),
@@ -65,7 +65,7 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldPerformSeveralOperations() {
         final SimpleCommand command = this.command("see-the-flop");
-        final ComputationContext context = command.perform(TestObjects.defaultContext());
+        final ComputationContext context = command.perform(TestObjects.ticTacToeContext());
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             tableName(context),
@@ -81,7 +81,7 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldReadSeveralCommands() {
         ComputationContext context = this.command("set-table-name")
-            .perform(TestObjects.defaultContext());
+            .perform(TestObjects.ticTacToeContext());
         context = this.command("set-max-players").perform(context);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
@@ -118,9 +118,7 @@ final class YamlCommandsReaderTest {
     }
 
     private static ComputationContext ticTacToeInitialContext() {
-        return TestObjects.defaultContext()
-            .extendWithEmpty("table")
-            .extendWithEmpty("request")
+        return TestObjects.ticTacToeContext()
             .setValueFor("table", "nextPlayer", "O")
             .setValueFor("table", "currentPlayer", "X")
             .setValueFor("request", "move", "A1")

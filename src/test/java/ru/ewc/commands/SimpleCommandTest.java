@@ -39,7 +39,7 @@ import ru.ewc.decisions.api.ComputationContext;
 final class SimpleCommandTest {
     @Test
     void shouldCreateState() {
-        final ComputationContext actual = ticTacToeTable().perform(TestObjects.defaultContext());
+        final ComputationContext actual = ticTacToeTable().perform(TestObjects.ticTacToeContext());
         MatcherAssert.assertThat(
             "Table name should be updated to 'Tic-Tac-Toe'",
             actual.valueFor("table", "name"),
@@ -50,7 +50,7 @@ final class SimpleCommandTest {
     @Test
     void shouldUpdateState() {
         ComputationContext actual;
-        final ComputationContext initial = TestObjects.defaultContext();
+        final ComputationContext initial = TestObjects.ticTacToeContext();
         actual = ticTacToeTable().perform(initial);
         actual = machiKoroTable().perform(actual);
         MatcherAssert.assertThat(

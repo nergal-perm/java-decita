@@ -27,7 +27,6 @@ package ru.ewc.decisions.api;
 import java.util.Map;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.decisions.core.InMemoryLocator;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -87,24 +86,4 @@ public final class ComputationContext {
         this.collection.locatorFor(loc).setFragmentValue(frag, value);
         return this;
     }
-
-    /**
-     * Extends the current context with an empty Locator with provided name.
-     *
-     * @param locator The name of an empty Locator to extend the context with.
-     * @return The new {@link ComputationContext} instance.
-     */
-    public ComputationContext extendWithEmpty(final String locator) {
-        ComputationContext result = this.copy();
-        if (!this.collection.hasLocator(locator)) {
-            final Locators empty = new Locators(Map.of(locator, InMemoryLocator.empty()));
-            result = new ComputationContext(this.collection.mergedWith(empty));
-        }
-        return result;
-    }
-
-    private ComputationContext copy() {
-        return new ComputationContext(this.collection);
-    }
-
 }

@@ -24,7 +24,6 @@
 
 package ru.ewc.decisions;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
@@ -65,9 +64,9 @@ public final class TestObjects {
 
     public static ComputationContext ticTacToeContext() {
         final Map<String, Locator> locators = Map.of(
-            "request", newEmptyLocator(),
-            "table", newEmptyLocator(),
-            "cells", newEmptyLocator()
+            "request", InMemoryLocator.empty(),
+            "table", InMemoryLocator.empty(),
+            "cells", InMemoryLocator.empty()
         );
         return new ComputationContext(defaultLocators().mergedWith(new Locators(locators)));
     }
@@ -137,9 +136,4 @@ public final class TestObjects {
             )
         );
     }
-
-    private static InMemoryLocator newEmptyLocator() {
-        return new InMemoryLocator(new HashMap<>());
-    }
-
 }

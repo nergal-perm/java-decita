@@ -60,6 +60,10 @@ public interface Locator {
      */
     void setFragmentValue(String fragment, String value);
 
+    default Map<String, Object> state() {
+        return Map.of();
+    }
+
     /**
      * Computes this table's outcomes by checking all of its {@link Rule}s.
      *

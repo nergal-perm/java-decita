@@ -87,4 +87,21 @@ public final class Locators {
     public boolean hasLocator(final String locator) {
         return this.collection.containsKey(locator);
     }
+
+    /**
+     * Obtains the locators state. Will be used by library's clients for debugging and testing
+     * purposes.
+     *
+     * @return A copy of all the Locators states.
+     */
+    public Map<String, Map<String, Object>> state() {
+        final Map<String, Map<String, Object>> state = new HashMap<>(this.collection.size());
+        for (final Map.Entry<String, Locator> entry : this.collection.entrySet()) {
+            if (entry.getValue().state().isEmpty()) {
+                continue;
+            }
+            state.put(entry.getKey(), entry.getValue().state());
+        }
+        return state;
+    }
 }

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.2](https://github.com/nergal-perm/java-decita/compare/v0.5.1...v0.5.2) (2024-05-18)
+
+
+### Features
+
+* **locators:** exposed an interface to obtain Locator's state ([7ca3511](https://github.com/nergal-perm/java-decita/commit/7ca351192010a58d93143ed5c7ec1ccfa5706003)), closes [#112](https://github.com/nergal-perm/java-decita/issues/112)
+* **locators:** removed the implicit creation of missing Locators ([ae0dd75](https://github.com/nergal-perm/java-decita/commit/ae0dd7510e32627deea0f485ba828327e335acab)), closes [#111](https://github.com/nergal-perm/java-decita/issues/111)
+
 ### [0.5.1](https://github.com/nergal-perm/java-decita/compare/v0.5.0...v0.5.1) (2024-05-11)
 
 

@@ -27,9 +27,9 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
-import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
+import ru.ewc.state.StoredState;
 
 /**
  * I am the facade for the Decita library. My main responsibility is to provide a single entry point
@@ -39,12 +39,6 @@ import ru.ewc.decisions.input.PlainTextDecisionReader;
  */
 public final class DecitaFacade {
     /**
-     * The always available Locator that returns constant values.
-     */
-    private static final BaseLocators CONSTANT_LOCATORS =
-        new BaseLocators(Map.of(Locator.CONSTANT_VALUES, new ConstantLocator()));
-
-    /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
     private final Supplier<DecisionTables> tables;
@@ -52,15 +46,15 @@ public final class DecitaFacade {
     /**
      * The basic set of {@link Locator} that represents the current stored state of the system.
      */
-    private final BaseLocators locators;
+    private final StoredState state;
 
     /**
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
-    public DecitaFacade(final Supplier<DecisionTables> tables) {
-        this(tables, BaseLocators.EMPTY);
+    DecitaFacade(final Supplier<DecisionTables> tables) {
+        this(tables, StoredState.EMPTY);
     }
 
     /**
@@ -74,7 +68,7 @@ public final class DecitaFacade {
     public DecitaFacade(final URI path, final String ext, final String delimiter) {
         this(
             () -> new PlainTextDecisionReader(path, ext, delimiter).allTables(),
-            BaseLocators.EMPTY
+            StoredState.EMPTY
         );
     }
 
@@ -84,9 +78,9 @@ public final class DecitaFacade {
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      * @param state The basic set of {@link Locator} used to obtain data from the system.
      */
-    private DecitaFacade(final Supplier<DecisionTables> tables, final BaseLocators state) {
+    private DecitaFacade(final Supplier<DecisionTables> tables, final StoredState state) {
         this.tables = tables;
-        this.locators = state;
+        this.state = state;
     }
 
     /**
@@ -108,10 +102,10 @@ public final class DecitaFacade {
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
     public ComputationContext contextWith(final BaseLocators request) {
-        return BaseLocators.EMPTY.mergedWith(
-            DecitaFacade.CONSTANT_LOCATORS,
+        return StoredState.EMPTY.mergedWith(
+            StoredState.CONSTANT_LOCATORS,
             this.tables.get(),
-            this.locators,
+            this.state,
             request
         );
     }

@@ -36,12 +36,6 @@ import java.util.Map;
  */
 // @todo #115 Make Locators abstract in order to extend it with the custom Locators
 public class BaseLocators {
-
-    /**
-     * The empty set of predefined {@link Locator}s that should be used to get data from a system.
-     */
-    public static final BaseLocators EMPTY = new BaseLocators(Map.of());
-
     /**
      * The {@link Locator}s to be managed by this instance.
      */

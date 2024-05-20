@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions;
+package ru.ewc.decisions.api;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -32,9 +32,6 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import ru.ewc.decisions.api.BaseLocators;
-import ru.ewc.decisions.api.DecitaException;
-import ru.ewc.decisions.api.DecitaFacade;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 

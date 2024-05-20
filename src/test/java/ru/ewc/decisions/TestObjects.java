@@ -39,6 +39,7 @@ import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.input.DecisionTables;
+import ru.ewc.state.StoredState;
 
 /**
  * I hold different preconfigured objects for unit-tests.
@@ -60,7 +61,7 @@ public final class TestObjects {
      * @return A prefilled {@link ComputationContext}.
      */
     public static ComputationContext defaultContext() {
-        return defaultLocatorsWith(BaseLocators.EMPTY);
+        return defaultLocatorsWith(StoredState.EMPTY);
     }
 
     public static ComputationContext ticTacToeContext() {
@@ -138,7 +139,7 @@ public final class TestObjects {
         final BaseLocators constant = new BaseLocators(
             Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
         );
-        return BaseLocators.EMPTY.mergedWith(
+        return StoredState.EMPTY.mergedWith(
             new DecisionTables(List.of(truthy)),
             constant,
             additional

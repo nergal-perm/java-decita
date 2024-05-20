@@ -65,6 +65,6 @@ public class CommandsFacade {
      */
     @SuppressWarnings("unused")
     public void perform(final String command, final BaseLocators state) {
-        this.commands.get(command).perform(this.decisions.merged(state));
+        this.commands.get(command).perform(this.decisions.contextWith(state));
     }
 }

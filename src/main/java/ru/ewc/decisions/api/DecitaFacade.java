@@ -27,7 +27,6 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
-import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 
 /**
@@ -90,11 +89,7 @@ public final class DecitaFacade {
      * @return The outcome of the decision.
      */
     public Map<String, String> decisionFor(final String table, final BaseLocators request) {
-        final Locator locator = this.tables.get().locatorFor(table);
-        if (locator instanceof DecisionTable) {
-            return locator.outcome(this.merged(request));
-        }
-        throw new DecitaException("The table with the name %s is not found.".formatted(table));
+        return this.contextWith(request).decisionFor(table);
     }
 
     /**
@@ -104,7 +99,7 @@ public final class DecitaFacade {
      *  request).
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
-    public ComputationContext merged(final BaseLocators request) {
+    public ComputationContext contextWith(final BaseLocators request) {
         return this.tables.get().mergedWith(
             BaseLocators.CONSTANT,
             this.locators,

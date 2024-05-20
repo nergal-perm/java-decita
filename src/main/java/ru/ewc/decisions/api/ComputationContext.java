@@ -69,7 +69,6 @@ public final class ComputationContext {
      * @return The Dictionary containing the decision result.
      * @throws DecitaException If the table could not be found or computed.
      */
-    @SuppressWarnings("unused")
     public Map<String, String> decisionFor(final String name) throws DecitaException {
         return this.collection.locatorFor(name).outcome(this);
     }

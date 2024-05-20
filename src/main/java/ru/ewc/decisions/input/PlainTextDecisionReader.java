@@ -32,9 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
@@ -74,11 +72,12 @@ public final class PlainTextDecisionReader implements DecisionReader {
     }
 
     @Override
-    public BaseLocators allTables() {
-        return new BaseLocators(
+    public DecisionTables allTables() {
+        return new DecisionTables(
             this.readAllTables()
                 .stream()
-                .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable))
+                .map(RawContent::asDecisionTable)
+                .toList()
         );
     }
 

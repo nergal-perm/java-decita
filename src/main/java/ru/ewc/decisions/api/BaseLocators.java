@@ -35,7 +35,7 @@ import java.util.Map;
  * @since 0.3.1
  */
 // @todo #115 Make Locators abstract in order to extend it with the custom Locators
-public final class BaseLocators {
+public class BaseLocators {
 
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.
@@ -63,7 +63,7 @@ public final class BaseLocators {
      * @return The instance of {@link Locator}.
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
-    public Locator locatorFor(final String locator) throws DecitaException {
+    public final Locator locatorFor(final String locator) throws DecitaException {
         if (!this.collection.containsKey(locator)) {
             throw new DecitaException(
                 String.format("Locator '%s' not found in computation context", locator)
@@ -72,13 +72,7 @@ public final class BaseLocators {
         return this.collection.get(locator);
     }
 
-    public BaseLocators mergedWith(final BaseLocators additional) {
-        final Map<String, Locator> merged = new HashMap<>(this.collection);
-        merged.putAll(additional.collection);
-        return new BaseLocators(merged);
-    }
-
-    public ComputationContext mergedWith(final BaseLocators... additional) {
+    public final ComputationContext mergedWith(final BaseLocators... additional) {
         BaseLocators merged = this;
         for (final BaseLocators locators : additional) {
             merged = merged.mergedWith(locators);
@@ -86,7 +80,7 @@ public final class BaseLocators {
         return new ComputationContext(merged);
     }
 
-    public boolean hasLocator(final String locator) {
+    public final boolean hasLocator(final String locator) {
         return this.collection.containsKey(locator);
     }
 
@@ -105,5 +99,11 @@ public final class BaseLocators {
             state.put(entry.getKey(), entry.getValue().state());
         }
         return state;
+    }
+
+    private BaseLocators mergedWith(final BaseLocators additional) {
+        final Map<String, Locator> merged = new HashMap<>(this.collection);
+        merged.putAll(additional.collection);
+        return new BaseLocators(merged);
     }
 }

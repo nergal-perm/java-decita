@@ -114,7 +114,7 @@ public final class RawContent {
         } else {
             elserule.withOutcome("outcome", "undefined");
         }
-        return new DecisionTable(rules, elserule);
+        return new DecisionTable(rules, elserule, this.table);
     }
 
     /**

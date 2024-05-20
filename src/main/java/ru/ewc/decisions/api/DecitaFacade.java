@@ -28,6 +28,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
 import ru.ewc.decisions.core.ConstantLocator;
+import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 
 /**
@@ -46,10 +47,10 @@ public final class DecitaFacade {
     /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
-    private final Supplier<BaseLocators> tables;
+    private final Supplier<DecisionTables> tables;
 
     /**
-     * The basic set of {@link Locator} used to obtain data from the system.
+     * The basic set of {@link Locator} that represents the current stored state of the system.
      */
     private final BaseLocators locators;
 
@@ -58,7 +59,7 @@ public final class DecitaFacade {
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
-    public DecitaFacade(final Supplier<BaseLocators> tables) {
+    public DecitaFacade(final Supplier<DecisionTables> tables) {
         this(tables, BaseLocators.EMPTY);
     }
 
@@ -81,11 +82,11 @@ public final class DecitaFacade {
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
-     * @param locators The basic set of {@link Locator} used to obtain data from the system.
+     * @param state The basic set of {@link Locator} used to obtain data from the system.
      */
-    public DecitaFacade(final Supplier<BaseLocators> tables, final BaseLocators locators) {
+    private DecitaFacade(final Supplier<DecisionTables> tables, final BaseLocators state) {
         this.tables = tables;
-        this.locators = locators;
+        this.locators = state;
     }
 
     /**
@@ -107,8 +108,9 @@ public final class DecitaFacade {
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
     public ComputationContext contextWith(final BaseLocators request) {
-        return this.tables.get().mergedWith(
+        return BaseLocators.EMPTY.mergedWith(
             DecitaFacade.CONSTANT_LOCATORS,
+            this.tables.get(),
             this.locators,
             request
         );

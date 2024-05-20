@@ -50,12 +50,18 @@ public final class DecisionTable implements Locator {
     private final Rule elserule;
 
     /**
+     * The name of the table.
+     */
+    private final String name;
+
+    /**
      * Ctor.
      *
      * @param rules A collection of {@link Rule}s for this table.
+     * @param name The name of the table.
      */
-    public DecisionTable(final Iterable<Rule> rules) {
-        this(rules, new Rule().withOutcome("outcome", "undefined"));
+    public DecisionTable(final Iterable<Rule> rules, final String name) {
+        this(rules, new Rule().withOutcome("outcome", "undefined"), name);
     }
 
     /**
@@ -64,10 +70,16 @@ public final class DecisionTable implements Locator {
      * @param rules A collection of {@link Rule}s for this table.
      * @param elserule The special {@link Rule} that gets satisfied only if no other {@link Rule} is
      *  satisfied.
+     * @param name The name of the table.
      */
-    public DecisionTable(final Iterable<Rule> rules, final Rule elserule) {
+    public DecisionTable(final Iterable<Rule> rules, final Rule elserule, final String name) {
         this.rules = rules;
         this.elserule = elserule;
+        this.name = name;
+    }
+
+    public String tableName() {
+        return this.name;
     }
 
     @Override
@@ -102,4 +114,5 @@ public final class DecisionTable implements Locator {
     private Stream<Rule> satisfiedRules() {
         return StreamSupport.stream(this.rules.spliterator(), false).filter(Rule::isSatisfied);
     }
+
 }

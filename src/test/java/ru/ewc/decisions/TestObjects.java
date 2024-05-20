@@ -38,6 +38,7 @@ import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
+import ru.ewc.decisions.input.DecisionTables;
 
 /**
  * I hold different preconfigured objects for unit-tests.
@@ -59,7 +60,7 @@ public final class TestObjects {
      * @return A prefilled {@link ComputationContext}.
      */
     public static ComputationContext defaultContext() {
-        return new ComputationContext(defaultLocators());
+        return defaultLocatorsWith(BaseLocators.EMPTY);
     }
 
     public static ComputationContext ticTacToeContext() {
@@ -68,7 +69,7 @@ public final class TestObjects {
             "table", InMemoryLocator.empty(),
             "cells", InMemoryLocator.empty()
         );
-        return new ComputationContext(defaultLocators().mergedWith(new BaseLocators(locators)));
+        return defaultLocatorsWith(new BaseLocators(locators));
     }
 
     /**
@@ -126,14 +127,22 @@ public final class TestObjects {
     /**
      * A collection of default (required) {@link Locator}s.
      *
+     * @param additional Additional {@link BaseLocators} to merge with.
      * @return A collection of required {@link Locator}s.
      */
-    private static BaseLocators defaultLocators() {
-        return new BaseLocators(
-            Map.of(
-                "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
-                Locator.CONSTANT_VALUES, new ConstantLocator()
-            )
+    private static ComputationContext defaultLocatorsWith(final BaseLocators additional) {
+        final DecisionTable truthy = new DecisionTable(
+            List.of(alwaysTrueEqualsTrueRule()),
+            "always_true"
+        );
+        final BaseLocators constant = new BaseLocators(
+            Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
+        );
+        return BaseLocators.EMPTY.mergedWith(
+            new DecisionTables(List.of(truthy)),
+            constant,
+            additional
         );
     }
+
 }

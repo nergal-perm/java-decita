@@ -35,6 +35,7 @@ import ru.ewc.decisions.core.ConstantLocator;
  *
  * @since 0.3.1
  */
+// @todo #115 Make Locators abstract in order to extend it with the custom Locators
 public final class Locators {
     /**
      * The constant {@link Locator} that can be used in the {@link ComputationContext}.

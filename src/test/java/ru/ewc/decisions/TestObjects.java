@@ -26,9 +26,9 @@ package ru.ewc.decisions;
 
 import java.util.List;
 import java.util.Map;
+import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.api.Locators;
 import ru.ewc.decisions.conditions.AlwaysTrueCondition;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
@@ -68,7 +68,7 @@ public final class TestObjects {
             "table", InMemoryLocator.empty(),
             "cells", InMemoryLocator.empty()
         );
-        return new ComputationContext(defaultLocators().mergedWith(new Locators(locators)));
+        return new ComputationContext(defaultLocators().mergedWith(new BaseLocators(locators)));
     }
 
     /**
@@ -128,8 +128,8 @@ public final class TestObjects {
      *
      * @return A collection of required {@link Locator}s.
      */
-    private static Locators defaultLocators() {
-        return new Locators(
+    private static BaseLocators defaultLocators() {
+        return new BaseLocators(
             Map.of(
                 "always_true", new DecisionTable(List.of(alwaysTrueEqualsTrueRule())),
                 Locator.CONSTANT_VALUES, new ConstantLocator()

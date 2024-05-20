@@ -40,20 +40,20 @@ public final class DecitaFacade {
     /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
-    private final Supplier<Locators> tables;
+    private final Supplier<BaseLocators> tables;
 
     /**
      * The basic set of {@link Locator} used to obtain data from the system.
      */
-    private final Locators locators;
+    private final BaseLocators locators;
 
     /**
      * Ctor.
      *
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      */
-    public DecitaFacade(final Supplier<Locators> tables) {
-        this(tables, Locators.EMPTY);
+    public DecitaFacade(final Supplier<BaseLocators> tables) {
+        this(tables, BaseLocators.EMPTY);
     }
 
     /**
@@ -65,7 +65,10 @@ public final class DecitaFacade {
      */
     @SuppressWarnings("unused")
     public DecitaFacade(final URI path, final String ext, final String delimiter) {
-        this(() -> new PlainTextDecisionReader(path, ext, delimiter).allTables(), Locators.EMPTY);
+        this(
+            () -> new PlainTextDecisionReader(path, ext, delimiter).allTables(),
+            BaseLocators.EMPTY
+        );
     }
 
     /**
@@ -74,7 +77,7 @@ public final class DecitaFacade {
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      * @param locators The basic set of {@link Locator} used to obtain data from the system.
      */
-    public DecitaFacade(final Supplier<Locators> tables, final Locators locators) {
+    public DecitaFacade(final Supplier<BaseLocators> tables, final BaseLocators locators) {
         this.tables = tables;
         this.locators = locators;
     }
@@ -86,7 +89,7 @@ public final class DecitaFacade {
      * @param request The request to decide on.
      * @return The outcome of the decision.
      */
-    public Map<String, String> decisionFor(final String table, final Locators request) {
+    public Map<String, String> decisionFor(final String table, final BaseLocators request) {
         final Locator locator = this.tables.get().locatorFor(table);
         if (locator instanceof DecisionTable) {
             return locator.outcome(
@@ -96,7 +99,7 @@ public final class DecitaFacade {
         throw new DecitaException("The table with the name %s is not found.".formatted(table));
     }
 
-    public ComputationContext merged(final Locators state) {
+    public ComputationContext merged(final BaseLocators state) {
         return new ComputationContext(this.defaultLocators().mergedWith(state));
     }
 
@@ -105,9 +108,9 @@ public final class DecitaFacade {
      *
      * @return A set of base {@link Locator}s.
      */
-    private Locators defaultLocators() {
+    private BaseLocators defaultLocators() {
         return this.tables.get()
             .mergedWith(this.locators)
-            .mergedWith(Locators.CONSTANT);
+            .mergedWith(BaseLocators.CONSTANT);
     }
 }

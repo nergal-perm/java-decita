@@ -36,18 +36,18 @@ import ru.ewc.decisions.core.ConstantLocator;
  * @since 0.3.1
  */
 // @todo #115 Make Locators abstract in order to extend it with the custom Locators
-public final class Locators {
+public final class BaseLocators {
     /**
      * The constant {@link Locator} that can be used in the {@link ComputationContext}.
      */
-    public static final Locators CONSTANT = new Locators(
+    public static final BaseLocators CONSTANT = new BaseLocators(
         Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
     );
 
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.
      */
-    public static final Locators EMPTY = new Locators(Map.of());
+    public static final BaseLocators EMPTY = new BaseLocators(Map.of());
 
     /**
      * The {@link Locator}s to be managed by this instance.
@@ -59,7 +59,7 @@ public final class Locators {
      *
      * @param collection The {@link Locator}s to be managed by this instance.
      */
-    public Locators(final Map<String, Locator> collection) {
+    public BaseLocators(final Map<String, Locator> collection) {
         this.collection = collection;
     }
 
@@ -79,10 +79,10 @@ public final class Locators {
         return this.collection.get(locator);
     }
 
-    public Locators mergedWith(final Locators additional) {
+    public BaseLocators mergedWith(final BaseLocators additional) {
         final Map<String, Locator> merged = new HashMap<>(this.collection);
         merged.putAll(additional.collection);
-        return new Locators(merged);
+        return new BaseLocators(merged);
     }
 
     public boolean hasLocator(final String locator) {

@@ -32,9 +32,9 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.DecitaFacade;
-import ru.ewc.decisions.api.Locators;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 
@@ -58,7 +58,7 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
-        final Locators state = new Locators(
+        final BaseLocators state = new BaseLocators(
             Map.of(
                 "data", new InMemoryLocator(
                     Map.of("is-stored", "true")
@@ -84,7 +84,7 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
-        final Locators state = new Locators(
+        final BaseLocators state = new BaseLocators(
             Map.of(
                 "data", new InMemoryLocator(
                     Map.of("is-stored", false)
@@ -110,7 +110,7 @@ final class EndToEndTest {
 
     @Test
     void shouldThrowIfSeveralRulesResolveToTrue() {
-        final Locators state = new Locators(
+        final BaseLocators state = new BaseLocators(
             Map.of(
                 "data", new InMemoryLocator(
                     Map.of("value", 1)

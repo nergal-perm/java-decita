@@ -27,8 +27,8 @@ package ru.ewc.commands;
 import java.net.URI;
 import java.util.Map;
 import ru.ewc.commands.input.YamlCommandsReader;
+import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.DecitaFacade;
-import ru.ewc.decisions.api.Locators;
 
 /**
  * I am a facade for the commands that are written in the YAML format.
@@ -64,7 +64,7 @@ public class CommandsFacade {
      * @param state The state of the locators.
      */
     @SuppressWarnings("unused")
-    public void perform(final String command, final Locators state) {
+    public void perform(final String command, final BaseLocators state) {
         this.commands.get(command).perform(this.decisions.merged(state));
     }
 }

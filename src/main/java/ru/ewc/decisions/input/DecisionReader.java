@@ -24,9 +24,9 @@
 
 package ru.ewc.decisions.input;
 
+import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.api.Locators;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
@@ -44,5 +44,5 @@ public interface DecisionReader {
      * @return A collection of {@link Locator}s , representing the contents of
      *  {@link DecisionTable}s data sources.
      */
-    Locators allTables();
+    BaseLocators allTables();
 }

@@ -36,16 +36,16 @@ import ru.ewc.decisions.core.DecisionTable;
  */
 public final class ComputationContext {
     /**
-     * The instance of {@link Locators} that provides the required {@link Locator}s.
+     * The instance of {@link BaseLocators} that provides the required {@link Locator}s.
      */
-    private final Locators collection;
+    private final BaseLocators collection;
 
     /**
      * Ctor.
      *
-     * @param locators The {@link Locators} instance to use.
+     * @param locators The {@link BaseLocators} instance to use.
      */
-    public ComputationContext(final Locators locators) {
+    public ComputationContext(final BaseLocators locators) {
         this.collection = locators;
     }
 

@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import ru.ewc.decisions.api.Locators;
+import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
@@ -74,8 +74,8 @@ public final class PlainTextDecisionReader implements DecisionReader {
     }
 
     @Override
-    public Locators allTables() {
-        return new Locators(
+    public BaseLocators allTables() {
+        return new BaseLocators(
             this.readAllTables()
                 .stream()
                 .collect(Collectors.toMap(RawContent::tableName, RawContent::asDecisionTable))

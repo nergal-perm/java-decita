@@ -73,11 +73,11 @@ public class BaseLocators {
     }
 
     public final ComputationContext mergedWith(final BaseLocators... additional) {
-        BaseLocators merged = this;
-        for (final BaseLocators locators : additional) {
-            merged = merged.mergedWith(locators);
+        final Map<String, Locator> merged = new HashMap<>(this.collection);
+        for (final BaseLocators locator : additional) {
+            merged.putAll(locator.collection);
         }
-        return new ComputationContext(merged);
+        return new ComputationContext(new BaseLocators(merged));
     }
 
     public final boolean hasLocator(final String locator) {
@@ -99,11 +99,5 @@ public class BaseLocators {
             state.put(entry.getKey(), entry.getValue().state());
         }
         return state;
-    }
-
-    private BaseLocators mergedWith(final BaseLocators additional) {
-        final Map<String, Locator> merged = new HashMap<>(this.collection);
-        merged.putAll(additional.collection);
-        return new BaseLocators(merged);
     }
 }

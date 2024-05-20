@@ -26,7 +26,6 @@ package ru.ewc.decisions.api;
 
 import java.util.HashMap;
 import java.util.Map;
-import ru.ewc.decisions.core.ConstantLocator;
 
 /**
  * I am the collection of {@link Locator}s used to populate the {@link ComputationContext}s. My main
@@ -37,12 +36,6 @@ import ru.ewc.decisions.core.ConstantLocator;
  */
 // @todo #115 Make Locators abstract in order to extend it with the custom Locators
 public final class BaseLocators {
-    /**
-     * The constant {@link Locator} that can be used in the {@link ComputationContext}.
-     */
-    public static final BaseLocators CONSTANT = new BaseLocators(
-        Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
-    );
 
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.

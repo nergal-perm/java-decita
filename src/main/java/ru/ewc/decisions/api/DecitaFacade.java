@@ -27,6 +27,7 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
+import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 
 /**
@@ -36,6 +37,12 @@ import ru.ewc.decisions.input.PlainTextDecisionReader;
  * @since 0.3.1
  */
 public final class DecitaFacade {
+    /**
+     * The always available Locator that returns constant values.
+     */
+    private static final BaseLocators CONSTANT_LOCATORS =
+        new BaseLocators(Map.of(Locator.CONSTANT_VALUES, new ConstantLocator()));
+
     /**
      * The function that provides a fresh set of uncomputed decision tables.
      */
@@ -101,7 +108,7 @@ public final class DecitaFacade {
      */
     public ComputationContext contextWith(final BaseLocators request) {
         return this.tables.get().mergedWith(
-            BaseLocators.CONSTANT,
+            DecitaFacade.CONSTANT_LOCATORS,
             this.locators,
             request
         );

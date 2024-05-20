@@ -85,6 +85,14 @@ public final class BaseLocators {
         return new BaseLocators(merged);
     }
 
+    public ComputationContext mergedWith(final BaseLocators... additional) {
+        BaseLocators merged = this;
+        for (final BaseLocators locators : additional) {
+            merged = merged.mergedWith(locators);
+        }
+        return new ComputationContext(merged);
+    }
+
     public boolean hasLocator(final String locator) {
         return this.collection.containsKey(locator);
     }

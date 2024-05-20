@@ -92,25 +92,23 @@ public final class DecitaFacade {
     public Map<String, String> decisionFor(final String table, final BaseLocators request) {
         final Locator locator = this.tables.get().locatorFor(table);
         if (locator instanceof DecisionTable) {
-            return locator.outcome(
-                new ComputationContext(this.defaultLocators().mergedWith(request))
-            );
+            return locator.outcome(this.merged(request));
         }
         throw new DecitaException("The table with the name %s is not found.".formatted(table));
     }
 
-    public ComputationContext merged(final BaseLocators state) {
-        return new ComputationContext(this.defaultLocators().mergedWith(state));
-    }
-
     /**
-     * Returns a new {@link ComputationContext} with the default {@link Locator}s.
+     * Merges together all the {@link BaseLocators} instances required to perform the computation.
      *
-     * @return A set of base {@link Locator}s.
+     * @param request The additional locators to merge with (usually coming in a form of external
+     *  request).
+     * @return An instance of {@link ComputationContext} with all the required locators.
      */
-    private BaseLocators defaultLocators() {
-        return this.tables.get()
-            .mergedWith(this.locators)
-            .mergedWith(BaseLocators.CONSTANT);
+    public ComputationContext merged(final BaseLocators request) {
+        return this.tables.get().mergedWith(
+            BaseLocators.CONSTANT,
+            this.locators,
+            request
+        );
     }
 }

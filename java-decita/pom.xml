@@ -34,7 +34,7 @@
   </parent>
 
   <artifactId>java-decita</artifactId>
-  <version>0.6.0-RC</version>
+  <version>0.6.0</version>
 
   <name>Java Decision Tables</name>
   <description>Decision Tables calculation engine</description>

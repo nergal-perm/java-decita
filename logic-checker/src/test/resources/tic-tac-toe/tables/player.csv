@@ -1,0 +1,3 @@
+request::player;table::currentPlayer
+---
+is_current;true;false

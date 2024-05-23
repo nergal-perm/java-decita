@@ -1,0 +1,12 @@
+cells::A1;X;O;~;~;~;~;X;O;~;~;~;~;X;O;~;~
+cells::A2;X;O;~;~;~;~;~;~;X;O;~;~;~;~;~;~
+cells::A3;X;O;~;~;~;~;~;~;~;~;X;O;~;~;X;O
+cells::B1;~;~;X;O;~;~;X;O;~;~;~;~;~;~;~;~
+cells::B2;~;~;X;O;~;~;~;~;X;O;~;~;X;O;X;O
+cells::B3;~;~;X;O;~;~;~;~;~;~;X;O;~;~;~;~
+cells::C1;~;~;~;~;X;O;X;O;~;~;~;~;~;~;X;O
+cells::C2;~;~;~;~;X;O;~;~;X;O;~;~;~;~;~;~
+cells::C3;~;~;~;~;X;O;~;~;~;~;X;O;X;O;~;~
+---
+is_over;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;false
+winner;X;O;X;O;X;O;X;O;X;O;X;O;X;O;X;O;none

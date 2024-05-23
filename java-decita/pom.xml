@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2024 Eugene Terekhov
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.nergal-perm</groupId>
+    <artifactId>decita</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <artifactId>java-decita</artifactId>
+  <version>0.6.0-RC</version>
+
+  <name>Java Decision Tables</name>
+  <description>Decision Tables calculation engine</description>
+  <url>https://nergal-perm.github.io/java-decita/</url>
+  <inceptionYear>2023</inceptionYear>
+  <organization>
+    <name>Eugene Terekhov</name>
+    <url>https://github.com/nergal-perm</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://raw.githubusercontent.com/nergal-perm/java-decita/master/LICENSE</url>
+      <distribution>site</distribution>
+      <comments>MIT License</comments>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>1</id>
+      <name>Eugene Terekhov</name>
+      <email>nergal@psu.ru</email>
+      <url>https://github.com/nergal-perm</url>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+4</timezone>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Nikita Batin</name>
+      <url>https://github.com/citerm</url>
+      <roles>
+        <role>Architect</role>
+      </roles>
+      <timezone>+3</timezone>
+    </contributor>
+  </contributors>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/nergal-perm/java-decita/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>github</system>
+    <url>https://github.com/nergal-perm/java-decita/actions</url>
+  </ciManagement>
+  <scm>
+    <connection>scm:git:github.com:nergal-perm/java-decita.git</connection>
+    <developerConnection>scm:git:github.com:nergal-perm/java-decita.git</developerConnection>
+    <url>https://github.com/nergal-perm/java-decita</url>
+  </scm>
+
+  <distributionManagement>
+    <downloadUrl>https://github.com/nergal-perm/java-decita/packages/</downloadUrl>
+    <repository>
+      <id>github</id>
+      <name>GitHub nergal-perm Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/nergal-perm/java-decita</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <snapshotRepository>
+      <id>Github packages</id>
+    </snapshotRepository>
+    <site>
+      <id>github.io</id>
+      <url>https://nergal-perm.github.io/java-decita</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.24.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

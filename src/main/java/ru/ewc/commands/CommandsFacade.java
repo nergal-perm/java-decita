@@ -27,8 +27,7 @@ package ru.ewc.commands;
 import java.net.URI;
 import java.util.Map;
 import ru.ewc.commands.input.YamlCommandsReader;
-import ru.ewc.decisions.api.DecitaFacade;
-import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.state.StoredState;
 
 /**
  * I am a facade for the commands that are written in the YAML format.
@@ -42,29 +41,29 @@ public class CommandsFacade {
     private final Map<String, SimpleCommand> commands;
 
     /**
-     * The facade for the decisions.
+     * The state of the application.
      */
-    private final DecitaFacade decisions;
+    private final StoredState state;
 
     /**
      * Ctor.
      *
      * @param folder The path to the folder with the commands descriptions.
-     * @param decisions The facade for the decisions.
+     * @param state The state of the application.
      */
-    public CommandsFacade(final URI folder, final DecitaFacade decisions) {
+    public CommandsFacade(final URI folder, final StoredState state) {
         this.commands = new YamlCommandsReader(folder).commands();
-        this.decisions = decisions;
+        this.state = state;
     }
 
     /**
      * I am a method that performs the command.
      *
      * @param command The command to perform.
-     * @param state The state of the locators.
+     * @param incoming The state of the locators.
      */
     @SuppressWarnings("unused")
-    public void perform(final String command, final BaseLocators state) {
-        this.commands.get(command).perform(this.decisions.contextWith(state));
+    public void perform(final String command, final StoredState incoming) {
+        this.commands.get(command).perform(this.state.mergedWith(incoming));
     }
 }

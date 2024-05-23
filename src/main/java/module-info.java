@@ -4,5 +4,5 @@ module java.decita.api {
     requires org.yaml.snakeyaml;
     exports ru.ewc.decisions.api;
     exports ru.ewc.commands;
-    exports ru.ewc.decisions.core;
+    exports ru.ewc.state;
 }

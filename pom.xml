@@ -35,83 +35,14 @@
   </parent>
 
   <groupId>io.github.nergal-perm</groupId>
-  <artifactId>java-decita</artifactId>
-  <version>0.5.2</version>
-  <packaging>jar</packaging>
+  <artifactId>decita</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
 
-  <name>Java Decision Tables</name>
-  <description>Decision Tables calculation engine</description>
-  <url>https://nergal-perm.github.io/java-decita/</url>
-  <inceptionYear>2023</inceptionYear>
-  <organization>
-    <name>Eugene Terekhov</name>
-    <url>https://github.com/nergal-perm</url>
-  </organization>
-  <licenses>
-    <license>
-      <name>MIT</name>
-      <url>https://raw.githubusercontent.com/nergal-perm/java-decita/master/LICENSE</url>
-      <distribution>site</distribution>
-      <comments>MIT License</comments>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <id>1</id>
-      <name>Eugene Terekhov</name>
-      <email>nergal@psu.ru</email>
-      <url>https://github.com/nergal-perm</url>
-      <roles>
-        <role>Architect</role>
-        <role>Developer</role>
-      </roles>
-      <timezone>+4</timezone>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>Nikita Batin</name>
-      <url>https://github.com/citerm</url>
-      <roles>
-        <role>Architect</role>
-      </roles>
-      <timezone>+3</timezone>
-    </contributor>
-  </contributors>
-
-  <issueManagement>
-    <system>github</system>
-    <url>https://github.com/nergal-perm/java-decita/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>github</system>
-    <url>https://github.com/nergal-perm/java-decita/actions</url>
-  </ciManagement>
-  <scm>
-    <connection>scm:git:github.com:nergal-perm/java-decita.git</connection>
-    <developerConnection>scm:git:github.com:nergal-perm/java-decita.git</developerConnection>
-    <url>https://github.com/nergal-perm/java-decita</url>
-  </scm>
-
-  <distributionManagement>
-    <downloadUrl>https://github.com/nergal-perm/java-decita/packages/</downloadUrl>
-    <repository>
-      <id>github</id>
-      <name>GitHub nergal-perm Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/nergal-perm/java-decita</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <snapshotRepository>
-      <id>Github packages</id>
-    </snapshotRepository>
-    <site>
-      <id>github.io</id>
-      <url>https://nergal-perm.github.io/java-decita</url>
-    </site>
-  </distributionManagement>
+  <modules>
+    <module>java-decita</module>
+    <module>logic-checker</module>
+  </modules>
 
   <dependencies>
     <dependency>
@@ -132,12 +63,6 @@
       <artifactId>jcabi-matchers</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>3.24.2</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -146,8 +71,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>17</source>
-          <target>17</target>
+          <source>21</source>
+          <target>21</target>
           <compilerArgs>
             <arg>-Xlint:-requires-automatic</arg>
           </compilerArgs>

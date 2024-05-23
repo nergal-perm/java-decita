@@ -1,0 +1,12 @@
+operations:
+  - "cells::A1 -> empty"
+  - "cells::A2 -> empty"
+  - "cells::A3 -> empty"
+  - "cells::B1 -> empty"
+  - "cells::B2 -> empty"
+  - "cells::B3 -> empty"
+  - "cells::C1 -> empty"
+  - "cells::C2 -> empty"
+  - "cells::C3 -> empty"
+  - "table::currentPlayer -> X"
+  - "table::nextPlayer -> O"

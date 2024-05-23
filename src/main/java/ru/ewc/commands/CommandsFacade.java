@@ -27,8 +27,8 @@ package ru.ewc.commands;
 import java.net.URI;
 import java.util.Map;
 import ru.ewc.commands.input.YamlCommandsReader;
-import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.DecitaFacade;
+import ru.ewc.decisions.core.BaseLocators;
 
 /**
  * I am a facade for the commands that are written in the YAML format.

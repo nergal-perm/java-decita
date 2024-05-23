@@ -22,10 +22,13 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.api;
+package ru.ewc.decisions.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.Locator;
 
 /**
  * I am the collection of {@link Locator}s used to populate the {@link ComputationContext}s. My main
@@ -34,7 +37,6 @@ import java.util.Map;
  *
  * @since 0.3.1
  */
-// @todo #115 Make Locators abstract in order to extend it with the custom Locators
 public class BaseLocators {
     /**
      * The {@link Locator}s to be managed by this instance.
@@ -46,7 +48,7 @@ public class BaseLocators {
      *
      * @param collection The {@link Locator}s to be managed by this instance.
      */
-    public BaseLocators(final Map<String, Locator> collection) {
+    protected BaseLocators(final Map<String, Locator> collection) {
         this.collection = collection;
     }
 

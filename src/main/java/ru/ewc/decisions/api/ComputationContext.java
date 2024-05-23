@@ -25,6 +25,7 @@
 package ru.ewc.decisions.api;
 
 import java.util.Map;
+import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 

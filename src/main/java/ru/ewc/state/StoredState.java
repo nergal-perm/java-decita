@@ -25,8 +25,8 @@
 package ru.ewc.state;
 
 import java.util.Map;
-import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
 
 /**

@@ -27,6 +27,7 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
+import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.StoredState;

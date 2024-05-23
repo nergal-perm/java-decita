@@ -26,13 +26,13 @@ package ru.ewc.decisions;
 
 import java.util.List;
 import java.util.Map;
-import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.conditions.AlwaysTrueCondition;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.conditions.NotCondition;
+import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
@@ -70,7 +70,7 @@ public final class TestObjects {
             "table", InMemoryLocator.empty(),
             "cells", InMemoryLocator.empty()
         );
-        return defaultLocatorsWith(new BaseLocators(locators));
+        return defaultLocatorsWith(new StoredState(locators));
     }
 
     /**
@@ -136,7 +136,7 @@ public final class TestObjects {
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
-        final BaseLocators constant = new BaseLocators(
+        final BaseLocators constant = new StoredState(
             Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
         );
         return StoredState.EMPTY.mergedWith(

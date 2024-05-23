@@ -24,9 +24,9 @@
 
 package ru.ewc.decisions.input;
 
-import ru.ewc.decisions.api.BaseLocators;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**

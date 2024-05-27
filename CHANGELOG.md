@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.1](https://github.com/nergal-perm/java-decita/compare/v0.6.0...v0.6.1) (2024-05-27)
+
+
+### Features
+
+* determining if a Coordinate is resolved ([8b408f8](https://github.com/nergal-perm/java-decita/commit/8b408f87e1c1887f4b2f5233b7adf5e3cf9acb7c)), closes [#120](https://github.com/nergal-perm/java-decita/issues/120)
+
 ### [0.5.2](https://github.com/nergal-perm/java-decita/compare/v0.5.1...v0.5.2) (2024-05-18)
 
 

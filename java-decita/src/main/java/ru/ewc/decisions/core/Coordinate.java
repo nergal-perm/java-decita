@@ -125,10 +125,6 @@ public final class Coordinate implements Comparable<Coordinate> {
         return Locator.CONSTANT_VALUES.equals(this.locator);
     }
 
-    public boolean isResolved() {
-        return isResolved(this.locator) && isResolved(this.fragment);
-    }
-
     @Override
     public int compareTo(final Coordinate other) {
         final int result;
@@ -160,9 +156,5 @@ public final class Coordinate implements Comparable<Coordinate> {
     private void turnToConstantWith(final String constant) {
         this.locator = Locator.CONSTANT_VALUES;
         this.fragment = constant;
-    }
-
-    private static boolean isResolved(final String segment) {
-        return segment != null && !(segment.contains("$") || segment.contains("::"));
     }
 }

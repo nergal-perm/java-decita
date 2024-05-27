@@ -39,16 +39,6 @@ import ru.ewc.decisions.core.Coordinate;
  */
 final class CoordinateTest {
     @Test
-    void testConstantTrueIsResolved() {
-        final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
-        MatcherAssert.assertThat(
-            "The constant coordinate is resolved",
-            target.isResolved(),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void testAlreadyComputed() {
         final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
         MatcherAssert.assertThat(

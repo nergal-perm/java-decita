@@ -65,7 +65,6 @@ public class SimpleCommand {
         return target;
     }
 
-    // @todo #23 Make templates resolutions the Coordinate's responsibility
     private static Coordinate resolveLeft(final String desc, final ComputationContext context) {
         return Coordinate.from(
             SimpleCommand.resolve(

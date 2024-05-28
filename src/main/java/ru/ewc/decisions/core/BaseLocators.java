@@ -38,7 +38,6 @@ import ru.ewc.state.StoredState;
  *
  * @since 0.3.1
  */
-// @todo #123 Implement the separate Request locators class
 public class BaseLocators {
     /**
      * The {@link Locator}s to be managed by this instance.

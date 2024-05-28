@@ -32,8 +32,8 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.InMemoryLocator;
+import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.StoredState;
 
@@ -49,31 +49,24 @@ final class EndToEndTest {
     public static final String OUTCOME = "outcome";
 
     /**
-     * The facade for the Decita library.
+     * Constant for the empty incoming request data.
      */
-    public static final DecitaFacade FACADE = new DecitaFacade(
-        new PlainTextDecisionReader(tablesDirectory(), ".csv", ";")::allTables
-    );
+    public static final RequestLocator EMPTY_REQ = new RequestLocator(InMemoryLocator.empty());
 
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
-        final BaseLocators state = new StoredState(
-            Map.of(
-                "data", new InMemoryLocator(
-                    Map.of("is-stored", "true")
-                ),
-                "market", new InMemoryLocator(
-                    Map.of("shop", 2)
-                ),
-                "currentPlayer", new InMemoryLocator(
-                    Map.of("name", "Eugene")
+        final DecitaFacade facade = EndToEndTest.facadeWithState(
+            new StoredState(
+                Map.of(
+                    "data", new InMemoryLocator(Map.of("is-stored", "true")),
+                    "market", new InMemoryLocator(Map.of("shop", 2)),
+                    "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
                 )
             )
         );
-        final Map<String, String> actual = FACADE.decisionFor("sample-table", state);
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            actual,
+            facade.decisionFor("sample-table", EndToEndTest.EMPTY_REQ),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
@@ -83,23 +76,18 @@ final class EndToEndTest {
 
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
-        final BaseLocators state = new StoredState(
-            Map.of(
-                "data", new InMemoryLocator(
-                    Map.of("is-stored", false)
-                ),
-                "market", new InMemoryLocator(
-                    Map.of("shop", 3)
-                ),
-                "currentPlayer", new InMemoryLocator(
-                    Map.of("name", "Eugene")
+        final DecitaFacade facade = EndToEndTest.facadeWithState(
+            new StoredState(
+                Map.of(
+                    "data", new InMemoryLocator(Map.of("is-stored", false)),
+                    "market", new InMemoryLocator(Map.of("shop", 3)),
+                    "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
                 )
             )
         );
-        final Map<String, String> actual = FACADE.decisionFor("sample-table", state);
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            actual,
+            facade.decisionFor("sample-table", EndToEndTest.EMPTY_REQ),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
@@ -109,14 +97,15 @@ final class EndToEndTest {
 
     @Test
     void shouldThrowIfSeveralRulesResolveToTrue() {
-        final BaseLocators state = new StoredState(
-            Map.of(
-                "data", new InMemoryLocator(
-                    Map.of("value", 1)
+        final DecitaFacade facade = EndToEndTest.facadeWithState(
+            new StoredState(
+                Map.of(
+                    "data", new InMemoryLocator(Map.of("value", 1))
                 )
             )
         );
-        Assertions.assertThatThrownBy(() -> FACADE.decisionFor("multiple-rules", state))
+        Assertions
+            .assertThatThrownBy(() -> facade.decisionFor("multiple-rules", EndToEndTest.EMPTY_REQ))
             .isInstanceOf(DecitaException.class)
             .hasMessageContaining("Multiple rules are satisfied");
     }
@@ -127,4 +116,12 @@ final class EndToEndTest {
             "src/test/resources/tables"
         ).toUri();
     }
+
+    private static DecitaFacade facadeWithState(final StoredState state) {
+        return new DecitaFacade(
+            new PlainTextDecisionReader(tablesDirectory(), ".csv", ";")::allTables,
+            state
+        );
+    }
+
 }

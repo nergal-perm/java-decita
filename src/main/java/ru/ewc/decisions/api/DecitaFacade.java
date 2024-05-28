@@ -28,6 +28,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
 import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.StoredState;
@@ -79,7 +80,7 @@ public final class DecitaFacade {
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      * @param state The basic set of {@link Locator} used to obtain data from the system.
      */
-    private DecitaFacade(final Supplier<DecisionTables> tables, final StoredState state) {
+    DecitaFacade(final Supplier<DecisionTables> tables, final StoredState state) {
         this.tables = tables;
         this.state = state;
     }
@@ -94,7 +95,7 @@ public final class DecitaFacade {
     // @todo #122 Initialize Locators source with a set of Producers and the Request
     // @todo #122 Initialize ComputationContext with Locators source and the Request
     // @todo #122 Implement an instance of Decision for the current Request
-    public Map<String, String> decisionFor(final String table, final BaseLocators request) {
+    public Map<String, String> decisionFor(final String table, final RequestLocator request) {
         return this.contextWith(request).decisionFor(table);
     }
 

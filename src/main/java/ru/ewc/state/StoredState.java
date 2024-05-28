@@ -35,6 +35,7 @@ import ru.ewc.decisions.core.ConstantLocator;
  *
  * @since 0.6.0
  */
+// @todo #123 Refactor StoredState to be used as a Locators Factory based on incoming Request
 public class StoredState extends BaseLocators {
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.

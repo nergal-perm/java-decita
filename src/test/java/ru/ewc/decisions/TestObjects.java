@@ -128,18 +128,18 @@ public final class TestObjects {
     /**
      * A collection of default (required) {@link Locator}s.
      *
-     * @param additional Additional {@link BaseLocators} to merge with.
+     * @param state Additional {@link BaseLocators} to merge with.
      * @return A collection of required {@link Locator}s.
      */
-    private static ComputationContext defaultLocatorsWith(final BaseLocators additional) {
+    private static ComputationContext defaultLocatorsWith(final StoredState state) {
         final DecisionTable truthy = new DecisionTable(
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
-        return StoredState.EMPTY.mergedWith(
+        return new ComputationContext(
+            state,
             RequestLocator.EMPTY,
-            new DecisionTables(List.of(truthy)),
-            additional
+            new DecisionTables(List.of(truthy))
         );
     }
 

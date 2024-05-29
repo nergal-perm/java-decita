@@ -97,10 +97,6 @@ public final class DecitaFacade {
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
     public ComputationContext contextWith(final RequestLocator request) {
-        return StoredState.EMPTY.mergedWith(
-            request,
-            this.tables.get(),
-            this.state
-        );
+        return new ComputationContext(this.state, request, this.tables.get());
     }
 }

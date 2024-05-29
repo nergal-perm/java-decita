@@ -29,8 +29,6 @@ import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.input.DecisionTables;
-import ru.ewc.state.StoredState;
 
 /**
  * I am the collection of {@link Locator}s used to populate the {@link ComputationContext}s. My main
@@ -68,18 +66,6 @@ public class BaseLocators {
             );
         }
         return this.collection.get(locator);
-    }
-
-    public final ComputationContext mergedWith(
-        final RequestLocator request,
-        final DecisionTables tables,
-        final BaseLocators... additional
-    ) {
-        final Map<String, Locator> merged = new HashMap<>(this.collection);
-        for (final BaseLocators locator : additional) {
-            merged.putAll(locator.collection);
-        }
-        return new ComputationContext(new StoredState(merged), request, tables);
     }
 
     public final boolean hasLocator(final String locator) {

@@ -31,6 +31,7 @@ import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.input.DecisionTables;
+import ru.ewc.state.StoredState;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -48,7 +49,7 @@ public final class ComputationContext {
     /**
      * The instance of {@link BaseLocators} that provides the required {@link Locator}s.
      */
-    private final BaseLocators collection;
+    private final StoredState state;
 
     /**
      * The storage of incoming request data.
@@ -63,16 +64,16 @@ public final class ComputationContext {
     /**
      * Ctor.
      *
-     * @param locators The {@link BaseLocators} instance to use.
+     * @param state The {@link StoredState} instance to use.
      * @param request The {@link RequestLocator} instance to use.
      * @param tables The {@link DecisionTables} instance to use.
      */
     public ComputationContext(
-        final BaseLocators locators,
+        final StoredState state,
         final RequestLocator request,
         final DecisionTables tables
     ) {
-        this.collection = locators;
+        this.state = state;
         this.request = request;
         this.tables = tables;
     }
@@ -94,7 +95,7 @@ public final class ComputationContext {
         } else if (this.tables.hasLocator(locator)) {
             found = this.tables.locatorFor(locator);
         } else {
-            found = this.collection.locatorFor(locator);
+            found = this.state.locatorFor(locator);
         }
         return found.fragmentBy(fragment, this);
     }
@@ -124,7 +125,7 @@ public final class ComputationContext {
         if ("request".equals(loc)) {
             found = this.request.locatorFor(loc);
         } else {
-            found = this.collection.locatorFor(loc);
+            found = this.state.locatorFor(loc);
         }
         found.setFragmentValue(frag, value);
         return this;

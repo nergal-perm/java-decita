@@ -29,6 +29,7 @@ import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
+import ru.ewc.decisions.core.RequestLocator;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -49,12 +50,19 @@ public final class ComputationContext {
     private final BaseLocators collection;
 
     /**
+     * The storage of incoming request data.
+     */
+    private final RequestLocator request;
+
+    /**
      * Ctor.
      *
      * @param locators The {@link BaseLocators} instance to use.
+     * @param request The {@link RequestLocator} instance to use.
      */
-    public ComputationContext(final BaseLocators locators) {
+    public ComputationContext(final BaseLocators locators, final RequestLocator request) {
         this.collection = locators;
+        this.request = request;
     }
 
     /**
@@ -69,6 +77,8 @@ public final class ComputationContext {
         final Locator found;
         if ("constant".equals(locator)) {
             found = ComputationContext.CONSTANT_LOCATOR;
+        } else if ("request".equals(locator)) {
+            found = this.request.locatorFor(locator);
         } else {
             found = this.collection.locatorFor(locator);
         }
@@ -96,7 +106,13 @@ public final class ComputationContext {
      * @return The updated {@link ComputationContext} instance.
      */
     public ComputationContext setValueFor(final String loc, final String frag, final String value) {
-        this.collection.locatorFor(loc).setFragmentValue(frag, value);
+        final Locator found;
+        if ("request".equals(loc)) {
+            found = this.request.locatorFor(loc);
+        } else {
+            found = this.collection.locatorFor(loc);
+        }
+        found.setFragmentValue(frag, value);
         return this;
     }
 }

@@ -36,6 +36,7 @@ import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
+import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.state.StoredState;
@@ -136,6 +137,7 @@ public final class TestObjects {
             "always_true"
         );
         return StoredState.EMPTY.mergedWith(
+            RequestLocator.EMPTY,
             new DecisionTables(List.of(truthy)),
             additional
         );

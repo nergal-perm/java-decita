@@ -27,7 +27,6 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
-import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
@@ -100,17 +99,17 @@ public final class DecitaFacade {
     }
 
     /**
-     * Merges together all the {@link BaseLocators} instances required to perform the computation.
+     * Merges together all the {@link RequestLocator} instances required to perform the computation.
      *
      * @param request The additional locators to merge with (usually coming in a form of external
      *  request).
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
-    public ComputationContext contextWith(final BaseLocators request) {
+    public ComputationContext contextWith(final RequestLocator request) {
         return StoredState.EMPTY.mergedWith(
+            request,
             this.tables.get(),
-            this.state,
-            request
+            this.state
         );
     }
 }

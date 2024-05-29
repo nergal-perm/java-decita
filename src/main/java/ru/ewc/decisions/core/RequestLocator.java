@@ -34,6 +34,11 @@ import ru.ewc.decisions.api.Locator;
  */
 public class RequestLocator extends BaseLocators {
     /**
+     * The empty {@link RequestLocator}.
+      */
+    public static final RequestLocator EMPTY = new RequestLocator(InMemoryLocator.empty());
+
+    /**
      * Ctor.
      *
      * @param locator The {@link Locator} to be managed by this instance.

@@ -30,6 +30,7 @@ import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.RequestLocator;
+import ru.ewc.decisions.input.DecisionTables;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -55,14 +56,25 @@ public final class ComputationContext {
     private final RequestLocator request;
 
     /**
+     * The storage of decision tables.
+     */
+    private final DecisionTables tables;
+
+    /**
      * Ctor.
      *
      * @param locators The {@link BaseLocators} instance to use.
      * @param request The {@link RequestLocator} instance to use.
+     * @param tables The {@link DecisionTables} instance to use.
      */
-    public ComputationContext(final BaseLocators locators, final RequestLocator request) {
+    public ComputationContext(
+        final BaseLocators locators,
+        final RequestLocator request,
+        final DecisionTables tables
+    ) {
         this.collection = locators;
         this.request = request;
+        this.tables = tables;
     }
 
     /**
@@ -79,6 +91,8 @@ public final class ComputationContext {
             found = ComputationContext.CONSTANT_LOCATOR;
         } else if ("request".equals(locator)) {
             found = this.request.locatorFor(locator);
+        } else if (this.tables.hasLocator(locator)) {
+            found = this.tables.locatorFor(locator);
         } else {
             found = this.collection.locatorFor(locator);
         }
@@ -94,7 +108,7 @@ public final class ComputationContext {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decisionFor(final String name) throws DecitaException {
-        return this.collection.locatorFor(name).outcome(this);
+        return this.tables.locatorFor(name).outcome(this);
     }
 
     /**

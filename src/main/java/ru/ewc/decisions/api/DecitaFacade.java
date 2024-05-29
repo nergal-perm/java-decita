@@ -50,15 +50,6 @@ public final class DecitaFacade {
     private final StoredState state;
 
     /**
-     * Ctor.
-     *
-     * @param tables The function that provides a fresh set of uncomputed decision tables.
-     */
-    DecitaFacade(final Supplier<DecisionTables> tables) {
-        this(tables, StoredState.EMPTY);
-    }
-
-    /**
      * Ctor used by library clients to construct the facade based on a folder with decision tables.
      *
      * @param path Path to the folder with decision tables.

@@ -27,7 +27,9 @@ package ru.ewc.decisions;
 import java.util.List;
 import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.api.RequestLocator;
 import ru.ewc.decisions.conditions.AlwaysTrueCondition;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
@@ -36,9 +38,7 @@ import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
-import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.core.Rule;
-import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.state.StoredState;
 
 /**

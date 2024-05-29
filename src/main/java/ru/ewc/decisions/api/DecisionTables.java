@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.input;
+package ru.ewc.decisions.api;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 

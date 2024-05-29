@@ -33,7 +33,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.core.InMemoryLocator;
-import ru.ewc.decisions.core.RequestLocator;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.StoredState;
 

@@ -29,8 +29,6 @@ import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.decisions.core.RequestLocator;
-import ru.ewc.decisions.input.DecisionTables;
 import ru.ewc.state.StoredState;
 
 /**
@@ -39,7 +37,6 @@ import ru.ewc.state.StoredState;
  *
  * @since 0.1
  */
-// @todo #127 Create Locator-specific fields for ComputationContext
 public final class ComputationContext {
     /**
      * The always available Locator that returns constant values.

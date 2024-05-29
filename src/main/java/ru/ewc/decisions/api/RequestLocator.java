@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.core;
+package ru.ewc.decisions.api;
 
 import java.util.Map;
-import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.core.InMemoryLocator;
 
 /**
  * I am a Locator that represents the incoming data (i.e. in a form of incoming request).

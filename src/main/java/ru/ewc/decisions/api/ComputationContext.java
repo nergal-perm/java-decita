@@ -37,6 +37,7 @@ import ru.ewc.state.StoredState;
  *
  * @since 0.1
  */
+// @todo #122 Get rid of the Facades and make ComputationContext the entrypoint for the library.
 public final class ComputationContext {
     /**
      * The always available Locator that returns constant values.

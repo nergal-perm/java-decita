@@ -27,7 +27,7 @@ package ru.ewc.commands;
 import java.net.URI;
 import java.util.Map;
 import ru.ewc.commands.input.YamlCommandsReader;
-import ru.ewc.state.StoredState;
+import ru.ewc.decisions.api.ComputationContext;
 
 /**
  * I am a facade for the commands that are written in the YAML format.
@@ -36,34 +36,28 @@ import ru.ewc.state.StoredState;
  */
 public class CommandsFacade {
     /**
-     * The command registry.
+     * The command registry that stores the commands.
      */
     private final Map<String, SimpleCommand> commands;
-
-    /**
-     * The state of the application.
-     */
-    private final StoredState state;
 
     /**
      * Ctor.
      *
      * @param folder The path to the folder with the commands descriptions.
-     * @param state The state of the application.
      */
-    public CommandsFacade(final URI folder, final StoredState state) {
+    public CommandsFacade(final URI folder) {
         this.commands = new YamlCommandsReader(folder).commands();
-        this.state = state;
     }
 
     /**
      * I am a method that performs the command.
      *
      * @param command The command to perform.
-     * @param incoming The state of the locators.
+     * @param context Current context of the computation, containing the state of the system, the
+     *  decision tables and the incoming data (i.e. the incoming user request).
      */
     @SuppressWarnings("unused")
-    public void perform(final String command, final StoredState incoming) {
-        this.commands.get(command).perform(this.state.mergedWith(incoming));
+    public void perform(final String command, final ComputationContext context) {
+        this.commands.get(command).perform(context);
     }
 }

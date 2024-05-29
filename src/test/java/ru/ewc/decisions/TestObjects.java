@@ -33,7 +33,6 @@ import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.conditions.NotCondition;
 import ru.ewc.decisions.core.BaseLocators;
-import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
@@ -136,12 +135,8 @@ public final class TestObjects {
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
-        final BaseLocators constant = new StoredState(
-            Map.of(Locator.CONSTANT_VALUES, new ConstantLocator())
-        );
         return StoredState.EMPTY.mergedWith(
             new DecisionTables(List.of(truthy)),
-            constant,
             additional
         );
     }

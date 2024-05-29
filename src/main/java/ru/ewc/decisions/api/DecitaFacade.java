@@ -108,7 +108,6 @@ public final class DecitaFacade {
      */
     public ComputationContext contextWith(final BaseLocators request) {
         return StoredState.EMPTY.mergedWith(
-            StoredState.CONSTANT_LOCATORS,
             this.tables.get(),
             this.state,
             request

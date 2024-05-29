@@ -26,6 +26,7 @@ package ru.ewc.decisions.api;
 
 import java.util.Map;
 import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 
@@ -37,6 +38,11 @@ import ru.ewc.decisions.core.DecisionTable;
  */
 // @todo #127 Create Locator-specific fields for ComputationContext
 public final class ComputationContext {
+    /**
+     * The always available Locator that returns constant values.
+     */
+    private static final ConstantLocator CONSTANT_LOCATOR = new ConstantLocator();
+
     /**
      * The instance of {@link BaseLocators} that provides the required {@link Locator}s.
      */
@@ -60,7 +66,13 @@ public final class ComputationContext {
      * @throws DecitaException If the {@link Locator} wasn't found in the context.
      */
     public String valueFor(final String locator, final String fragment) throws DecitaException {
-        return this.collection.locatorFor(locator).fragmentBy(fragment, this);
+        final Locator found;
+        if ("constant".equals(locator)) {
+            found = ComputationContext.CONSTANT_LOCATOR;
+        } else {
+            found = this.collection.locatorFor(locator);
+        }
+        return found.fragmentBy(fragment, this);
     }
 
     /**

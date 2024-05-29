@@ -35,6 +35,7 @@ import ru.ewc.decisions.core.DecisionTable;
  *
  * @since 0.1
  */
+// @todo #127 Create Locator-specific fields for ComputationContext
 public final class ComputationContext {
     /**
      * The instance of {@link BaseLocators} that provides the required {@link Locator}s.

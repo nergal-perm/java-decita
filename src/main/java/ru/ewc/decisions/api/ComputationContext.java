@@ -30,6 +30,7 @@ import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.state.StoredState;
+import ru.ewc.state.StoredStateFactory;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -60,6 +61,11 @@ public final class ComputationContext {
     private final DecisionTables tables;
 
     /**
+     * The factories to create {@link Locator}s.
+     */
+    private final StoredStateFactory factories;
+
+    /**
      * Ctor.
      *
      * @param state The {@link StoredState} instance to use.
@@ -74,6 +80,7 @@ public final class ComputationContext {
         this.state = state;
         this.request = request;
         this.tables = tables;
+        this.factories = new StoredStateFactory(state);
     }
 
     /**
@@ -93,7 +100,7 @@ public final class ComputationContext {
         } else if (this.tables.hasLocator(locator)) {
             found = this.tables.locatorFor(locator);
         } else {
-            found = this.state.locatorFor(locator);
+            found = this.factories.locatorFor(locator, this.request);
         }
         return found.fragmentBy(fragment, this);
     }

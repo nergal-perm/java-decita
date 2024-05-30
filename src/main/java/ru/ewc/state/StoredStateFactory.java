@@ -25,28 +25,46 @@
 package ru.ewc.state;
 
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.api.RequestLocator;
 
 /**
- * I am a stored application state. My main responsibility is to provide access to the stored data
- * in order to make decisions or to change it via commands.
+ * I am a factory for the {@link Locator}s. I am used to create request-specific set of Locators
+ * pointing to fragments of stored data.
  *
- * @since 0.6.0
+ * @since 0.7.0
  */
-// @todo #123 Refactor StoredState to be used as a Locators Factory based on incoming Request
-public class StoredState extends BaseLocators {
+public class StoredStateFactory {
     /**
-     * The empty set of predefined {@link Locator}s that should be used to get data from a system.
+     * The factories to create {@link Locator}s.
      */
-    public static final StoredState EMPTY = new StoredState(Map.of());
+    private final Map<String, Function<RequestLocator, Locator>> factories;
 
     /**
      * Ctor.
      *
-     * @param collection The {@link Locator}s to be managed by this instance.
+     * @param state The {@link StoredState} to create {@link Locator}s from.
      */
-    public StoredState(final Map<String, Locator> collection) {
-        super(collection);
+    public StoredStateFactory(final StoredState state) {
+        this.factories = state.locators().entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    e -> r -> state.locatorFor(e.getKey())
+                )
+            );
+    }
+
+    /**
+     * Makes a request-specific {@link Locator} for the specified name.
+     *
+     * @param name Name of the Locator to create.
+     * @param request The incoming request data.
+     * @return The {@link Locator} for the specified name.
+     */
+    public Locator locatorFor(final String name, final RequestLocator request) {
+        return this.factories.get(name).apply(request);
     }
 }

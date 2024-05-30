@@ -88,4 +88,13 @@ public class BaseLocators {
         }
         return state;
     }
+
+    /**
+     * Temporary method that provides access to the locators for testing purposes.
+     *
+     * @return The {@link Map} of {@link Locator}s.
+     */
+    public Map<String, Locator> locators() {
+        return this.collection;
+    }
 }

@@ -82,7 +82,6 @@ public final class DecitaFacade {
      */
     // @todo #122 Initialize Locators source with a set of Producers and the Request
     // @todo #122 Initialize ComputationContext with Locators source and the Request
-    // @todo #122 Implement an instance of Decision for the current Request
     public Map<String, String> decisionFor(final String table, final RequestLocator request) {
         return this.contextWith(request).decisionFor(table);
     }

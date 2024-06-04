@@ -47,6 +47,7 @@ public class StoredStateFactory {
      *
      * @param state The {@link StoredState} to create {@link Locator}s from.
      */
+    // @todo #127 Pass the StateFactories to the StoredStateFactory from outside
     public StoredStateFactory(final StoredState state) {
         this.factories = state.locators().entrySet().stream()
             .collect(

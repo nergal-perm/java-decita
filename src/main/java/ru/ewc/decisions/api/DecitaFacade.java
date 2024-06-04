@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.StoredState;
+import ru.ewc.state.StoredStateFactory;
 
 /**
  * I am the facade for the Decita library. My main responsibility is to provide a single entry point
@@ -89,11 +90,11 @@ public final class DecitaFacade {
     /**
      * Merges together all the {@link RequestLocator} instances required to perform the computation.
      *
-     * @param request The additional locators to merge with (usually coming in a form of external
+     * @param req The additional locators to merge with (usually coming in a form of external
      *  request).
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
-    public ComputationContext contextWith(final RequestLocator request) {
-        return new ComputationContext(this.state, request, this.tables.get());
+    public ComputationContext contextWith(final RequestLocator req) {
+        return new ComputationContext(new StoredStateFactory(this.state), this.tables.get(), req);
     }
 }

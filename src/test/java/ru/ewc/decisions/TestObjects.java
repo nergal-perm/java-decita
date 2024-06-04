@@ -40,6 +40,7 @@ import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.state.StoredState;
+import ru.ewc.state.StoredStateFactory;
 
 /**
  * I hold different preconfigured objects for unit-tests.
@@ -137,9 +138,7 @@ public final class TestObjects {
             "always_true"
         );
         return new ComputationContext(
-            state,
-            RequestLocator.EMPTY,
-            new DecisionTables(List.of(truthy))
+            new StoredStateFactory(state), new DecisionTables(List.of(truthy)), RequestLocator.EMPTY
         );
     }
 

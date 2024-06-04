@@ -25,11 +25,9 @@
 package ru.ewc.decisions.api;
 
 import java.util.Map;
-import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.state.StoredState;
 import ru.ewc.state.StoredStateFactory;
 
 /**
@@ -44,11 +42,6 @@ public final class ComputationContext {
      * The always available Locator that returns constant values.
      */
     private static final ConstantLocator CONSTANT_LOCATOR = new ConstantLocator();
-
-    /**
-     * The instance of {@link BaseLocators} that provides the required {@link Locator}s.
-     */
-    private final StoredState state;
 
     /**
      * The storage of incoming request data.
@@ -68,19 +61,18 @@ public final class ComputationContext {
     /**
      * Ctor.
      *
-     * @param state The {@link StoredState} instance to use.
-     * @param request The {@link RequestLocator} instance to use.
+     * @param state The {@link StoredStateFactory} instance to use.
      * @param tables The {@link DecisionTables} instance to use.
+     * @param request The {@link RequestLocator} instance to use.
      */
     public ComputationContext(
-        final StoredState state,
-        final RequestLocator request,
-        final DecisionTables tables
+        final StoredStateFactory state,
+        final DecisionTables tables,
+        final RequestLocator request
     ) {
-        this.state = state;
         this.request = request;
         this.tables = tables;
-        this.factories = new StoredStateFactory(state);
+        this.factories = state;
     }
 
     /**
@@ -130,7 +122,7 @@ public final class ComputationContext {
         if ("request".equals(loc)) {
             found = this.request.locatorFor(loc);
         } else {
-            found = this.state.locatorFor(loc);
+            found = this.factories.locatorFor(loc, this.request);
         }
         found.setFragmentValue(frag, value);
         return this;

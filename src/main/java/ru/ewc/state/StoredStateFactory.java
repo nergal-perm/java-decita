@@ -24,11 +24,11 @@
 
 package ru.ewc.state;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.api.RequestLocator;
+import ru.ewc.decisions.core.ConstantLocator;
 
 /**
  * I am a factory for the {@link Locator}s. I am used to create request-specific set of Locators
@@ -38,34 +38,40 @@ import ru.ewc.decisions.api.RequestLocator;
  */
 public class StoredStateFactory {
     /**
-     * The factories to create {@link Locator}s.
+     * The always available Locator that returns constant values.
      */
-    private final Map<String, Function<RequestLocator, Locator>> factories;
+    private static final ConstantLocator CONSTANT_LOCATOR = new ConstantLocator();
+
+    /**
+     * The {@link Locator}s to be managed by this instance.
+     */
+    private final Map<String, Locator> locators;
 
     /**
      * Ctor.
      *
-     * @param state The {@link StoredState} to create {@link Locator}s from.
+     * @param state The {@link State} to create {@link Locator}s from.
+     * @param req The incoming request data.
      */
     // @todo #127 Pass the StateFactories to the StoredStateFactory from outside
-    public StoredStateFactory(final StoredState state) {
-        this.factories = state.locators().entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    e -> r -> state.locatorFor(e.getKey())
-                )
-            );
+    public StoredStateFactory(final State state, final RequestLocator req) {
+        this.locators = StoredStateFactory.locatorsFrom(state, req);
     }
 
     /**
      * Makes a request-specific {@link Locator} for the specified name.
      *
      * @param name Name of the Locator to create.
-     * @param request The incoming request data.
      * @return The {@link Locator} for the specified name.
      */
-    public Locator locatorFor(final String name, final RequestLocator request) {
-        return this.factories.get(name).apply(request);
+    public Locator locatorFor(final String name) {
+        return this.locators.get(name);
+    }
+
+    private static Map<String, Locator> locatorsFrom(final State state, final RequestLocator req) {
+        final Map<String, Locator> locators = new HashMap<>(state.locators());
+        locators.put("constant", StoredStateFactory.CONSTANT_LOCATOR);
+        locators.put("request", req.locatorFor("request"));
+        return locators;
     }
 }

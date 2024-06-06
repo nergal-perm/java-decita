@@ -28,7 +28,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Supplier;
 import ru.ewc.decisions.input.PlainTextDecisionReader;
-import ru.ewc.state.StoredState;
+import ru.ewc.state.State;
 import ru.ewc.state.StoredStateFactory;
 
 /**
@@ -46,7 +46,7 @@ public final class DecitaFacade {
     /**
      * The basic set of {@link Locator} that represents the current stored state of the system.
      */
-    private final StoredState state;
+    private final State state;
 
     /**
      * Ctor used by library clients to construct the facade based on a folder with decision tables.
@@ -59,7 +59,7 @@ public final class DecitaFacade {
     public DecitaFacade(final URI path, final String ext, final String delimiter) {
         this(
             () -> new PlainTextDecisionReader(path, ext, delimiter).allTables(),
-            StoredState.EMPTY
+            State.EMPTY
         );
     }
 
@@ -69,7 +69,7 @@ public final class DecitaFacade {
      * @param tables The function that provides a fresh set of uncomputed decision tables.
      * @param state The basic set of {@link Locator} used to obtain data from the system.
      */
-    DecitaFacade(final Supplier<DecisionTables> tables, final StoredState state) {
+    DecitaFacade(final Supplier<DecisionTables> tables, final State state) {
         this.tables = tables;
         this.state = state;
     }
@@ -95,6 +95,6 @@ public final class DecitaFacade {
      * @return An instance of {@link ComputationContext} with all the required locators.
      */
     public ComputationContext contextWith(final RequestLocator req) {
-        return new ComputationContext(new StoredStateFactory(this.state), this.tables.get(), req);
+        return new ComputationContext(new StoredStateFactory(this.state, req), this.tables.get());
     }
 }

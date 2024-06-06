@@ -39,7 +39,7 @@ import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
-import ru.ewc.state.StoredState;
+import ru.ewc.state.State;
 import ru.ewc.state.StoredStateFactory;
 
 /**
@@ -62,7 +62,7 @@ public final class TestObjects {
      * @return A prefilled {@link ComputationContext}.
      */
     public static ComputationContext defaultContext() {
-        return defaultLocatorsWith(StoredState.EMPTY);
+        return defaultLocatorsWith(State.EMPTY);
     }
 
     public static ComputationContext ticTacToeContext() {
@@ -71,7 +71,7 @@ public final class TestObjects {
             "table", InMemoryLocator.empty(),
             "cells", InMemoryLocator.empty()
         );
-        return defaultLocatorsWith(new StoredState(locators));
+        return defaultLocatorsWith(new State(locators));
     }
 
     /**
@@ -132,13 +132,13 @@ public final class TestObjects {
      * @param state Additional {@link BaseLocators} to merge with.
      * @return A collection of required {@link Locator}s.
      */
-    private static ComputationContext defaultLocatorsWith(final StoredState state) {
+    private static ComputationContext defaultLocatorsWith(final State state) {
         final DecisionTable truthy = new DecisionTable(
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
         return new ComputationContext(
-            new StoredStateFactory(state), new DecisionTables(List.of(truthy)), RequestLocator.EMPTY
+            new StoredStateFactory(state, RequestLocator.EMPTY), new DecisionTables(List.of(truthy))
         );
     }
 

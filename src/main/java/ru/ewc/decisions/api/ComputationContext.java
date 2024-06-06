@@ -25,7 +25,6 @@
 package ru.ewc.decisions.api;
 
 import java.util.Map;
-import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.state.StoredStateFactory;
@@ -38,15 +37,6 @@ import ru.ewc.state.StoredStateFactory;
  */
 // @todo #122 Get rid of the Facades and make ComputationContext the entrypoint for the library.
 public final class ComputationContext {
-    /**
-     * The always available Locator that returns constant values.
-     */
-    private static final ConstantLocator CONSTANT_LOCATOR = new ConstantLocator();
-
-    /**
-     * The storage of incoming request data.
-     */
-    private final RequestLocator request;
 
     /**
      * The storage of decision tables.
@@ -63,14 +53,11 @@ public final class ComputationContext {
      *
      * @param state The {@link StoredStateFactory} instance to use.
      * @param tables The {@link DecisionTables} instance to use.
-     * @param request The {@link RequestLocator} instance to use.
      */
     public ComputationContext(
         final StoredStateFactory state,
-        final DecisionTables tables,
-        final RequestLocator request
+        final DecisionTables tables
     ) {
-        this.request = request;
         this.tables = tables;
         this.factories = state;
     }
@@ -85,14 +72,10 @@ public final class ComputationContext {
      */
     public String valueFor(final String locator, final String fragment) throws DecitaException {
         final Locator found;
-        if ("constant".equals(locator)) {
-            found = ComputationContext.CONSTANT_LOCATOR;
-        } else if ("request".equals(locator)) {
-            found = this.request.locatorFor(locator);
-        } else if (this.tables.hasLocator(locator)) {
+        if (this.tables.hasLocator(locator)) {
             found = this.tables.locatorFor(locator);
         } else {
-            found = this.factories.locatorFor(locator, this.request);
+            found = this.factories.locatorFor(locator);
         }
         return found.fragmentBy(fragment, this);
     }
@@ -118,12 +101,7 @@ public final class ComputationContext {
      * @return The updated {@link ComputationContext} instance.
      */
     public ComputationContext setValueFor(final String loc, final String frag, final String value) {
-        final Locator found;
-        if ("request".equals(loc)) {
-            found = this.request.locatorFor(loc);
-        } else {
-            found = this.factories.locatorFor(loc, this.request);
-        }
+        final Locator found = this.factories.locatorFor(loc);
         found.setFragmentValue(frag, value);
         return this;
     }

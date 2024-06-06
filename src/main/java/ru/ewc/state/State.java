@@ -35,18 +35,18 @@ import ru.ewc.decisions.core.BaseLocators;
  * @since 0.6.0
  */
 // @todo #123 Refactor StoredState to be used as a Locators Factory based on incoming Request
-public class StoredState extends BaseLocators {
+public class State extends BaseLocators {
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.
      */
-    public static final StoredState EMPTY = new StoredState(Map.of());
+    public static final State EMPTY = new State(Map.of());
 
     /**
      * Ctor.
      *
      * @param collection The {@link Locator}s to be managed by this instance.
      */
-    public StoredState(final Map<String, Locator> collection) {
+    public State(final Map<String, Locator> collection) {
         super(collection);
     }
 }

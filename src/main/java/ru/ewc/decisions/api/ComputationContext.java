@@ -26,6 +26,7 @@ package ru.ewc.decisions.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import ru.ewc.commands.Commands;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
@@ -50,6 +51,11 @@ public final class ComputationContext {
     private final State state;
 
     /**
+     * The storage of the commands to be executed.
+     */
+    private final Commands commands;
+
+    /**
      * Ctor.
      *
      * @param state The {@link State} instance to use.
@@ -59,8 +65,34 @@ public final class ComputationContext {
         final State state,
         final DecisionTables tables
     ) {
-        this.tables = tables;
+        this(state, tables, new Commands(Map.of()));
+    }
+
+    public ComputationContext(
+        final State state,
+        final DecisionTables tables,
+        final Commands commands
+    ) {
         this.state = extendedWithConstant(state);
+        this.tables = tables;
+        this.commands = commands;
+    }
+
+    /**
+     * Computes the specified {@link DecisionTable} result as a Dictionary. This method is used by
+     * unit-tests and the library's clients.
+     *
+     * @param name The name of the table to compute.
+     * @return The Dictionary containing the decision result.
+     * @throws DecitaException If the table could not be found or computed.
+     */
+    public Map<String, String> decisionFor(final String name) throws DecitaException {
+        return this.tables.locatorFor(name).outcome(this);
+    }
+
+    @SuppressWarnings("unused")
+    public void perform(final String command) {
+        this.commands.perform(command, this);
     }
 
     /**
@@ -79,18 +111,6 @@ public final class ComputationContext {
             found = this.state.locatorFor(locator);
         }
         return found.fragmentBy(fragment, this);
-    }
-
-    /**
-     * Computes the specified {@link DecisionTable} result as a Dictionary. This method is used by
-     * unit-tests and the library's clients.
-     *
-     * @param name The name of the table to compute.
-     * @return The Dictionary containing the decision result.
-     * @throws DecitaException If the table could not be found or computed.
-     */
-    public Map<String, String> decisionFor(final String name) throws DecitaException {
-        return this.tables.locatorFor(name).outcome(this);
     }
 
     /**

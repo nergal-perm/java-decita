@@ -34,19 +34,23 @@ import ru.ewc.decisions.api.ComputationContext;
  *
  * @since 0.5.1
  */
-public class CommandsFacade {
+public class Commands {
     /**
      * The command registry that stores the commands.
      */
-    private final Map<String, SimpleCommand> commands;
+    private final Map<String, SimpleCommand> registry;
 
     /**
      * Ctor.
      *
      * @param folder The path to the folder with the commands descriptions.
      */
-    public CommandsFacade(final URI folder) {
-        this.commands = new YamlCommandsReader(folder).commands();
+    public Commands(final URI folder) {
+        this(new YamlCommandsReader(folder).commands());
+    }
+
+    public Commands(final Map<String, SimpleCommand> registry) {
+        this.registry = registry;
     }
 
     /**
@@ -56,8 +60,7 @@ public class CommandsFacade {
      * @param context Current context of the computation, containing the state of the system, the
      *  decision tables and the incoming data (i.e. the incoming user request).
      */
-    @SuppressWarnings("unused")
     public void perform(final String command, final ComputationContext context) {
-        this.commands.get(command).perform(context);
+        this.registry.get(command).perform(context);
     }
 }

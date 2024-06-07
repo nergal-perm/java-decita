@@ -54,65 +54,66 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldRead() {
         final SimpleCommand command = this.command("set-table-name");
-        final ComputationContext context = command.perform(TestObjects.ticTacToeContext());
+        final ComputationContext actual = TestObjects.ticTacToeContext();
+        command.perform(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
-            tableName(context),
+            tableName(actual),
             Matchers.equalTo("Machi-Koro")
         );
     }
 
     @Test
     void shouldPerformSeveralOperations() {
-        final SimpleCommand command = this.command("see-the-flop");
-        final ComputationContext context = command.perform(TestObjects.ticTacToeContext());
+        final ComputationContext actual = TestObjects.ticTacToeContext();
+        this.command("see-the-flop").perform(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
-            tableName(context),
+            tableName(actual),
             Matchers.equalTo("Texas Hold'em")
         );
         MatcherAssert.assertThat(
             "Table cards should be set",
-            tableValueFor("flop", context),
+            tableValueFor("flop", actual),
             Matchers.equalTo("2c 3d 4h")
         );
     }
 
     @Test
     void shouldReadSeveralCommands() {
-        ComputationContext context = this.command("set-table-name")
-            .perform(TestObjects.ticTacToeContext());
-        context = this.command("set-max-players").perform(context);
+        final ComputationContext actual = TestObjects.ticTacToeContext();
+        this.command("set-table-name").perform(actual);
+        this.command("set-max-players").perform(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
-            tableName(context),
+            tableName(actual),
             Matchers.equalTo("Machi-Koro")
         );
         final String fragment = "max-players";
         MatcherAssert.assertThat(
             "Max players should be set according to description",
-            tableValueFor(fragment, context),
+            tableValueFor(fragment, actual),
             Matchers.equalTo("5")
         );
     }
 
     @Test
     void shouldMakeTictactoeMove() {
-        final ComputationContext initial = ticTacToeInitialContext();
-        final ComputationContext context = this.command("make-a-move").perform(initial);
+        final ComputationContext actual = ticTacToeInitialContext();
+        this.command("make-a-move").perform(actual);
         MatcherAssert.assertThat(
             "Cell A1 should contain X",
-            context.valueFor("cells", "A1"),
+            actual.valueFor("cells", "A1"),
             Matchers.equalTo("X")
         );
         MatcherAssert.assertThat(
             "Current player should be O",
-            tableValueFor("currentPlayer", context),
+            tableValueFor("currentPlayer", actual),
             Matchers.equalTo("O")
         );
         MatcherAssert.assertThat(
             "Next player should be X",
-            tableValueFor("nextPlayer", context),
+            tableValueFor("nextPlayer", actual),
             Matchers.equalTo("X")
         );
     }

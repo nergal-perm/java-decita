@@ -49,20 +49,19 @@ public class SimpleCommand {
     }
 
     /**
-     * I am a simple method that sets the value of the "name" fragment in the "table" Locator to
-     * "Tic-Tac-Toe".
+     * The method that performs all the operations that constitute the command. Every operation
+     * changes some aspect of the state. The aspect is defined by the {@link Coordinate} that is
+     * the left part of the operation. The value to set is defined by the right part of the
+     * operation.
      *
      * @param context The {@link ComputationContext} to work with.
-     * @return An instance of updated {@link ComputationContext}.
      */
-    public ComputationContext perform(final ComputationContext context) {
-        ComputationContext target = context;
+    public void perform(final ComputationContext context) {
         for (final String description : this.operations) {
             final Coordinate coordinate = SimpleCommand.resolveLeft(description, context);
             final String value = SimpleCommand.resolveRight(description, context);
-            target = coordinate.setValueInContext(value, target);
+            coordinate.setValueInContext(value, context);
         }
-        return target;
     }
 
     private static Coordinate resolveLeft(final String desc, final ComputationContext context) {

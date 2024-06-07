@@ -29,7 +29,6 @@ import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.api.RequestLocator;
 import ru.ewc.decisions.conditions.AlwaysTrueCondition;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
@@ -40,7 +39,6 @@ import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.state.State;
-import ru.ewc.state.StoredStateFactory;
 
 /**
  * I hold different preconfigured objects for unit-tests.
@@ -137,9 +135,6 @@ public final class TestObjects {
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
-        return new ComputationContext(
-            new StoredStateFactory(state, RequestLocator.EMPTY), new DecisionTables(List.of(truthy))
-        );
+        return new ComputationContext(state, new DecisionTables(List.of(truthy)));
     }
-
 }

@@ -24,10 +24,12 @@
 
 package ru.ewc.decisions.api;
 
+import java.util.HashMap;
 import java.util.Map;
+import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.state.StoredStateFactory;
+import ru.ewc.state.State;
 
 /**
  * I am the container for all the things, required for TruthTable evaluation. My main responsibility
@@ -35,7 +37,6 @@ import ru.ewc.state.StoredStateFactory;
  *
  * @since 0.1
  */
-// @todo #122 Get rid of the Facades and make ComputationContext the entrypoint for the library.
 public final class ComputationContext {
 
     /**
@@ -44,22 +45,22 @@ public final class ComputationContext {
     private final DecisionTables tables;
 
     /**
-     * The factories to create {@link Locator}s.
+     * The storage of the current state of the system.
      */
-    private final StoredStateFactory factories;
+    private final State state;
 
     /**
      * Ctor.
      *
-     * @param state The {@link StoredStateFactory} instance to use.
+     * @param state The {@link State} instance to use.
      * @param tables The {@link DecisionTables} instance to use.
      */
     public ComputationContext(
-        final StoredStateFactory state,
+        final State state,
         final DecisionTables tables
     ) {
         this.tables = tables;
-        this.factories = state;
+        this.state = extendedWithConstant(state);
     }
 
     /**
@@ -75,7 +76,7 @@ public final class ComputationContext {
         if (this.tables.hasLocator(locator)) {
             found = this.tables.locatorFor(locator);
         } else {
-            found = this.factories.locatorFor(locator);
+            found = this.state.locatorFor(locator);
         }
         return found.fragmentBy(fragment, this);
     }
@@ -101,8 +102,14 @@ public final class ComputationContext {
      * @return The updated {@link ComputationContext} instance.
      */
     public ComputationContext setValueFor(final String loc, final String frag, final String value) {
-        final Locator found = this.factories.locatorFor(loc);
+        final Locator found = this.state.locatorFor(loc);
         found.setFragmentValue(frag, value);
         return this;
+    }
+
+    private static State extendedWithConstant(final State state) {
+        final Map<String, Locator> locators = new HashMap<>(state.locators());
+        locators.put("constant", new ConstantLocator());
+        return new State(locators);
     }
 }

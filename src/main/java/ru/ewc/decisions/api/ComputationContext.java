@@ -24,17 +24,18 @@
 
 package ru.ewc.decisions.api;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import ru.ewc.commands.Commands;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
+import ru.ewc.decisions.input.PlainTextDecisionReader;
 import ru.ewc.state.State;
 
 /**
- * I am the container for all the things, required for TruthTable evaluation. My main responsibility
- * is to provide the set of {@link Locator}s in order to find all the required {@link Coordinate}s.
+ * I am the facade for all TruthTable evaluations and Commands executions.
  *
  * @since 0.1
  */
@@ -51,29 +52,35 @@ public final class ComputationContext {
     private final State state;
 
     /**
-     * The storage of the commands to be executed.
+     * The storage of all the commands.
      */
     private final Commands commands;
 
-    /**
-     * Ctor.
-     *
-     * @param state The {@link State} instance to use.
-     * @param tables The {@link DecisionTables} instance to use.
-     */
-    public ComputationContext(
-        final State state,
-        final DecisionTables tables
-    ) {
+    public ComputationContext(final State state, final URI tables) {
+        this(state, ComputationContext.getAllTables(tables));
+    }
+
+    public ComputationContext(final State state, final URI tables, final URI commands) {
+        this(state, ComputationContext.getAllTables(tables), new Commands(commands));
+    }
+
+    public ComputationContext(final State state, final DecisionTables tables) {
         this(state, tables, new Commands(Map.of()));
     }
 
+    /**
+     * Primary Ctor.
+     *
+     * @param state The {@link State} instance to use.
+     * @param tables The {@link DecisionTables} instance to use.
+     * @param commands The {@link Commands} instance to use.
+     */
     public ComputationContext(
         final State state,
         final DecisionTables tables,
         final Commands commands
     ) {
-        this.state = extendedWithConstant(state);
+        this.state = ComputationContext.extendedWithConstant(state);
         this.tables = tables;
         this.commands = commands;
     }
@@ -131,5 +138,9 @@ public final class ComputationContext {
         final Map<String, Locator> locators = new HashMap<>(state.locators());
         locators.put("constant", new ConstantLocator());
         return new State(locators);
+    }
+
+    private static DecisionTables getAllTables(final URI tables) {
+        return new PlainTextDecisionReader(tables, ".csv", ";").allTables();
     }
 }

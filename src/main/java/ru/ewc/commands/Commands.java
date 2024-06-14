@@ -25,6 +25,7 @@
 package ru.ewc.commands;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import ru.ewc.commands.input.YamlCommandsReader;
 import ru.ewc.decisions.api.ComputationContext;
@@ -62,5 +63,14 @@ public class Commands {
      */
     public void perform(final String command, final ComputationContext context) {
         this.registry.get(command).perform(context);
+    }
+
+    /**
+     * I am a method that returns the names of the commands.
+     *
+     * @return The list of the command names.
+     */
+    public List<String> names() {
+        return this.registry.keySet().stream().toList();
     }
 }

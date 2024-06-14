@@ -26,6 +26,7 @@ package ru.ewc.decisions.api;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import ru.ewc.commands.Commands;
 import ru.ewc.decisions.core.ConstantLocator;
@@ -132,6 +133,16 @@ public final class ComputationContext {
         final Locator found = this.state.locatorFor(loc);
         found.setFragmentValue(frag, value);
         return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Map<String, Map<String, Object>> storedState() {
+        return this.state.state();
+    }
+
+    @SuppressWarnings("unused")
+    public List<String> commandNames() {
+        return this.commands.names();
     }
 
     private static State extendedWithConstant(final State state) {

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/nergal-perm/java-decita/compare/v0.6.1...v0.7.0) (2024-06-14)
+
+
+### Features
+
+* exposing command names to external clients ([1f73841](https://github.com/nergal-perm/java-decita/commit/1f738416cd71d5cdd322c784638992346d6e331a)), closes [#113](https://github.com/nergal-perm/java-decita/issues/113)
+* **locators:** created a simple StoredStateFactory ([d34e24c](https://github.com/nergal-perm/java-decita/commit/d34e24ca1b44949b0b118bbb17d8f8ff479d8896)), closes [#127](https://github.com/nergal-perm/java-decita/issues/127)
+
 ### [0.6.1](https://github.com/nergal-perm/java-decita/compare/v0.6.0...v0.6.1) (2024-05-27)
 
 

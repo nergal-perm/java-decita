@@ -55,7 +55,7 @@ final class YamlCommandsReaderTest {
     void shouldRead() {
         final SimpleCommand command = this.command("set-table-name");
         final ComputationContext actual = TestObjects.ticTacToeContext();
-        command.perform(actual);
+        command.performIn(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             tableName(actual),
@@ -66,7 +66,7 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldPerformSeveralOperations() {
         final ComputationContext actual = TestObjects.ticTacToeContext();
-        this.command("see-the-flop").perform(actual);
+        this.command("see-the-flop").performIn(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             tableName(actual),
@@ -82,8 +82,8 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldReadSeveralCommands() {
         final ComputationContext actual = TestObjects.ticTacToeContext();
-        this.command("set-table-name").perform(actual);
-        this.command("set-max-players").perform(actual);
+        this.command("set-table-name").performIn(actual);
+        this.command("set-max-players").performIn(actual);
         MatcherAssert.assertThat(
             "Table name should be set according to description",
             tableName(actual),
@@ -100,7 +100,7 @@ final class YamlCommandsReaderTest {
     @Test
     void shouldMakeTictactoeMove() {
         final ComputationContext actual = ticTacToeInitialContext();
-        this.command("make-a-move").perform(actual);
+        this.command("make-a-move").performIn(actual);
         MatcherAssert.assertThat(
             "Cell A1 should contain X",
             actual.valueFor("cells", "A1"),

@@ -62,7 +62,7 @@ public class Commands {
      *  decision tables and the incoming data (i.e. the incoming user request).
      */
     public void perform(final String command, final ComputationContext context) {
-        this.registry.get(command).perform(context);
+        this.registry.get(command).performIn(context);
     }
 
     /**

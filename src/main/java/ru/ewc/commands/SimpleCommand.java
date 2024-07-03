@@ -24,16 +24,18 @@
 
 package ru.ewc.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
- * I am a simple Command, an intermediary class for testing purposes.
+ * I am a simple Command, my main responsibility is to perform a set of operations that change the
+ * inner state of the {@link ComputationContext}.
  *
  * @since 0.5.0
  */
-public class SimpleCommand {
+public final class SimpleCommand {
     /**
      * The operation to perform.
      */
@@ -56,12 +58,26 @@ public class SimpleCommand {
      *
      * @param context The {@link ComputationContext} to work with.
      */
-    public void perform(final ComputationContext context) {
+    public void performIn(final ComputationContext context) {
         for (final String description : this.operations) {
             final Coordinate coordinate = SimpleCommand.resolveLeft(description, context);
             final String value = SimpleCommand.resolveRight(description, context);
             coordinate.setValueInContext(value, context);
         }
+    }
+
+    public Iterable<String> unresolvedParts() {
+        final List<String> result = new ArrayList<>(this.operations.size() * 2);
+        for (final String description : this.operations) {
+            final String[] split = description.split("->");
+            if (split[0].contains("${")) {
+                result.add(extractInnerMostCoordinate(split[0].trim()));
+            }
+            if (split[1].contains("${")) {
+                result.add(extractInnerMostCoordinate(split[1].trim()));
+            }
+        }
+        return result.stream().filter(s -> s.contains("::")).toList();
     }
 
     private static Coordinate resolveLeft(final String desc, final ComputationContext context) {
@@ -97,4 +113,5 @@ public class SimpleCommand {
         final int end = description.indexOf('}');
         return description.substring(start + 2, end);
     }
+
 }

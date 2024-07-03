@@ -40,7 +40,7 @@ final class SimpleCommandTest {
     @Test
     void shouldCreateState() {
         final ComputationContext actual = TestObjects.ticTacToeContext();
-        ticTacToeTable().perform(actual);
+        ticTacToeCommand().performIn(actual);
         MatcherAssert.assertThat(
             "Table name should be updated to 'Tic-Tac-Toe'",
             actual.valueFor("table", "name"),
@@ -51,8 +51,8 @@ final class SimpleCommandTest {
     @Test
     void shouldUpdateState() {
         final ComputationContext actual = TestObjects.ticTacToeContext();
-        ticTacToeTable().perform(actual);
-        machiKoroTable().perform(actual);
+        ticTacToeCommand().performIn(actual);
+        machiKoroCommand().performIn(actual);
         MatcherAssert.assertThat(
             "Table name should be updated to 'Machi-Koro'",
             actual.valueFor("table", "name"),
@@ -60,11 +60,23 @@ final class SimpleCommandTest {
         );
     }
 
-    private static SimpleCommand machiKoroTable() {
+    @Test
+    void shouldExtractUnresolvedParts() {
+        final SimpleCommand command = new SimpleCommand(
+            List.of("table::${function::currentTable} -> ${request::tableName}")
+        );
+        MatcherAssert.assertThat(
+            "Command should provide its unresolved parts",
+            command.unresolvedParts(),
+            Matchers.containsInAnyOrder("request::tableName", "function::currentTable")
+        );
+    }
+
+    private static SimpleCommand machiKoroCommand() {
         return new SimpleCommand(List.of("table::name -> Machi-Koro"));
     }
 
-    private static SimpleCommand ticTacToeTable() {
+    private static SimpleCommand ticTacToeCommand() {
         return new SimpleCommand(List.of("table::name -> Tic-Tac-Toe"));
     }
 }

@@ -66,7 +66,7 @@ public final class SimpleCommand {
         }
     }
 
-    public Iterable<String> unresolvedParts() {
+    public List<String> unresolvedParts() {
         final List<String> result = new ArrayList<>(this.operations.size() * 2);
         for (final String description : this.operations) {
             final String[] split = description.split("->");

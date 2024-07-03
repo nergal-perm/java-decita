@@ -141,8 +141,14 @@ public final class ComputationContext {
     }
 
     @SuppressWarnings("unused")
+    @Deprecated
     public List<String> commandNames() {
         return this.commands.names();
+    }
+
+    @SuppressWarnings("unused")
+    public Map<String, List<String>> commandData() {
+        return this.commands.args();
     }
 
     private static State extendedWithConstant(final State state) {

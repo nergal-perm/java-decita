@@ -27,6 +27,7 @@ package ru.ewc.commands;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import ru.ewc.commands.input.YamlCommandsReader;
 import ru.ewc.decisions.api.ComputationContext;
 
@@ -72,5 +73,19 @@ public class Commands {
      */
     public List<String> names() {
         return this.registry.keySet().stream().toList();
+    }
+
+    /**
+     * I am a method that returns the unresolved parts of the commands.
+     *
+     * @return The map of the command names and their unresolved parts.
+     */
+    public Map<String, List<String>> args() {
+        return this.registry.entrySet().stream().collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().unresolvedParts()
+            )
+        );
     }
 }

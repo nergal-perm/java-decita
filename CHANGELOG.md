@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.1](https://github.com/nergal-perm/java-decita/compare/v0.7.0...v0.7.1) (2024-07-03)
+
+
+### Features
+
+* exposing the list of commands resolvable parts ([8bec5d6](https://github.com/nergal-perm/java-decita/commit/8bec5d6600d90673c9be926b67ee0c6f159ef243))
+* extracting the list of commands resolvable parts ([79a60db](https://github.com/nergal-perm/java-decita/commit/79a60dbe64c64834aca080ba9ec0e28242e93085))
+
 ## [0.7.0](https://github.com/nergal-perm/java-decita/compare/v0.6.1...v0.7.0) (2024-06-14)
 
 

@@ -22,27 +22,42 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.core;
+package ru.ewc.decisions.api;
 
-import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.Locator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * I am a concrete {@link Locator} responsible for finding (creating instances of) Constant
- * Fragments. It is useful for all kinds of comparisons, especially for the calculation of the
- * Truth Table's Rules.
+ * I am a simple publisher for the output data. I provide functionality to store the output data
+ * while computing something and retrieve it later.
  *
- * @since 0.1
+ * @param <T> The type of the output data to track.
+ * @since 0.7.2
  */
-public final class ConstantLocator implements Locator {
-    @Override
-    public String fragmentBy(final String fragment, final ComputationContext context) {
-        context.trackEvent("Constant fragment returned: %s".formatted(fragment));
-        return fragment;
+public final class OutputPublisher<T> {
+    /**
+     * The collection of all the subscribed trackers.
+     */
+    private final List<OutputTracker<T>> trackers = new ArrayList<>(1);
+
+    /**
+     * Stores the output data (event) in all the subscribed trackers.
+     *
+     * @param data The output data to store.
+     */
+    public void track(final T data) {
+        this.trackers.forEach(tracker -> tracker.add(data));
     }
 
-    @Override
-    public void setFragmentValue(final String fragment, final String value) {
-        // no-op method, nothing changes
+    /**
+     * Creates a new tracker and subscribes it to the publisher.
+     *
+     * @return The new {@link OutputTracker} instance.
+     */
+    public OutputTracker<T> createTracker() {
+        final OutputTracker<T> tracker = new OutputTracker<>();
+        this.trackers.add(tracker);
+        return tracker;
     }
+
 }

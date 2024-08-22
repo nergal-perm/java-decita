@@ -20,3 +20,6 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# VS Code
+/.vscode/extensions.json

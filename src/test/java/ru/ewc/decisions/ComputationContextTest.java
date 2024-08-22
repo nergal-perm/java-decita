@@ -39,16 +39,12 @@ import ru.ewc.decisions.core.Coordinate;
 final class ComputationContextTest {
     @Test
     void shouldFindAFragment() throws DecitaException {
-        final ComputationContext context = contextWithConstantLocator();
+        final ComputationContext context = TestObjects.defaultContext();
         final Coordinate actual = TestObjects.valueTrue().locateIn(context);
         MatcherAssert.assertThat(
             "The context should have a fragment",
             actual,
             Matchers.equalTo(TestObjects.valueTrue())
         );
-    }
-
-    private static ComputationContext contextWithConstantLocator() {
-        return TestObjects.defaultContext();
     }
 }

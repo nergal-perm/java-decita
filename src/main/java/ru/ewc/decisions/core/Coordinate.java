@@ -102,14 +102,17 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
         if (!this.isComputed()) {
-            final String located = context.valueFor(this.locator, this.fragment);
-            this.turnToConstantWith(located);
+            this.turnToConstantWith(this.valueIn(context));
         }
         return this;
     }
 
     public String valueIn(final ComputationContext context) throws DecitaException {
-        return context.valueFor(this.locator, this.fragment);
+        final String result = context.valueFor(this.locator, this.fragment);
+        context.trackEvent(
+            "Coordinate %s::%s resolved to %s".formatted(this.locator, this.fragment, result)
+        );
+        return result;
     }
 
     public ComputationContext setValueInContext(final String val, final ComputationContext target) {

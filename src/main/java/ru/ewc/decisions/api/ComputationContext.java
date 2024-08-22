@@ -57,6 +57,11 @@ public final class ComputationContext {
      */
     private final Commands commands;
 
+    /**
+     * The publisher of the computation events.
+     */
+    private final OutputPublisher<String> publisher;
+
     public ComputationContext(final State state, final URI tables) {
         this(state, ComputationContext.getAllTables(tables));
     }
@@ -84,6 +89,15 @@ public final class ComputationContext {
         this.state = ComputationContext.extendedWithConstant(state);
         this.tables = tables;
         this.commands = commands;
+        this.publisher = new OutputPublisher<>();
+    }
+
+    public OutputTracker<String> trackComputationEvents() {
+        return this.publisher.createTracker();
+    }
+
+    public void trackEvent(final String message) {
+        this.publisher.track(message);
     }
 
     /**

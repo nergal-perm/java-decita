@@ -22,27 +22,30 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.core;
+package ru.ewc.decisions.api;
 
-import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.Locator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * I am a concrete {@link Locator} responsible for finding (creating instances of) Constant
- * Fragments. It is useful for all kinds of comparisons, especially for the calculation of the
- * Truth Table's Rules.
+ * I am a simple tracker for the events. I provide functionality to store events while computing
+ * something and retrieve them later, making me a simple 'ad hoc' logger.
  *
- * @since 0.1
+ * @param <T> The type of the events to track.
+ * @since 0.7.2
  */
-public final class ConstantLocator implements Locator {
-    @Override
-    public String fragmentBy(final String fragment, final ComputationContext context) {
-        context.trackEvent("Constant fragment returned: %s".formatted(fragment));
-        return fragment;
+public final class OutputTracker<T> {
+    /**
+     * The storage of all the tracked events and their associated data.
+     */
+    private final List<T> tracked = new ArrayList<>(5);
+
+    public List<T> events() {
+        return List.copyOf(this.tracked);
     }
 
-    @Override
-    public void setFragmentValue(final String fragment, final String value) {
-        // no-op method, nothing changes
+    void add(final T event) {
+        this.tracked.add(event);
     }
+
 }

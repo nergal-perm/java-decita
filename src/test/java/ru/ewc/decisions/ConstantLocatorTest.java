@@ -27,8 +27,10 @@ package ru.ewc.decisions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.core.ConstantLocator;
 
 /**
@@ -44,30 +46,39 @@ final class ConstantLocatorTest {
         final Locator target = new ConstantLocator();
         MatcherAssert.assertThat(
             "The constant locator is instantiated",
-            target,
-            Matchers.not(Matchers.nullValue())
+            target, Matchers.not(Matchers.nullValue())
         );
     }
 
     @Test
     void shouldLocateBooleanFragment() throws DecitaException {
         final Locator target = new ConstantLocator();
-        final String actual = target.fragmentBy("true", TestObjects.defaultContext());
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.trackComputationEvents();
+        final String actual = target.fragmentBy("true", context);
         MatcherAssert.assertThat(
             "The constant locator should find boolean values",
-            actual,
-            Matchers.is("true")
+            actual, Matchers.is("true")
+        );
+        MatcherAssert.assertThat(
+            "Should have logged boolean constant fragment retrieval",
+            tracker.events().get(0), Matchers.is("Constant fragment returned: true")
         );
     }
 
     @Test
     void shouldLocateStringFragment() throws DecitaException {
         final Locator target = new ConstantLocator();
-        final String actual = target.fragmentBy("test value", TestObjects.defaultContext());
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.trackComputationEvents();
+        final String actual = target.fragmentBy("test value", context);
         MatcherAssert.assertThat(
             "The constant locator should find string values",
-            actual,
-            Matchers.is("test value")
+            actual, Matchers.is("test value")
+        );
+        MatcherAssert.assertThat(
+            "Should have logged string constant fragment retrieval",
+            tracker.events().get(0), Matchers.is("Constant fragment returned: test value")
         );
     }
 }

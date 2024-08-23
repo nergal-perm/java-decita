@@ -92,12 +92,12 @@ public final class ComputationContext {
         this.publisher = new OutputPublisher<>();
     }
 
-    public OutputTracker<String> trackComputationEvents() {
+    public OutputTracker<String> startTracking() {
         return this.publisher.createTracker();
     }
 
-    public void trackEvent(final String message) {
-        this.publisher.track(message);
+    public void logComputation(final OutputTracker.EventType type, final String message) {
+        this.publisher.track("%s: %s".formatted(type.name(), message));
     }
 
     /**

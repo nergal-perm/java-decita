@@ -27,6 +27,7 @@ package ru.ewc.commands;
 import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -105,6 +106,12 @@ public final class SimpleCommand {
             final Coordinate coordinate = Coordinate.from(coord);
             result = result.replace("${%s}".formatted(coord), coordinate.valueIn(context));
         }
+        if (!result.equals(description)) {
+            context.logComputation(
+                OutputTracker.EventType.DN,
+                "%s to %s".formatted(description, result)
+            );
+        }
         return result;
     }
 
@@ -113,5 +120,4 @@ public final class SimpleCommand {
         final int end = description.indexOf('}');
         return description.substring(start + 2, end);
     }
-
 }

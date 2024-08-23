@@ -28,6 +28,7 @@ import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.conditions.Condition;
 
 /**
@@ -109,8 +110,9 @@ public final class Coordinate implements Comparable<Coordinate> {
 
     public String valueIn(final ComputationContext context) throws DecitaException {
         final String result = context.valueFor(this.locator, this.fragment);
-        context.trackEvent(
-            "Coordinate %s::%s resolved to %s".formatted(this.locator, this.fragment, result)
+        context.logComputation(
+            OutputTracker.EventType.ST,
+            "%s::%s to %s".formatted(this.locator, this.fragment, result)
         );
         return result;
     }

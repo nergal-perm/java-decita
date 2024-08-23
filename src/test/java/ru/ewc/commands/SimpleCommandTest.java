@@ -24,12 +24,18 @@
 
 package ru.ewc.commands;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.DecisionTables;
+import ru.ewc.decisions.api.OutputTracker;
+import ru.ewc.decisions.core.InMemoryLocator;
+import ru.ewc.state.State;
 
 /**
  * I am a test for the {@link SimpleCommand}.
@@ -69,6 +75,45 @@ final class SimpleCommandTest {
             "Command should provide its unresolved parts",
             command.unresolvedParts(),
             Matchers.containsInAnyOrder("request::tableName", "function::currentTable")
+        );
+    }
+
+    @Test
+    void shouldResolveUnresolvedParts() {
+        final SimpleCommand command = new SimpleCommand(
+            List.of("table::${function::currentTable} -> ${request::tableName}")
+        );
+        final ComputationContext context = tableNameChangeContext();
+        final OutputTracker<String> tracker = context.startTracking();
+        command.performIn(context);
+        MatcherAssert.assertThat(
+            "Should have changed the table name",
+            context.valueFor("table", "0000"),
+            Matchers.is("Tic-Tac-Toe")
+        );
+        MatcherAssert.assertThat(
+            "Should have logged all the computations",
+            tracker.events(),
+            Matchers.contains(
+                "ST: function::currentTable to 0000",
+                "DN: table::${function::currentTable} to table::0000",
+                "ST: request::tableName to Tic-Tac-Toe",
+                "DN: ${request::tableName} to Tic-Tac-Toe",
+                "ST: constant::Tic-Tac-Toe to Tic-Tac-Toe"
+            )
+        );
+    }
+
+    private static ComputationContext tableNameChangeContext() {
+        return new ComputationContext(
+            new State(
+                Map.of(
+                    "table", new InMemoryLocator(new HashMap<>(Map.of("0000", "Machi Koro"))),
+                    "function", new InMemoryLocator(Map.of("currentTable", "0000")),
+                    "request", new InMemoryLocator(Map.of("tableName", "Tic-Tac-Toe"))
+                )
+            ),
+            new DecisionTables(List.of())
         );
     }
 

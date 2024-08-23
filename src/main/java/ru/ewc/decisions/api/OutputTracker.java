@@ -48,4 +48,15 @@ public final class OutputTracker<T> {
         this.tracked.add(event);
     }
 
+    public enum EventType {
+        /**
+         * The computation of the static (i.e. without resolvable parts) Coordinate.
+         */
+        ST,
+        /**
+         * The computation of the dynamic (i.e. with resolvable parts) Coordinate.
+         */
+        DN
+    }
+
 }

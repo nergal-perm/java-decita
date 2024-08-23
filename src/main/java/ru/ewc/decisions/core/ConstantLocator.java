@@ -37,7 +37,6 @@ import ru.ewc.decisions.api.Locator;
 public final class ConstantLocator implements Locator {
     @Override
     public String fragmentBy(final String fragment, final ComputationContext context) {
-        context.trackEvent("Constant fragment returned: %s".formatted(fragment));
         return fragment;
     }
 

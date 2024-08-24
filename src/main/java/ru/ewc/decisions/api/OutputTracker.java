@@ -26,6 +26,7 @@ package ru.ewc.decisions.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.ewc.decisions.core.Rule;
 
 /**
  * I am a simple tracker for the events. I provide functionality to store events while computing
@@ -57,6 +58,10 @@ public final class OutputTracker<T> {
          * The computation of the dynamic (i.e. with resolvable parts) Coordinate.
          */
         DN,
+        /**
+         * The computation of the {@link Rule}.
+         */
+        RL,
         /**
          * The computation of the Condition.
          */

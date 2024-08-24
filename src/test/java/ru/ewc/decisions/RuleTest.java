@@ -27,7 +27,9 @@ package ru.ewc.decisions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.core.Rule;
 
 /**
@@ -49,7 +51,9 @@ final class RuleTest {
     @Test
     void testComputedAfterEvaluation() throws DecitaException {
         final Rule target = TestObjects.alwaysTrueEqualsTrueRule();
-        target.check(TestObjects.defaultContext());
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.startTracking();
+        target.check(context);
         MatcherAssert.assertThat(
             "The rule is computed after evaluation",
             target.isComputed(),
@@ -60,12 +64,19 @@ final class RuleTest {
             target.isEliminated(),
             Matchers.is(false)
         );
+        MatcherAssert.assertThat(
+            "Should log the Rule satisfaction event",
+            tracker.events().size(),
+            Matchers.is(1)
+        );
     }
 
     @Test
     void testEliminatedAfterEvaluation() throws DecitaException {
         final Rule target = TestObjects.alwaysTrueEqualsFalseRule();
-        target.check(TestObjects.defaultContext());
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.startTracking();
+        target.check(context);
         MatcherAssert.assertThat(
             "The rule is computed after evaluation",
             target.isComputed(),
@@ -75,6 +86,11 @@ final class RuleTest {
             "The rule is eliminated after evaluation if it resolves to 'false'",
             target.isEliminated(),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Should log the Rule elimination event",
+            tracker.events().size(),
+            Matchers.is(1)
         );
     }
 }

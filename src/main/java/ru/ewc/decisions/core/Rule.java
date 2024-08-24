@@ -31,6 +31,7 @@ import java.util.Map;
 import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.conditions.Condition;
 
 /**
@@ -44,12 +45,23 @@ public final class Rule {
     /**
      * The rule's {@link Condition}s.
      */
-    private final List<Condition> conditions = new ArrayList<>(5);
+    private final List<Condition> conditions;
 
     /**
      * The rule's outcomes.
      */
-    private final Map<String, String> outcomes = new HashMap<>();
+    private final Map<String, String> outcomes;
+
+    /**
+     * The rule's name.
+     */
+    private final String name;
+
+    public Rule(final String name) {
+        this.name = name;
+        this.outcomes = new HashMap<>();
+        this.conditions = new ArrayList<>(5);
+    }
 
     /**
      * Adds a {@link Condition} to this rule.
@@ -111,10 +123,22 @@ public final class Rule {
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
     public void check(final ComputationContext context) throws DecitaException {
-        if (!this.isEliminated() || !this.isComputed()) {
-            for (final Condition cond : this.conditions) {
-                cond.evaluate(context);
-            }
+        while (!this.isSatisfied() && !this.isEliminated()) {
+            this.conditions.stream()
+                .filter(c -> !c.isEvaluated())
+                .findFirst()
+                .ifPresent(c -> c.evaluate(context));
+        }
+        if (this.isSatisfied()) {
+            context.logComputation(
+                OutputTracker.EventType.RL,
+                "%s => true".formatted(this.asString())
+            );
+        } else {
+            context.logComputation(
+                OutputTracker.EventType.RL,
+                "%s => false".formatted(this.asString())
+            );
         }
     }
 
@@ -125,5 +149,9 @@ public final class Rule {
      */
     public Map<String, String> outcome() {
         return this.outcomes;
+    }
+
+    private String asString() {
+        return this.name;
     }
 }

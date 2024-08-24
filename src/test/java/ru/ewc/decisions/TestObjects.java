@@ -107,7 +107,7 @@ public final class TestObjects {
      * @return Always succeeding {@link Rule} instance.
      */
     static Rule alwaysTrueEqualsTrueRule() {
-        return new Rule()
+        return new Rule("always_true")
             .withCondition(new AlwaysTrueCondition())
             .withOutcome("outcome", "Hello");
     }
@@ -119,7 +119,7 @@ public final class TestObjects {
      * @return Always failing {@link Rule} instance.
      */
     static Rule alwaysTrueEqualsFalseRule() {
-        return new Rule()
+        return new Rule("always_false")
             .withCondition(new NotCondition(new AlwaysTrueCondition()))
             .withOutcome("outcome", "World");
     }

@@ -89,7 +89,7 @@ public final class RawContent {
     public DecisionTable asDecisionTable() {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule();
+            final Rule rule = new Rule("%s::rule_%02d".formatted(this.table, column));
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
                     fullConditionFrom(Coordinate.from(condition[0]), condition[column])
@@ -103,7 +103,7 @@ public final class RawContent {
             }
             rules.add(rule);
         }
-        final Rule elserule = new Rule();
+        final Rule elserule = new Rule("%s::else".formatted(this.table));
         if (this.outcomes[0].length > this.conditions[0].length) {
             for (final String[] outcome : this.outcomes) {
                 elserule.withOutcome(

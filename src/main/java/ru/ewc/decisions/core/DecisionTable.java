@@ -61,7 +61,7 @@ public final class DecisionTable implements Locator {
      * @param name The name of the table.
      */
     public DecisionTable(final Iterable<Rule> rules, final String name) {
-        this(rules, new Rule().withOutcome("outcome", "undefined"), name);
+        this(rules, new Rule("%s::else".formatted(name)).withOutcome("outcome", "undefined"), name);
     }
 
     /**

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.2](https://github.com/nergal-perm/java-decita/compare/v0.7.1...v0.7.2) (2024-08-24)
+
+
+### Features
+
+* added simple events tracker to ComputationContext ([b2e9427](https://github.com/nergal-perm/java-decita/commit/b2e94271597a58fadfaca71fa970fa3dab6ea10d)), closes [#137](https://github.com/nergal-perm/java-decita/issues/137)
+* **coordinates:** method for Coordinate's string representation ([bd4f63a](https://github.com/nergal-perm/java-decita/commit/bd4f63a01ae3a735aaf3a97538958484a8b3f173)), closes [#133](https://github.com/nergal-perm/java-decita/issues/133)
+* logging the dynamic Coordinate resolution ([4355fe1](https://github.com/nergal-perm/java-decita/commit/4355fe1ded72d73d17fd68f6fbc09001529879c2)), closes [#132](https://github.com/nergal-perm/java-decita/issues/132)
+* **logging:** logging the Condition resolution ([afe8dfd](https://github.com/nergal-perm/java-decita/commit/afe8dfded936adeeaa7b1e7a41817ffd6e40a96f)), closes [#133](https://github.com/nergal-perm/java-decita/issues/133)
+* **logging:** logging the DecisionTable's outcome ([5d32ad0](https://github.com/nergal-perm/java-decita/commit/5d32ad0bef3b0c826e55dd938d856f5918c2ab84)), closes [#136](https://github.com/nergal-perm/java-decita/issues/136)
+* **logging:** logging the Rules computation ([910f263](https://github.com/nergal-perm/java-decita/commit/910f2636f65ff2280ac635c8e508aa6ffda91048)), closes [#134](https://github.com/nergal-perm/java-decita/issues/134) [#135](https://github.com/nergal-perm/java-decita/issues/135)
+
 ### [0.7.1](https://github.com/nergal-perm/java-decita/compare/v0.7.0...v0.7.1) (2024-07-03)
 
 

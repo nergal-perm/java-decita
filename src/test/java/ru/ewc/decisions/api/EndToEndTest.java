@@ -75,13 +75,20 @@ final class EndToEndTest {
                 "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
             )
         );
+        final ComputationContext context = createContextFrom(state);
+        final OutputTracker<String> tracker = context.startTracking();
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            createContextFrom(state).decisionFor("sample-table"),
+            context.decisionFor("sample-table"),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
             )
+        );
+        MatcherAssert.assertThat(
+            "Should have logged all the computations",
+            tracker.events().size(),
+            Matchers.is(19)
         );
     }
 
@@ -102,7 +109,7 @@ final class EndToEndTest {
     private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),
-            "src/test/resources/tables"
+            "src/test/resources/v1"
         ).toUri();
     }
 

@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.Locator;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * I am a collection of {@link Rule}s used to compute any kind of decision. My main responsibility
@@ -101,9 +102,14 @@ public final class DecisionTable implements Locator {
         if (this.satisfiedRules().count() > 1) {
             throw new DecitaException("Multiple rules are satisfied");
         }
-        return this.satisfiedRules()
+        final Map<String, String> outcome = this.satisfiedRules()
             .findFirst().orElse(this.elserule)
             .outcome();
+        context.logComputation(
+            OutputTracker.EventType.TB,
+            "%s => %s".formatted(this.name, outcome)
+        );
+        return outcome;
     }
 
     /**
@@ -114,5 +120,4 @@ public final class DecisionTable implements Locator {
     private Stream<Rule> satisfiedRules() {
         return StreamSupport.stream(this.rules.spliterator(), false).filter(Rule::isSatisfied);
     }
-
 }

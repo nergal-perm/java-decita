@@ -26,6 +26,7 @@ package ru.ewc.decisions.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 
 /**
@@ -62,6 +63,10 @@ public final class OutputTracker<T> {
          * The computation of the {@link Rule}.
          */
         RL,
+        /**
+         * The computation of the {@link DecisionTable}.
+         */
+        TB,
         /**
          * The computation of the Condition.
          */

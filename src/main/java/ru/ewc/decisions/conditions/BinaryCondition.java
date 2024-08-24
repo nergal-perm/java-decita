@@ -50,6 +50,16 @@ public abstract class BinaryCondition implements Condition {
     private final Coordinate right;
 
     /**
+     * String representation of the left-hand side {@link Coordinate}.
+     */
+    private final String lsource;
+
+    /**
+     * String representation of the right-hand side {@link Coordinate}.
+     */
+    private final String rsource;
+
+    /**
      * Constructor.
      *
      * @param left Left-side {@link Coordinate}.
@@ -58,6 +68,8 @@ public abstract class BinaryCondition implements Condition {
     protected BinaryCondition(final Coordinate left, final Coordinate right) {
         this.left = left;
         this.right = right;
+        this.lsource = left.asString();
+        this.rsource = right.asString();
     }
 
     @Override
@@ -85,9 +97,9 @@ public abstract class BinaryCondition implements Condition {
     @Override
     public final String asString() {
         return "%s %s %s".formatted(
-            this.left.asString(),
+            this.lsource,
             this.comparisonAsString(),
-            this.right.asString()
+            this.rsource
         );
     }
 

@@ -45,6 +45,11 @@ public class GreaterThanCondition extends BinaryCondition {
     }
 
     @Override
+    protected final String comparisonAsString() {
+        return ">";
+    }
+
+    @Override
     protected final Matcher<Coordinate> comparisonFor() {
         return Matchers.greaterThan(this.rightPart());
     }

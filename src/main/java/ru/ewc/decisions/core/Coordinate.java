@@ -112,7 +112,7 @@ public final class Coordinate implements Comparable<Coordinate> {
         final String result = context.valueFor(this.locator, this.fragment);
         context.logComputation(
             OutputTracker.EventType.ST,
-            "%s to %s".formatted(this.asString(), result)
+            "%s => %s".formatted(this.asString(), result)
         );
         return result;
     }

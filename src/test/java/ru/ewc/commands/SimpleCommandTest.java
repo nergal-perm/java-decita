@@ -95,11 +95,11 @@ final class SimpleCommandTest {
             "Should have logged all the computations",
             tracker.events(),
             Matchers.contains(
-                "ST: function::currentTable to 0000",
-                "DN: table::${function::currentTable} to table::0000",
-                "ST: request::tableName to Tic-Tac-Toe",
-                "DN: ${request::tableName} to Tic-Tac-Toe",
-                "ST: constant::Tic-Tac-Toe to Tic-Tac-Toe"
+                "ST: function::currentTable => 0000",
+                "DN: table::${function::currentTable} => table::0000",
+                "ST: request::tableName => Tic-Tac-Toe",
+                "DN: ${request::tableName} => Tic-Tac-Toe",
+                "ST: constant::Tic-Tac-Toe => Tic-Tac-Toe"
             )
         );
     }

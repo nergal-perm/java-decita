@@ -26,6 +26,9 @@ package ru.ewc.decisions.conditions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * Unit tests for {@link NotCondition}.
@@ -35,11 +38,18 @@ import org.junit.jupiter.api.Test;
 final class NotConditionTest {
     @Test
     void shouldNegateBaseCondition() {
-        final Condition base = new AlwaysTrueCondition();
+        final Condition target = TestObjects.alwaysTrueConstantCondition();
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.startTracking();
         MatcherAssert.assertThat(
             "The negated 'always true' condition resolves to 'false'",
-            new NotCondition(base).isSatisfied(),
+            new NotCondition(target).evaluate(context),
             Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            "Should log correct number of events",
+            tracker.events().size(),
+            Matchers.is(1)
         );
     }
 }

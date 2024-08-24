@@ -26,6 +26,7 @@ package ru.ewc.decisions.conditions;
 
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * I represent a negation, i.e. a {@link Condition} that is satisfied when its base
@@ -48,7 +49,12 @@ public final class NotCondition extends UnaryCondition {
         if (!this.baseCondition().isEvaluated()) {
             this.baseCondition().evaluate(context);
         }
-        return this.isSatisfied();
+        final boolean satisfied = this.isSatisfied();
+        context.logComputation(
+            OutputTracker.EventType.CN,
+            "%s => %s".formatted(this.asString(), satisfied)
+        );
+        return satisfied;
     }
 
     @Override
@@ -59,5 +65,10 @@ public final class NotCondition extends UnaryCondition {
     @Override
     public boolean isSatisfied() {
         return !this.baseCondition().isSatisfied();
+    }
+
+    @Override
+    public String asString() {
+        return "!(%s)".formatted(this.baseCondition().asString());
     }
 }

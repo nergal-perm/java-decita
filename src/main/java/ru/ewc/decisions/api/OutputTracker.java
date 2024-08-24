@@ -56,7 +56,11 @@ public final class OutputTracker<T> {
         /**
          * The computation of the dynamic (i.e. with resolvable parts) Coordinate.
          */
-        DN
+        DN,
+        /**
+         * The computation of the Condition.
+         */
+        CN
     }
 
 }

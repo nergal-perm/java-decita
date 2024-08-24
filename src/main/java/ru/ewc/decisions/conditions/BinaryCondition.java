@@ -28,6 +28,7 @@ import lombok.EqualsAndHashCode;
 import org.hamcrest.Matcher;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -63,7 +64,12 @@ public abstract class BinaryCondition implements Condition {
     public final boolean evaluate(final ComputationContext context) throws DecitaException {
         this.right.locateIn(context);
         this.left.locateIn(context);
-        return this.isSatisfied();
+        final boolean satisfied = this.isSatisfied();
+        context.logComputation(
+            OutputTracker.EventType.CN,
+            "%s => %s".formatted(this.asString(), satisfied)
+        );
+        return satisfied;
     }
 
     @Override
@@ -74,6 +80,15 @@ public abstract class BinaryCondition implements Condition {
     @Override
     public final boolean isSatisfied() {
         return this.isEvaluated() && this.comparisonFor().matches(this.left);
+    }
+
+    @Override
+    public final String asString() {
+        return "%s %s %s".formatted(
+            this.left.asString(),
+            this.comparisonAsString(),
+            this.right.asString()
+        );
     }
 
     /**
@@ -91,4 +106,12 @@ public abstract class BinaryCondition implements Condition {
     protected final Coordinate rightPart() {
         return this.right;
     }
+
+    /**
+     * Returns the String representation of this {@link Condition}.
+     *
+     * @return This {@link Condition} as a String.
+     */
+    protected abstract String comparisonAsString();
+
 }

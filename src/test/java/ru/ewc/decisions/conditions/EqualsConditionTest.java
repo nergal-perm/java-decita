@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * Tests for a single {@link Condition}.
@@ -51,10 +52,16 @@ final class EqualsConditionTest {
     void testEvaluatingToTrue() throws DecitaException {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
         final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.startTracking();
         MatcherAssert.assertThat(
             "The 'always true' condition evaluates to true",
             target.evaluate(context),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Should log correct number of events",
+            tracker.events().size(),
+            Matchers.is(1)
         );
     }
 

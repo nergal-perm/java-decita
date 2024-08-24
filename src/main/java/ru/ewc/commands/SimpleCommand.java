@@ -109,7 +109,7 @@ public final class SimpleCommand {
         if (!result.equals(description)) {
             context.logComputation(
                 OutputTracker.EventType.DN,
-                "%s to %s".formatted(description, result)
+                "%s => %s".formatted(description, result)
             );
         }
         return result;

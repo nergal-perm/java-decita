@@ -45,6 +45,11 @@ public class LessThanCondition extends BinaryCondition {
     }
 
     @Override
+    protected final String comparisonAsString() {
+        return "<";
+    }
+
+    @Override
     protected final Matcher<Coordinate> comparisonFor() {
         return Matchers.lessThan(this.rightPart());
     }

@@ -44,6 +44,11 @@ public class EqualsCondition extends BinaryCondition {
     }
 
     @Override
+    protected final String comparisonAsString() {
+        return "=";
+    }
+
+    @Override
     protected final Matcher<Coordinate> comparisonFor() {
         return Matchers.equalTo(this.rightPart());
     }

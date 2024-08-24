@@ -66,4 +66,6 @@ public interface Condition {
     default boolean isNotSatisfied() {
         return this.isEvaluated() && !this.isSatisfied();
     }
+
+    String asString();
 }

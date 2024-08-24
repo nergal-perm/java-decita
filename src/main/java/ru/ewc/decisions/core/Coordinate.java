@@ -112,7 +112,7 @@ public final class Coordinate implements Comparable<Coordinate> {
         final String result = context.valueFor(this.locator, this.fragment);
         context.logComputation(
             OutputTracker.EventType.ST,
-            "%s::%s to %s".formatted(this.locator, this.fragment, result)
+            "%s to %s".formatted(this.asString(), result)
         );
         return result;
     }
@@ -128,6 +128,15 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public boolean isComputed() {
         return Locator.CONSTANT_VALUES.equals(this.locator);
+    }
+
+    /**
+     * Returns the string representation of the {@link Coordinate}.
+     *
+     * @return The string in the "locator::fragment" format.
+     */
+    public String asString() {
+        return "%s::%s".formatted(this.locator, this.fragment);
     }
 
     @Override

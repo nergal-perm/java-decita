@@ -26,6 +26,7 @@ package ru.ewc.decisions;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
@@ -37,55 +38,119 @@ import ru.ewc.decisions.core.Coordinate;
  * @since 0.1
  */
 final class CoordinateTest {
-    @Test
-    void testConstantCoordinateIsAlwaysComputed() {
-        final Coordinate target = Coordinate.from("true");
-        MatcherAssert.assertThat(
-            "The constant coordinate is always computed",
-            target.isComputed(),
-            Matchers.is(true)
-        );
+    /**
+     * Tests for Constant coordinates, i.e. coordinates created from the specified value.
+     *
+     * @since 0.8.0
+     */
+    @Nested
+    final class ConstantCoordinateTest {
+        @Test
+        void testConstantCoordinateIsAlwaysComputed() {
+            final Coordinate target = Coordinate.from("true");
+            MatcherAssert.assertThat(
+                "The constant coordinate is always computed",
+                target.isComputed(),
+                Matchers.is(true)
+            );
+        }
     }
 
-    @Test
-    void testStaticCoordinateResolvedButNotComputedAfterCreation() {
-        final Coordinate target = Coordinate.from("always_true::outcome");
-        MatcherAssert.assertThat(
-            "The static coordinate is resolved right after creation",
-            target.isResolved(),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "The static coordinate is not computed right after creation",
-            target.isComputed(),
-            Matchers.is(false)
-        );
+    /**
+     * Tests for Dynamic coordinates, i.e. coordinates that have to resolve their own address
+     * (locator, or fragment, or both) before being computed.
+     *
+     * @since 0.8.0
+     */
+    @Nested
+    final class DynamicCoordinateTest {
+        @Test
+        void whenWholeAddressIsDynamicThenShouldResolveToConstantCoordinate() {
+            final Coordinate target = Coordinate.from("${cells::A1}");
+            final ComputationContext context = TestObjects.ticTacToeContext();
+            context.setValueFor("cells", "A1", "empty");
+            target.resolveIn(context);
+            MatcherAssert.assertThat(
+                "Dynamic coordinate defined by a single placeholder is resolved to a constant coordinate",
+                target.asString(),
+                Matchers.is("constant::empty")
+            );
+        }
+
+        @Test
+        void whenLocatorIsDynamicThenShouldResolveToStaticConstant() {
+            final Coordinate target = Coordinate.from("${request::locator}::A1");
+            final ComputationContext context = TestObjects.ticTacToeContext();
+            context.setValueFor("request", "locator", "cells");
+            target.resolveIn(context);
+            MatcherAssert.assertThat(
+                "Dynamic coordinate with a single placeholder is resolved to a static coordinate",
+                target.asString(),
+                Matchers.is("cells::A1")
+            );
+        }
+
+        @Test
+        void whenFragmentIsDynamicThenShouldResolveToStaticConstant() {
+            final Coordinate target = Coordinate.from("cells::${request::fragment}");
+            final ComputationContext context = TestObjects.ticTacToeContext();
+            context.setValueFor("request", "fragment", "A1");
+            target.resolveIn(context);
+            MatcherAssert.assertThat(
+                "Dynamic coordinate with a single placeholder is resolved to a static coordinate",
+                target.asString(),
+                Matchers.is("cells::A1")
+            );
+        }
+
+        @Test
+        void testDynamicCoordinateNotResolvedAfterCreation() {
+            final Coordinate target = Coordinate.from("outcome::${dynamically::defined}");
+            MatcherAssert.assertThat(
+                "The dynamic coordinate is not resolved right after creation",
+                target.isResolved(),
+                Matchers.is(false)
+            );
+            MatcherAssert.assertThat(
+                "The dynamic coordinate is not computed right after creation",
+                target.isComputed(),
+                Matchers.is(false)
+            );
+        }
     }
 
-    @Test
-    void testDynamicCoordinateNotResolvedAfterCreation() {
-        final Coordinate target = Coordinate.from("outcome::${dynamically::defined}");
-        MatcherAssert.assertThat(
-            "The dynamic coordinate is not resolved right after creation",
-            target.isResolved(),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            "The dynamic coordinate is not computed right after creation",
-            target.isComputed(),
-            Matchers.is(false)
-        );
-    }
+    /**
+     * Tests for Static coordinates, i.e. coordinates that have their address known in advance.
+     *
+     * @since 0.8.0
+     */
+    @Nested
+    final class StaticCoordinateTest {
+        @Test
+        void testStaticCoordinateResolvedButNotComputedAfterCreation() {
+            final Coordinate target = Coordinate.from("always_true::outcome");
+            MatcherAssert.assertThat(
+                "The static coordinate is resolved right after creation",
+                target.isResolved(),
+                Matchers.is(true)
+            );
+            MatcherAssert.assertThat(
+                "The static coordinate is not computed right after creation",
+                target.isComputed(),
+                Matchers.is(false)
+            );
+        }
 
-    @Test
-    void testChangesUponLocation() throws DecitaException {
-        final Coordinate target = Coordinate.from("always_true::outcome");
-        final ComputationContext context = TestObjects.defaultContext();
-        target.locateIn(context);
-        MatcherAssert.assertThat(
-            "Locating the coordinate means computing its constant value",
-            target.isComputed(),
-            Matchers.is(true)
-        );
+        @Test
+        void testChangesUponLocation() throws DecitaException {
+            final Coordinate target = Coordinate.from("always_true::outcome");
+            final ComputationContext context = TestObjects.defaultContext();
+            target.locateIn(context);
+            MatcherAssert.assertThat(
+                "Locating the coordinate means computing its constant value",
+                target.isComputed(),
+                Matchers.is(true)
+            );
+        }
     }
 }

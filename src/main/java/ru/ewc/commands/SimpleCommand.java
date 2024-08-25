@@ -27,7 +27,6 @@ package ru.ewc.commands;
 import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -61,7 +60,7 @@ public final class SimpleCommand {
      */
     public void performIn(final ComputationContext context) {
         for (final String description : this.operations) {
-            final Coordinate coordinate = SimpleCommand.resolveLeft(description, context);
+            final Coordinate coordinate = Coordinate.from(description.split("->")[0].trim());
             final String value = SimpleCommand.resolveRight(description, context);
             coordinate.setValueInContext(value, context);
         }
@@ -81,43 +80,13 @@ public final class SimpleCommand {
         return result.stream().filter(s -> s.contains("::")).toList();
     }
 
-    private static Coordinate resolveLeft(final String desc, final ComputationContext context) {
-        return Coordinate.from(
-            SimpleCommand.resolve(
-                context,
-                desc.split("->")[0].trim()
-            )
-        );
-    }
-
     private static String resolveRight(final String desc, final ComputationContext context) {
-        return Coordinate.from(
-            SimpleCommand.resolve(
-                context,
-                desc.split("->")[1].trim()
-            )
-        ).valueIn(context);
-    }
-
-    private static String resolve(final ComputationContext context, final String description) {
-        String result = description;
-        while (result.contains("${")) {
-            final String coord = SimpleCommand.extractInnerMostCoordinate(result);
-            final Coordinate coordinate = Coordinate.from(coord);
-            result = result.replace("${%s}".formatted(coord), coordinate.valueIn(context));
-        }
-        if (!result.equals(description)) {
-            context.logComputation(
-                OutputTracker.EventType.DN,
-                "%s => %s".formatted(description, result)
-            );
-        }
-        return result;
+        return Coordinate.from(desc.split("->")[1].trim()).valueIn(context);
     }
 
     private static String extractInnerMostCoordinate(final String description) {
         final int start = description.lastIndexOf("${");
-        final int end = description.indexOf('}');
+        final int end = description.indexOf('}', start);
         return description.substring(start + 2, end);
     }
 }

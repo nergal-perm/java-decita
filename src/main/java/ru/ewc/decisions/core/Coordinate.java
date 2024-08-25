@@ -24,6 +24,8 @@
 
 package ru.ewc.decisions.core;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
@@ -90,7 +92,10 @@ public final class Coordinate implements Comparable<Coordinate> {
         final Coordinate result;
         if (coordinate.contains("::")) {
             final String[] split = coordinate.split("::");
-            result = new Coordinate(split[0], split[1]);
+            result = new Coordinate(
+                split[0],
+                Arrays.stream(split).skip(1).collect(Collectors.joining("::"))
+            );
         } else {
             result = new Coordinate(Locator.CONSTANT_VALUES, coordinate);
         }
@@ -107,6 +112,9 @@ public final class Coordinate implements Comparable<Coordinate> {
      * @throws DecitaException If the specified {@link Locator} is missing.
      */
     public Coordinate locateIn(final ComputationContext context) throws DecitaException {
+        if (!this.isResolved()) {
+            this.resolveIn(context);
+        }
         if (!this.isComputed()) {
             this.turnToConstantWith(this.valueIn(context));
         }
@@ -114,6 +122,7 @@ public final class Coordinate implements Comparable<Coordinate> {
     }
 
     public String valueIn(final ComputationContext context) throws DecitaException {
+        this.resolveIn(context);
         final String result = context.valueFor(this.locator, this.fragment);
         context.logComputation(
             OutputTracker.EventType.ST,
@@ -138,10 +147,33 @@ public final class Coordinate implements Comparable<Coordinate> {
     /**
      * Tests if the {@link Coordinate} is resolved, i.e. it does not contain any placeholders.
      *
-     * @return true if the {@link Coordinate} is resolved.
+     * @return True if the {@link Coordinate} is resolved.
      */
     public Boolean isResolved() {
         return !this.locator.contains("${") && !this.fragment.contains("${");
+    }
+
+    /**
+     * Resolves the {@link Coordinate} in the provided {@link ComputationContext}. The method
+     * replaces all placeholders with the actual values.
+     *
+     * @param context The {@link ComputationContext} to resolve the {@link Coordinate} in.
+     */
+    public void resolveIn(final ComputationContext context) {
+        final String description = "%s::%s".formatted(this.locator, this.fragment);
+        String result = description;
+        while (result.contains("${")) {
+            final String coord = Coordinate.extractInnerMostCoordinate(result);
+            final Coordinate coordinate = Coordinate.from(coord);
+            result = result.replace("${%s}".formatted(coord), coordinate.valueIn(context));
+        }
+        if (!result.equals(description)) {
+            context.logComputation(
+                OutputTracker.EventType.DN,
+                "%s => %s".formatted(description, result)
+            );
+        }
+        this.updateWith(result);
     }
 
     /**
@@ -186,4 +218,20 @@ public final class Coordinate implements Comparable<Coordinate> {
         this.fragment = constant;
     }
 
+    private void updateWith(final String coordinate) {
+        if (coordinate.contains("::")) {
+            final String[] split = coordinate.split("::");
+            this.locator = split[0];
+            this.fragment = Arrays.stream(split).skip(1).collect(Collectors.joining("::"));
+        } else {
+            this.locator = Locator.CONSTANT_VALUES;
+            this.fragment = coordinate;
+        }
+    }
+
+    private static String extractInnerMostCoordinate(final String description) {
+        final int start = description.lastIndexOf("${");
+        final int end = description.indexOf('}');
+        return description.substring(start + 2, end);
+    }
 }

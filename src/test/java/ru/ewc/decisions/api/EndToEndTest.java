@@ -27,7 +27,6 @@ package ru.ewc.decisions.api;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
@@ -103,17 +102,9 @@ final class EndToEndTest {
             )
         );
         final ComputationContext context = createContextFrom(state);
-        final OutputTracker<String> tracker = context.startTracking();
-        Map<String, String> actual = new HashMap<>();
-        try {
-            actual = context.decisionFor("dynamic-coordinate");
-        } catch (DecitaException e) {
-            // do nothing
-        }
-        tracker.events().forEach(System.out::println);
         MatcherAssert.assertThat(
-            "",
-            actual,
+            "Should resolve dynamic coordinates while computing a table",
+            context.decisionFor("dynamic-coordinate"),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo("moveAvailable"), Matchers.equalTo("true"))
             )

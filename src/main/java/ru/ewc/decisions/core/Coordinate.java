@@ -132,6 +132,9 @@ public final class Coordinate implements Comparable<Coordinate> {
     }
 
     public ComputationContext setValueInContext(final String val, final ComputationContext target) {
+        if (!this.isResolved()) {
+            this.resolveIn(target);
+        }
         return target.setValueFor(this.locator, this.fragment, val);
     }
 

@@ -31,6 +31,7 @@ import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
+import ru.ewc.decisions.core.Coordinate;
 
 /**
  * Tests for a single {@link Condition}.
@@ -69,7 +70,7 @@ final class EqualsConditionTest {
     void testNotComputedCondition() {
         final Condition target = new EqualsCondition(
             TestObjects.alwaysTrueConditionCoordinate(),
-            TestObjects.valueTrue()
+            Coordinate.TRUE
         );
         MatcherAssert.assertThat(
             "The condition is not yet evaluated right after creation",

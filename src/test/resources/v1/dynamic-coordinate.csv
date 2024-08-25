@@ -1,0 +1,4 @@
+cells::${request::move};empty
+game::currentPlayer;request::player
+---
+moveAvailable;true;false

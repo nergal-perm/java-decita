@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -51,8 +50,8 @@ final class GreaterThanConditionTest {
     @Test
     void shouldNotCompareStrings() {
         final GreaterThanCondition target = new GreaterThanCondition(
-            new Coordinate(Locator.CONSTANT_VALUES, "true"),
-            new Coordinate(Locator.CONSTANT_VALUES, "false")
+            Coordinate.TRUE,
+            Coordinate.FALSE
         );
         Assertions.assertThatThrownBy(() -> target.evaluate(this.context))
             .isInstanceOf(IllegalArgumentException.class)
@@ -62,8 +61,8 @@ final class GreaterThanConditionTest {
     @Test
     void shouldCompareNumbers() {
         final GreaterThanCondition target = new GreaterThanCondition(
-            new Coordinate(Locator.CONSTANT_VALUES, "5"),
-            new Coordinate(Locator.CONSTANT_VALUES, "3.5")
+            Coordinate.from("5"),
+            Coordinate.from("3.5")
         );
         Assertions.assertThat(target.evaluate(this.context)).isTrue();
     }

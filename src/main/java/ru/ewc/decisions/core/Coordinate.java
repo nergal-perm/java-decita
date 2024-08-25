@@ -45,7 +45,12 @@ public final class Coordinate implements Comparable<Coordinate> {
     /**
      * A constant value {@link Coordinate} that points to the "true" value.
      */
-    public static final Coordinate TRUE = new Coordinate(Locator.CONSTANT_VALUES, "true");
+    public static final Coordinate TRUE = Coordinate.from("true");
+
+    /**
+     * A constant value {@link Coordinate} that points to the "false" value.
+     */
+    public static final Coordinate FALSE = Coordinate.from("false");
 
     /**
      * A regular expression for a number.
@@ -68,7 +73,7 @@ public final class Coordinate implements Comparable<Coordinate> {
      * @param locator The {@link Locator} identifier.
      * @param fragment The value's identifier.
      */
-    public Coordinate(final String locator, final String fragment) {
+    private Coordinate(final String locator, final String fragment) {
         this.locator = locator;
         this.fragment = fragment;
     }
@@ -131,6 +136,15 @@ public final class Coordinate implements Comparable<Coordinate> {
     }
 
     /**
+     * Tests if the {@link Coordinate} is resolved, i.e. it does not contain any placeholders.
+     *
+     * @return true if the {@link Coordinate} is resolved.
+     */
+    public Boolean isResolved() {
+        return !this.locator.contains("${") && !this.fragment.contains("${");
+    }
+
+    /**
      * Returns the string representation of the {@link Coordinate}.
      *
      * @return The string in the "locator::fragment" format.
@@ -171,4 +185,5 @@ public final class Coordinate implements Comparable<Coordinate> {
         this.locator = Locator.CONSTANT_VALUES;
         this.fragment = constant;
     }
+
 }

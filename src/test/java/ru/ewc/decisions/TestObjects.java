@@ -78,16 +78,7 @@ public final class TestObjects {
      * @return A simple and always true {@link Condition}.
      */
     public static Condition alwaysTrueConstantCondition() {
-        return new EqualsCondition(valueTrue(), valueTrue());
-    }
-
-    /**
-     * Convenience method to get a new instance of {@link Coordinate} with value {@code true}.
-     *
-     * @return The concrete value {@link Coordinate}.
-     */
-    public static Coordinate valueTrue() {
-        return new Coordinate(Locator.CONSTANT_VALUES, "true");
+        return new EqualsCondition(Coordinate.TRUE, Coordinate.TRUE);
     }
 
     /**
@@ -97,7 +88,7 @@ public final class TestObjects {
      * @return A {@link Coordinate} of the always true {@link Condition}.
      */
     public static Coordinate alwaysTrueConditionCoordinate() {
-        return new Coordinate("always_true", "outcome");
+        return Coordinate.from("always_true::outcome");
     }
 
     /**

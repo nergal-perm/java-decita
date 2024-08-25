@@ -29,7 +29,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -39,20 +38,40 @@ import ru.ewc.decisions.core.Coordinate;
  */
 final class CoordinateTest {
     @Test
-    void testAlreadyComputed() {
-        final Coordinate target = new Coordinate(Locator.CONSTANT_VALUES, "true");
+    void testConstantCoordinateIsAlwaysComputed() {
+        final Coordinate target = Coordinate.from("true");
         MatcherAssert.assertThat(
-            "The constant coordinate is already computed",
+            "The constant coordinate is always computed",
             target.isComputed(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void testIsNotYetComputed() {
-        final Coordinate target = new Coordinate("always_true", "outcome");
+    void testStaticCoordinateResolvedButNotComputedAfterCreation() {
+        final Coordinate target = Coordinate.from("always_true::outcome");
         MatcherAssert.assertThat(
-            "The non-constant coordinate is not computed right after creation",
+            "The static coordinate is resolved right after creation",
+            target.isResolved(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "The static coordinate is not computed right after creation",
+            target.isComputed(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testDynamicCoordinateNotResolvedAfterCreation() {
+        final Coordinate target = Coordinate.from("outcome::${dynamically::defined}");
+        MatcherAssert.assertThat(
+            "The dynamic coordinate is not resolved right after creation",
+            target.isResolved(),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            "The dynamic coordinate is not computed right after creation",
             target.isComputed(),
             Matchers.is(false)
         );
@@ -60,7 +79,7 @@ final class CoordinateTest {
 
     @Test
     void testChangesUponLocation() throws DecitaException {
-        final Coordinate target = new Coordinate("always_true", "outcome");
+        final Coordinate target = Coordinate.from("always_true::outcome");
         final ComputationContext context = TestObjects.defaultContext();
         target.locateIn(context);
         MatcherAssert.assertThat(

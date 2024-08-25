@@ -40,11 +40,11 @@ final class ComputationContextTest {
     @Test
     void shouldFindAFragment() throws DecitaException {
         final ComputationContext context = TestObjects.defaultContext();
-        final Coordinate actual = TestObjects.valueTrue().locateIn(context);
+        final Coordinate actual = Coordinate.TRUE.locateIn(context);
         MatcherAssert.assertThat(
             "The context should have a fragment",
             actual,
-            Matchers.equalTo(TestObjects.valueTrue())
+            Matchers.equalTo(Coordinate.TRUE)
         );
     }
 }

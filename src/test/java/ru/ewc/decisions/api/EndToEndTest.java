@@ -41,7 +41,7 @@ import ru.ewc.state.State;
  *
  * @since 0.8.0
  */
-final class EndToEndV2Test {
+final class EndToEndTest {
     /**
      * Constant for the table outcome field.
      */
@@ -60,7 +60,7 @@ final class EndToEndV2Test {
             "The table is computed correctly",
             createContextFrom(state).decisionFor("sample-table"),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo(EndToEndV2Test.OUT), Matchers.equalTo("true")),
+                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUT), Matchers.equalTo("true")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
             )
         );
@@ -81,7 +81,7 @@ final class EndToEndV2Test {
             "The table is computed correctly",
             context.decisionFor("sample-table"),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo(EndToEndV2Test.OUT), Matchers.equalTo("else")),
+                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUT), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
             )
         );
@@ -128,7 +128,7 @@ final class EndToEndV2Test {
     private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),
-            "src/test/resources/v2"
+            "src/test/resources/tables"
         ).toUri();
     }
 

@@ -32,7 +32,7 @@ import ru.ewc.commands.Commands;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
-import ru.ewc.decisions.input.PlainTextDecisionReader;
+import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.state.State;
 
 /**
@@ -172,6 +172,6 @@ public final class ComputationContext {
     }
 
     private static DecisionTables getAllTables(final URI tables) {
-        return new PlainTextDecisionReader(tables, ".csv", ";").allTables();
+        return new CombinedCsvFileReader(tables, ".csv", ";").allTables();
     }
 }

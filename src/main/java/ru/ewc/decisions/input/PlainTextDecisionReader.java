@@ -88,8 +88,8 @@ public final class PlainTextDecisionReader implements DecisionReader {
      * @param contents Raw contents of a file as a Strings collection.
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Conditions.
      */
-    private String[][] outcomesFrom(final List<String> contents) {
-        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));
+    private String[][] conditionsFrom(final List<String> contents) {
+        return this.toArray(contents.subList(0, separatorIndex(contents)));
     }
 
     /**
@@ -98,8 +98,8 @@ public final class PlainTextDecisionReader implements DecisionReader {
      * @param contents Raw contents of a file as a Strings collection.
      * @return The 2D-array of Strings that holds the {@link DecisionTable}'s Outcomes.
      */
-    private String[][] conditionsFrom(final List<String> contents) {
-        return this.toArray(contents.subList(0, separatorIndex(contents)));
+    private String[][] outcomesFrom(final List<String> contents) {
+        return this.toArray(contents.subList(1 + separatorIndex(contents), contents.size()));
     }
 
     /**

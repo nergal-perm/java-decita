@@ -51,11 +51,18 @@ public final class CombinedCsvFileReader implements DecisionReader {
     }
 
     String[][] conditionsFrom(final List<String> lines) {
-        return this.toArray(lines.stream()
-            .filter(line -> line.startsWith("CND"))
+        return this.toArray(extract(lines, "CND"));
+    }
+
+    String[][] outcomesFrom(final List<String> lines) {
+        return this.toArray(extract(lines, "OUT"));
+    }
+
+    private static List<String> extract(List<String> lines, String filter) {
+        return lines.stream()
+            .filter(line -> line.startsWith(filter))
             .map(line -> line.substring(4))
-            .toList()
-        );
+            .toList();
     }
 
     private String[][] toArray(final List<String> lines) {

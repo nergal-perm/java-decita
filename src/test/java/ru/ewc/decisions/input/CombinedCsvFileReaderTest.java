@@ -50,10 +50,36 @@ final class CombinedCsvFileReaderTest {
         );
     }
 
+    @ValueSource(strings = {"CND;hello", "---", " ", "EXE;command", ""})
+    @ParameterizedTest(name = "{index}: Line \"{0}\" is not an outcome")
+    void whenThereAreNoOutcomesShouldReturnEmptyArray(final String input) {
+        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
+        final String[][] actual = target.outcomesFrom(Collections.singletonList(input));
+        MatcherAssert.assertThat(
+            "Should return empty array of Outcomes when there are no OUT lines in the file",
+            actual,
+            Matchers.emptyArray()
+        );
+    }
+
     @Test
     void whenThereIsAConditionShouldReturnFilledArray() {
         final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
         final String[][] actual = target.conditionsFrom(Collections.singletonList("CND;hello"));
+        MatcherAssert.assertThat(
+            "",
+            actual[0],
+            Matchers.allOf(
+                Matchers.hasItemInArray("hello"),
+                Matchers.arrayWithSize(1)
+            )
+        );
+    }
+
+    @Test
+    void whenThereIsAnOutcomeShouldReturnFilledArray() {
+        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
+        final String[][] actual = target.outcomesFrom(Collections.singletonList("OUT;hello"));
         MatcherAssert.assertThat(
             "",
             actual[0],

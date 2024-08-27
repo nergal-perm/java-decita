@@ -24,14 +24,8 @@
 
 package ru.ewc.decisions.input;
 
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.core.DecisionTable;
 
@@ -46,12 +40,7 @@ public final class PlainTextDecisionReader implements DecisionReader {
     /**
      * Path to a folder with source files.
      */
-    private final URI folder;
-
-    /**
-     * The extension of the source files.
-     */
-    private final String extension;
+    private final SourceFilesFolder folder;
 
     /**
      * The symbol that separates CSV-record fields.
@@ -66,66 +55,31 @@ public final class PlainTextDecisionReader implements DecisionReader {
      * @param delimiter The symbol that separates CSV-record fields.
      */
     public PlainTextDecisionReader(final URI dir, final String extension, final String delimiter) {
-        this.folder = dir;
-        this.extension = extension;
+        this.folder = new SourceFilesFolder(dir, extension);
         this.delimiter = delimiter;
     }
 
     @Override
     public DecisionTables allTables() {
         return new DecisionTables(
-            this.readAllTables()
-                .stream()
-                .map(RawContent::asDecisionTable)
+            this.folder.files().stream()
+                .map(this::readAsDecisionTable)
                 .toList()
         );
     }
 
     /**
-     * Reads all the source data and returns the unified storage object, capable of transforming
-     * data into {@link DecisionTable}s.
-     *
-     * @return A collection of objects, representing the contents of {@link DecisionTable}s data
-     *  sources.
-     */
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    private List<RawContent> readAllTables() {
-        List<RawContent> contents;
-        try (Stream<Path> files = Files.walk(Paths.get(this.folder))) {
-            contents = this.contentsOf(files);
-        } catch (final IOException exception) {
-            contents = Collections.emptyList();
-        }
-        return contents;
-    }
-
-    /**
-     * Reads the contents of all the files, passed in as a stream of paths.
-     *
-     * @param files Stream of paths to read data from.
-     * @return A collection of {@link RawContent}, each element corresponds to a single
-     *  {@link DecisionTable}.
-     */
-    private List<RawContent> contentsOf(final Stream<Path> files) {
-        return files.filter(Files::isRegularFile)
-            .map(p -> new FileContents(p, this.extension))
-            .filter(FileContents::hasRightExtension)
-            .map(this::readContentFromFile)
-            .toList();
-    }
-
-    /**
-     * Reads the contents of the specified file as a {@link RawContent}.
+     * Reads the contents of the specified file as a {@link DecisionTable}.
      *
      * @param file The file to read.
-     * @return The file's contents in a format suitable for constructing {@link DecisionTable}s.
+     * @return The file's contents as a {@link DecisionTable}.
      */
-    private RawContent readContentFromFile(final FileContents file) {
+    private DecisionTable readAsDecisionTable(final FileContents file) {
         return new RawContent(
             this.conditionsFrom(file.asStrings()),
             this.outcomesFrom(file.asStrings()),
             file.nameWithoutExtension()
-        );
+        ).asDecisionTable();
     }
 
     /**

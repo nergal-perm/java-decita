@@ -22,33 +22,7 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.commands;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import ru.ewc.decisions.TestObjects;
-import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.core.Coordinate;
-
 /**
- * Tests for the {@link Assignment}.
+ * Contains all the Commands-related functionality.
  */
-final class AssignmentTest {
-    @Test
-    void nonEmptyAssignmentShouldChangeContext() {
-        final ComputationContext context = TestObjects.ticTacToeContext();
-        context.setValueFor("cells", "A1", "empty");
-        context.setValueFor("request", "player", "X");
-        context.setValueFor("request", "move", "A1");
-        new Assignment(
-            Coordinate.from("cells::${request::move}"),
-            Coordinate.from("${request::player}")
-        ).performIn(context);
-        MatcherAssert.assertThat(
-            "Should not update the context",
-            context.valueFor("cells", "A1"),
-            Matchers.is("X")
-        );
-    }
-}
+package ru.ewc.decisions.commands;

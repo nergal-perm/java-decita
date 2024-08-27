@@ -27,6 +27,7 @@ package ru.ewc.commands;
 import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.core.Coordinate;
 
 /**
@@ -60,9 +61,10 @@ public final class SimpleCommand {
      */
     public void performIn(final ComputationContext context) {
         for (final String description : this.operations) {
-            final Coordinate coordinate = Coordinate.from(description.split("->")[0].trim());
-            final String value = SimpleCommand.resolveRight(description, context);
-            coordinate.setValueInContext(value, context);
+            new Assignment(
+                Coordinate.from(description.split("->")[0].trim()),
+                Coordinate.from(description.split("->")[1].trim())
+            ).performIn(context);
         }
     }
 
@@ -78,10 +80,6 @@ public final class SimpleCommand {
             }
         }
         return result.stream().filter(s -> s.contains("::")).toList();
-    }
-
-    private static String resolveRight(final String desc, final ComputationContext context) {
-        return Coordinate.from(desc.split("->")[1].trim()).valueIn(context);
     }
 
     private static String extractInnerMostCoordinate(final String description) {

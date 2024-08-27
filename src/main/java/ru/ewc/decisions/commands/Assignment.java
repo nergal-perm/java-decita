@@ -27,16 +27,40 @@ package ru.ewc.decisions.commands;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.core.Coordinate;
 
+/**
+ * I represent an assignment of the specific value to a target {@link Coordinate}. Both my parts are
+ * resolved lazily.
+ *
+ * @since 0.8.0
+ */
 public class Assignment {
+    /**
+     * The target {@link Coordinate} to assign the value to.
+     */
     private final Coordinate target;
+
+    /**
+     * The {@link Coordinate} that provides the value to assign.
+     */
     private final Coordinate value;
 
-    public Assignment(Coordinate target, Coordinate value) {
+    /**
+     * Ctor.
+     *
+     * @param target The target {@link Coordinate} to assign the value to.
+     * @param value The {@link Coordinate} that provides the value to assign.
+     */
+    public Assignment(final Coordinate target, final Coordinate value) {
         this.target = target;
         this.value = value;
     }
 
-    public void performIn(ComputationContext context) {
-        target.setValueInContext(value.valueIn(context), context);
+    /**
+     * The method that performs the assignment of the value to the target {@link Coordinate}.
+     *
+     * @param context The {@link ComputationContext} to work with.
+     */
+    public void performIn(final ComputationContext context) {
+        this.target.setValueInContext(this.value.valueIn(context), context);
     }
 }

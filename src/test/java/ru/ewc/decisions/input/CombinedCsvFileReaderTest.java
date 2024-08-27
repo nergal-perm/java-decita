@@ -38,7 +38,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 final class CombinedCsvFileReaderTest {
 
-    @ValueSource(strings = {"OUT;hello", "---", " ", "EXE;command", ""})
+    @ValueSource(strings = {"OUT;outcome", "EXE;command", "ASG:assign", "---", " ", ""})
     @ParameterizedTest(name = "{index}: Line \"{0}\" is not a condition")
     void whenThereAreNoConditionsShouldReturnEmptyArray(final String input) {
         final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
@@ -50,13 +50,25 @@ final class CombinedCsvFileReaderTest {
         );
     }
 
-    @ValueSource(strings = {"CND;hello", "---", " ", "EXE;command", ""})
+    @ValueSource(strings = {"CND;condition", "EXE;command", "ASG:assign", "---", " ", ""})
     @ParameterizedTest(name = "{index}: Line \"{0}\" is not an outcome")
     void whenThereAreNoOutcomesShouldReturnEmptyArray(final String input) {
         final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
         final String[][] actual = target.outcomesFrom(Collections.singletonList(input));
         MatcherAssert.assertThat(
             "Should return empty array of Outcomes when there are no OUT lines in the file",
+            actual,
+            Matchers.emptyArray()
+        );
+    }
+
+    @ValueSource(strings = {"CND;condition", "EXE;command", "OUT:outcome", "---", " ", ""})
+    @ParameterizedTest(name = "{index}: Line \"{0}\" is not an assignment")
+    void whereThereAreNoAssignmentsShouldReturnEmptyArray(final String input) {
+        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
+        final String[][] actual = target.assignmentsFrom(Collections.singletonList(input));
+        MatcherAssert.assertThat(
+            "Should return empty array of Assignments when there are no ASG lines in the file",
             actual,
             Matchers.emptyArray()
         );
@@ -80,6 +92,20 @@ final class CombinedCsvFileReaderTest {
     void whenThereIsAnOutcomeShouldReturnFilledArray() {
         final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
         final String[][] actual = target.outcomesFrom(Collections.singletonList("OUT;hello"));
+        MatcherAssert.assertThat(
+            "",
+            actual[0],
+            Matchers.allOf(
+                Matchers.hasItemInArray("hello"),
+                Matchers.arrayWithSize(1)
+            )
+        );
+    }
+
+    @Test
+    void whenThereIsAnAssignmentShouldReturnFilledArray() {
+        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
+        final String[][] actual = target.assignmentsFrom(Collections.singletonList("ASG;hello"));
         MatcherAssert.assertThat(
             "",
             actual[0],

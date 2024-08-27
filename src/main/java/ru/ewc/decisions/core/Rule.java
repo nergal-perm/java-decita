@@ -32,6 +32,7 @@ import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
+import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
 
 /**
@@ -53,6 +54,11 @@ public final class Rule {
     private final Map<String, String> outcomes;
 
     /**
+     * The rule's assignments.
+     */
+    private final List<Assignment> assignments;
+
+    /**
      * The rule's name.
      */
     private final String name;
@@ -61,6 +67,7 @@ public final class Rule {
         this.name = name;
         this.outcomes = new HashMap<>();
         this.conditions = new ArrayList<>(5);
+        this.assignments = new ArrayList<>(2);
     }
 
     /**
@@ -83,6 +90,17 @@ public final class Rule {
      */
     public Rule withOutcome(final String outcome, final String value) {
         this.outcomes.put(outcome, value);
+        return this;
+    }
+
+    /**
+     * Adds an assignment to this rule.
+     *
+     * @param assignment An {@link Assignment} to add.
+     * @return Itself, in order to implement fluent API.
+     */
+    public Rule withAssignment(final Assignment assignment) {
+        this.assignments.add(assignment);
         return this;
     }
 

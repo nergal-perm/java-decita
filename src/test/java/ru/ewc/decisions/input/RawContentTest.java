@@ -44,6 +44,7 @@ final class RawContentTest {
                 {"true", "false", "!false"},
             },
             new String[][]{{"outcome", "false", "true", "else"}},
+            new String[][]{},
             "sample-table"
         );
         MatcherAssert.assertThat(

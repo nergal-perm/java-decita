@@ -26,6 +26,7 @@ package ru.ewc.decisions.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.conditions.GreaterThanCondition;
@@ -58,18 +59,31 @@ public final class RawContent {
     private final String[][] outcomes;
 
     /**
+     * The array of String values that form the Assignments part of a {@link DecisionTable}.
+     */
+    private final String[][] assignments;
+
+    /**
      * Ctor.
      *
      * @param conditions A 2D-array of Strings describing the Conditions part of the
      *  {@link DecisionTable}.
      * @param outcomes A 2D-array of Strings describing the Outcomes part of the
      *  {@link DecisionTable}.
+     * @param assignments A 2D-array of Strings describing the Assignments part of the
+     *  {@link DecisionTable}.
      * @param table Name of the source table.
      */
-    public RawContent(final String[][] conditions, final String[][] outcomes, final String table) {
+    public RawContent(
+        final String[][] conditions,
+        final String[][] outcomes,
+        final String[][] assignments,
+        final String table
+    ) {
         this.table = table;
         this.conditions = conditions.clone();
         this.outcomes = outcomes.clone();
+        this.assignments = assignments.clone();
     }
 
     /**
@@ -99,6 +113,14 @@ public final class RawContent {
                 rule.withOutcome(
                     outcome[0],
                     outcome[column]
+                );
+            }
+            for (final String[] assignment : this.assignments) {
+                rule.withAssignment(
+                    new Assignment(
+                        Coordinate.from(assignment[0]),
+                        Coordinate.from(assignment[column])
+                    )
                 );
             }
             rules.add(rule);

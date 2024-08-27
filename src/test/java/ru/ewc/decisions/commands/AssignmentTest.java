@@ -33,6 +33,8 @@ import ru.ewc.decisions.core.Coordinate;
 
 /**
  * Tests for the {@link Assignment}.
+ *
+ * @since 0.8.0
  */
 final class AssignmentTest {
     @Test

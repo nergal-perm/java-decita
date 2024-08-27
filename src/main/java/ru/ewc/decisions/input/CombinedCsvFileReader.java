@@ -80,6 +80,10 @@ public final class CombinedCsvFileReader implements DecisionReader {
         return this.toArray(extract(lines, "OUT"));
     }
 
+    String[][] assignmentsFrom(final List<String> lines) {
+        return this.toArray(extract(lines, "ASG"));
+    }
+
     private static List<String> extract(final List<String> lines, final String filter) {
         return lines.stream()
             .filter(line -> line.startsWith(filter))
@@ -111,7 +115,9 @@ public final class CombinedCsvFileReader implements DecisionReader {
         return new RawContent(
             this.conditionsFrom(file.asStrings()),
             this.outcomesFrom(file.asStrings()),
+            this.assignmentsFrom(file.asStrings()),
             file.nameWithoutExtension()
         ).asDecisionTable();
     }
+
 }

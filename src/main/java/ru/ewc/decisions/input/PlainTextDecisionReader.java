@@ -26,7 +26,6 @@ package ru.ewc.decisions.input;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -109,8 +108,8 @@ public final class PlainTextDecisionReader implements DecisionReader {
      */
     private List<RawContent> contentsOf(final Stream<Path> files) {
         return files.filter(Files::isRegularFile)
-            .filter(path -> path.getFileName().toString().endsWith(this.extension))
-            .map(Path::toString)
+            .map(p -> new FileContents(p, this.extension))
+            .filter(FileContents::hasRightExtension)
             .map(this::readContentFromFile)
             .toList();
     }
@@ -118,16 +117,14 @@ public final class PlainTextDecisionReader implements DecisionReader {
     /**
      * Reads the contents of the specified file as a {@link RawContent}.
      *
-     * @param file File to read, represented as {@code String}.
+     * @param file The file to read.
      * @return The file's contents in a format suitable for constructing {@link DecisionTable}s.
      */
-    private RawContent readContentFromFile(final String file) {
-        final Path path = Path.of(file);
-        final List<String> contents = contentsOf(path);
+    private RawContent readContentFromFile(final FileContents file) {
         return new RawContent(
-            this.conditionsFrom(contents),
-            this.outcomesFrom(contents),
-            path.getFileName().toString().replace(this.extension, "")
+            this.conditionsFrom(file.asStrings()),
+            this.outcomesFrom(file.asStrings()),
+            file.nameWithoutExtension()
         );
     }
 
@@ -175,21 +172,5 @@ public final class PlainTextDecisionReader implements DecisionReader {
             result[idx] = lines.get(idx).split(this.delimiter);
         }
         return result;
-    }
-
-    /**
-     * Reads the contents of the specified file as a collection of {@code String}s.
-     *
-     * @param file File to read, represented as {@code Path}.
-     * @return The collection of {@code String}s read from file.
-     */
-    private static List<String> contentsOf(final Path file) {
-        List<String> strings;
-        try {
-            strings = Files.readAllLines(file, StandardCharsets.UTF_8);
-        } catch (final IOException exception) {
-            strings = Collections.emptyList();
-        }
-        return strings;
     }
 }

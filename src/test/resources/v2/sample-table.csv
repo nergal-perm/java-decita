@@ -1,0 +1,5 @@
+CND;hello-world::outcome;hello;world
+CND;market::shop;~;2
+CND;currentPlayer::name;!Katie;Katie
+OUT;outcome;true;false;else
+OUT;text;hello world;the world is not enough;no rule satisfied

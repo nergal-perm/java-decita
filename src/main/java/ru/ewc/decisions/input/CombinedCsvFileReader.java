@@ -24,8 +24,9 @@
 
 package ru.ewc.decisions.input;
 
+import java.net.URI;
 import java.util.List;
-import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
@@ -37,17 +38,38 @@ import ru.ewc.decisions.core.DecisionTable;
  */
 public final class CombinedCsvFileReader implements DecisionReader {
     /**
+     * The folder with source data files.
+     */
+    private final SourceFilesFolder folder;
+
+    /**
      * The symbol that separates CSV-record fields.
      */
     private final String delimiter;
 
-    public CombinedCsvFileReader(final String delimiter) {
+    /**
+     * Ctor.
+     *
+     * @param dir The path to the source data files.
+     * @param extension The extension of the source data files.
+     * @param delimiter The symbol that separates CSV-record fields.
+     */
+    public CombinedCsvFileReader(final URI dir, final String extension, final String delimiter) {
+        this.folder = new SourceFilesFolder(dir, extension);
         this.delimiter = delimiter;
     }
 
+    CombinedCsvFileReader(final String delimiter) {
+        this(null, ".any", delimiter);
+    }
+
     @Override
-    public BaseLocators allTables() {
-        return null;
+    public DecisionTables allTables() {
+        return new DecisionTables(
+            this.folder.files().stream()
+                .map(this::readAsDecisionTable)
+                .toList()
+        );
     }
 
     String[][] conditionsFrom(final List<String> lines) {
@@ -58,7 +80,7 @@ public final class CombinedCsvFileReader implements DecisionReader {
         return this.toArray(extract(lines, "OUT"));
     }
 
-    private static List<String> extract(List<String> lines, String filter) {
+    private static List<String> extract(final List<String> lines, final String filter) {
         return lines.stream()
             .filter(line -> line.startsWith(filter))
             .map(line -> line.substring(4))
@@ -77,5 +99,19 @@ public final class CombinedCsvFileReader implements DecisionReader {
             }
         }
         return result;
+    }
+
+    /**
+     * Reads the contents of the specified file as a {@link DecisionTable}.
+     *
+     * @param file The file to read.
+     * @return The file's contents as a {@link DecisionTable}.
+     */
+    private DecisionTable readAsDecisionTable(final FileContents file) {
+        return new RawContent(
+            this.conditionsFrom(file.asStrings()),
+            this.outcomesFrom(file.asStrings()),
+            file.nameWithoutExtension()
+        ).asDecisionTable();
     }
 }

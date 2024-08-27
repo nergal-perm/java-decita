@@ -33,19 +33,19 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.core.InMemoryLocator;
-import ru.ewc.decisions.input.PlainTextDecisionReader;
+import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.state.State;
 
 /**
- * Full scenario tests.
+ * Full scenario tests for combined CSV files format.
  *
- * @since 0.1
+ * @since 0.8.0
  */
-final class EndToEndTest {
+final class EndToEndV2Test {
     /**
      * Constant for the table outcome field.
      */
-    public static final String OUTCOME = "outcome";
+    public static final String OUT = "outcome";
 
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
@@ -60,7 +60,7 @@ final class EndToEndTest {
             "The table is computed correctly",
             createContextFrom(state).decisionFor("sample-table"),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("true")),
+                Matchers.hasEntry(Matchers.equalTo(EndToEndV2Test.OUT), Matchers.equalTo("true")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
             )
         );
@@ -81,7 +81,7 @@ final class EndToEndTest {
             "The table is computed correctly",
             context.decisionFor("sample-table"),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUTCOME), Matchers.equalTo("else")),
+                Matchers.hasEntry(Matchers.equalTo(EndToEndV2Test.OUT), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
             )
         );
@@ -128,14 +128,14 @@ final class EndToEndTest {
     private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),
-            "src/test/resources/v1"
+            "src/test/resources/v2"
         ).toUri();
     }
 
     private static ComputationContext createContextFrom(final State state) {
         return new ComputationContext(
             state,
-            new PlainTextDecisionReader(tablesDirectory(), ".csv", ";").allTables()
+            new CombinedCsvFileReader(tablesDirectory(), ".csv", ";").allTables()
         );
     }
 }

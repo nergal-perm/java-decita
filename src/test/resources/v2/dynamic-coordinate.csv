@@ -1,0 +1,3 @@
+CND;cells::${request::move};empty
+CND;game::currentPlayer;request::player
+OUT;moveAvailable;true;false

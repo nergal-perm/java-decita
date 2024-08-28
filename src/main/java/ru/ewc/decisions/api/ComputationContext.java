@@ -114,7 +114,7 @@ public final class ComputationContext {
 
     @SuppressWarnings("unused")
     public void perform(final String command) {
-        this.commands.perform(command, this);
+        ((DecisionTable) this.tables.locatorFor(command)).perform(this);
     }
 
     /**

@@ -169,6 +169,15 @@ public final class Rule {
         return this.outcomes;
     }
 
+    /**
+     * Performs all the assignments in this rule, effectively performing the state-changing command.
+     *
+     * @param context The {@link ComputationContext} to perform the assignments in.
+     */
+    public void perform(final ComputationContext context) {
+        this.assignments.forEach(a -> a.performIn(context));
+    }
+
     private String asString() {
         return this.name;
     }

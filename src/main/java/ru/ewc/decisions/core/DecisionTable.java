@@ -112,6 +112,11 @@ public final class DecisionTable implements Locator {
         return outcome;
     }
 
+    public void perform(final ComputationContext context) {
+        this.outcome(context);
+        this.satisfiedRules().findFirst().orElse(this.elserule).perform(context);
+    }
+
     /**
      * Converts the collection of {@link Rule}s into a {@link Stream}.
      *

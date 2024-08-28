@@ -125,6 +125,26 @@ final class EndToEndTest {
             .hasMessageContaining("Multiple rules are satisfied");
     }
 
+    @Test
+    void shouldPerformCommandFromTable() {
+        final State state = new State(
+            Map.of(
+                "data", new InMemoryLocator(Map.of("is-stored", "true")),
+                "market", new InMemoryLocator(Map.of("shop", 2)),
+                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
+            )
+        );
+        final ComputationContext context = createContextFrom(state);
+        final OutputTracker<String> tracker = context.startTracking();
+        context.perform("sample-table");
+        tracker.events().forEach(System.out::println);
+        MatcherAssert.assertThat(
+            "The table is computed correctly",
+            state.locatorFor("market").state(),
+            Matchers.hasEntry("shop", "3")
+        );
+    }
+
     private static URI tablesDirectory() {
         return Path.of(
             Paths.get("").toAbsolutePath().toString(),

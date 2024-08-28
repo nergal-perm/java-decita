@@ -48,7 +48,7 @@ public final class InMemoryLocator implements Locator {
      * @param storage The pre-filled key-value storage to start with.
      */
     public InMemoryLocator(final Map<String, Object> storage) {
-        this.storage = storage;
+        this.storage = new HashMap<>(storage);
     }
 
     /**

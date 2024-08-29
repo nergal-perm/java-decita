@@ -29,8 +29,32 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public record SourceLines(Map<String, List<String>> lines, String delimiter) {
-    static SourceLines fromLinesWithDelimiter(final List<String> lines, final String delimiter) {
+/**
+ * I am a class that represents the lines from the source file grouped by the type of the line.
+ *
+ * @since 0.8.0
+ */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+public final class SourceLines {
+    /**
+     * All the lines from the source file, grouped by the type of the line.
+     */
+    private final Map<String, List<String>> grouped;
+
+    /**
+     * The delimiter used in the source file.
+     */
+    private final String delimiter;
+
+    private SourceLines(final Map<String, List<String>> grouped, final String delimiter) {
+        this.grouped = grouped;
+        this.delimiter = delimiter;
+    }
+
+    public static SourceLines fromLinesWithDelimiter(
+        final List<String> lines,
+        final String delimiter
+    ) {
         return new SourceLines(
             Stream
                 .of("CND", "OUT", "ASG")
@@ -39,8 +63,12 @@ public record SourceLines(Map<String, List<String>> lines, String delimiter) {
         );
     }
 
+    public Map<String, List<String>> lines() {
+        return this.grouped;
+    }
+
     public String[][] asArrayOf(final String key) {
-        return this.toArray(this.lines.getOrDefault(key, List.of()));
+        return this.toArray(this.grouped.getOrDefault(key, List.of()));
     }
 
     private static List<String> filteredList(final String key, final List<String> source) {

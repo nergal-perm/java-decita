@@ -35,7 +35,7 @@ import ru.ewc.decisions.core.Coordinate;
  *
  * @since 0.8.0
  */
-public class Assignment {
+public final class Assignment {
     /**
      * The target {@link Coordinate} to assign the value to.
      */
@@ -68,12 +68,12 @@ public class Assignment {
 
     public List<String> commandArgs() {
         final List<String> result = new ArrayList<>(2);
-        result.addAll(this.unresolvedPartsFor(this.target.asString()));
-        result.addAll(this.unresolvedPartsFor(this.value.asString()));
+        result.addAll(Assignment.unresolvedPartsFor(this.target.asString()));
+        result.addAll(Assignment.unresolvedPartsFor(this.value.asString()));
         return result;
     }
 
-    public List<String> unresolvedPartsFor(final String description) {
+    private static List<String> unresolvedPartsFor(final String description) {
         final List<String> result = new ArrayList<>(1);
         if (description.contains("${")) {
             result.add(extractInnerMostCoordinate(description.trim()));

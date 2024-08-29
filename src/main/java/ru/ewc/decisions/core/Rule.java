@@ -187,14 +187,14 @@ public final class Rule {
         return !this.assignments.isEmpty();
     }
 
-    private String asString() {
-        return this.name;
-    }
-
     public List<String> commandArgs() {
         return this.assignments.stream()
             .map(Assignment::commandArgs)
             .flatMap(List::stream)
             .toList();
+    }
+
+    private String asString() {
+        return this.name;
     }
 }

@@ -28,7 +28,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import ru.ewc.commands.Commands;
 import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
@@ -53,11 +52,6 @@ public final class ComputationContext {
     private final State state;
 
     /**
-     * The storage of all the commands.
-     */
-    private final Commands commands;
-
-    /**
      * The publisher of the computation events.
      */
     private final OutputPublisher<String> publisher;
@@ -66,29 +60,15 @@ public final class ComputationContext {
         this(state, ComputationContext.getAllTables(tables));
     }
 
-    public ComputationContext(final State state, final URI tables, final URI commands) {
-        this(state, ComputationContext.getAllTables(tables), new Commands(commands));
-    }
-
-    public ComputationContext(final State state, final DecisionTables tables) {
-        this(state, tables, new Commands(Map.of()));
-    }
-
     /**
      * Primary Ctor.
      *
      * @param state The {@link State} instance to use.
      * @param tables The {@link DecisionTables} instance to use.
-     * @param commands The {@link Commands} instance to use.
      */
-    public ComputationContext(
-        final State state,
-        final DecisionTables tables,
-        final Commands commands
-    ) {
+    public ComputationContext(final State state, final DecisionTables tables) {
         this.state = ComputationContext.extendedWithConstant(state);
         this.tables = tables;
-        this.commands = commands;
         this.publisher = new OutputPublisher<>();
     }
 

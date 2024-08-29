@@ -161,7 +161,11 @@ public final class ComputationContext {
 
     @SuppressWarnings("unused")
     public Map<String, List<String>> commandData() {
-        return this.commands.args();
+        return this.tables.commands().stream().collect(
+            HashMap::new,
+            (map, table) -> map.put(table.tableName(), table.commandArgs()),
+            HashMap::putAll
+        );
     }
 
     private static State extendedWithConstant(final State state) {

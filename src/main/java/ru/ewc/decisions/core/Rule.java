@@ -190,4 +190,11 @@ public final class Rule {
     private String asString() {
         return this.name;
     }
+
+    public List<String> commandArgs() {
+        return this.assignments.stream()
+            .map(Assignment::commandArgs)
+            .flatMap(List::stream)
+            .toList();
+    }
 }

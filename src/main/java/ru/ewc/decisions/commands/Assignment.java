@@ -24,6 +24,8 @@
 
 package ru.ewc.decisions.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.core.Coordinate;
 
@@ -62,5 +64,26 @@ public class Assignment {
      */
     public void performIn(final ComputationContext context) {
         this.target.setValueInContext(this.value.valueIn(context), context);
+    }
+
+    public List<String> commandArgs() {
+        final List<String> result = new ArrayList<>(2);
+        result.addAll(this.unresolvedPartsFor(this.target.asString()));
+        result.addAll(this.unresolvedPartsFor(this.value.asString()));
+        return result;
+    }
+
+    public List<String> unresolvedPartsFor(final String description) {
+        final List<String> result = new ArrayList<>(1);
+        if (description.contains("${")) {
+            result.add(extractInnerMostCoordinate(description.trim()));
+        }
+        return result.stream().filter(s -> s.contains("::")).toList();
+    }
+
+    private static String extractInnerMostCoordinate(final String description) {
+        final int start = description.lastIndexOf("${");
+        final int end = description.indexOf('}', start);
+        return description.substring(start + 2, end);
     }
 }

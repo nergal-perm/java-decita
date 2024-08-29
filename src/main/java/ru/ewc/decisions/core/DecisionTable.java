@@ -24,6 +24,7 @@
 
 package ru.ewc.decisions.core;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -125,6 +126,13 @@ public final class DecisionTable implements Locator {
     public boolean describesCommand() {
         return StreamSupport.stream(this.rules.spliterator(), false)
             .anyMatch(Rule::describesCommand);
+    }
+
+    public List<String> commandArgs() {
+        return StreamSupport.stream(this.rules.spliterator(), false)
+            .map(Rule::commandArgs)
+            .flatMap(List::stream)
+            .toList();
     }
 
     /**

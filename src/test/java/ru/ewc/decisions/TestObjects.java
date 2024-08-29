@@ -24,6 +24,9 @@
 
 package ru.ewc.decisions;
 
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
@@ -38,6 +41,7 @@ import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
+import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.state.State;
 
 /**
@@ -91,6 +95,10 @@ public final class TestObjects {
         return Coordinate.from("always_true::outcome");
     }
 
+    public static ComputationContext tablesFolderWithState(final State state) {
+        return TestObjects.createContextFrom(state, "tables");
+    }
+
     /**
      * Convenience method to get an instance of {@link Rule} with the {@link Condition} that
      * always resolves to {@code true}.
@@ -127,5 +135,18 @@ public final class TestObjects {
             "always_true"
         );
         return new ComputationContext(state, new DecisionTables(List.of(truthy)));
+    }
+
+    private static ComputationContext createContextFrom(final State state, final String folder) {
+        return new ComputationContext(
+            state, new CombinedCsvFileReader(uriTo(folder), ".csv", ";").allTables()
+        );
+    }
+
+    private static URI uriTo(final String folder) {
+        return Path.of(
+            Paths.get("").toAbsolutePath().toString(),
+            "src/test/resources/%s".formatted(folder)
+        ).toUri();
     }
 }

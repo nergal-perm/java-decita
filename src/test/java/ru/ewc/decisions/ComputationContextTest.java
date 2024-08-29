@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.core.Coordinate;
+import ru.ewc.state.State;
 
 /**
  * The tests for {@link ComputationContext}.
@@ -45,6 +46,16 @@ final class ComputationContextTest {
             "The context should have a fragment",
             actual,
             Matchers.equalTo(Coordinate.TRUE)
+        );
+    }
+
+    @Test
+    void shouldGetAllCommandNames() {
+        final ComputationContext context = TestObjects.tablesFolderWithState(State.EMPTY);
+        MatcherAssert.assertThat(
+            "The context should have all the command names",
+            context.commandNames(),
+            Matchers.containsInAnyOrder("sample-table")
         );
     }
 }

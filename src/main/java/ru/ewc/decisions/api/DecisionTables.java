@@ -35,7 +35,7 @@ import ru.ewc.decisions.core.DecisionTable;
  *
  * @since 0.6.0
  */
-public class DecisionTables extends BaseLocators {
+public final class DecisionTables extends BaseLocators {
     /**
      * Ctor.
      *
@@ -46,5 +46,13 @@ public class DecisionTables extends BaseLocators {
             .stream()
             .collect(Collectors.toMap(DecisionTable::tableName, Function.identity()))
         );
+    }
+
+    public List<DecisionTable> commands() {
+        return this.locators().values().stream()
+            .filter(DecisionTable.class::isInstance)
+            .map(DecisionTable.class::cast)
+            .filter(DecisionTable::describesCommand)
+            .toList();
     }
 }

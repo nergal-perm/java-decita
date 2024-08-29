@@ -24,16 +24,13 @@
 
 package ru.ewc.decisions.api;
 
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.core.InMemoryLocator;
-import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.state.State;
 
 /**
@@ -47,18 +44,23 @@ final class EndToEndTest {
      */
     public static final String OUT = "outcome";
 
+    /**
+     * Constant for the shop field.
+     */
+    public static final String SHOP = "shop";
+
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
         final State state = new State(
             Map.of(
                 "data", new InMemoryLocator(Map.of("is-stored", "true")),
-                "market", new InMemoryLocator(Map.of("shop", 2)),
+                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 2)),
                 "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
             )
         );
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            createContextFrom(state).decisionFor("sample-table"),
+            TestObjects.tablesFolderWithState(state).decisionFor("sample-table"),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUT), Matchers.equalTo("true")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
@@ -71,11 +73,11 @@ final class EndToEndTest {
         final State state = new State(
             Map.of(
                 "data", new InMemoryLocator(Map.of("is-stored", false)),
-                "market", new InMemoryLocator(Map.of("shop", 3)),
+                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 3)),
                 "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
             )
         );
-        final ComputationContext context = createContextFrom(state);
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
         final OutputTracker<String> tracker = context.startTracking();
         MatcherAssert.assertThat(
             "The table is computed correctly",
@@ -101,7 +103,7 @@ final class EndToEndTest {
                 "game", new InMemoryLocator(Map.of("currentPlayer", "X"))
             )
         );
-        final ComputationContext context = createContextFrom(state);
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
         MatcherAssert.assertThat(
             "Should resolve dynamic coordinates while computing a table",
             context.decisionFor("dynamic-coordinate"),
@@ -118,7 +120,7 @@ final class EndToEndTest {
                 "data", new InMemoryLocator(Map.of("value", 1))
             )
         );
-        final ComputationContext context = createContextFrom(state);
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
         Assertions
             .assertThatThrownBy(() -> context.decisionFor("multiple-rules"))
             .isInstanceOf(DecitaException.class)
@@ -130,32 +132,17 @@ final class EndToEndTest {
         final State state = new State(
             Map.of(
                 "data", new InMemoryLocator(Map.of("is-stored", "true")),
-                "market", new InMemoryLocator(Map.of("shop", 2)),
-                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
+                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 2)),
+                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene")),
+                "request", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 3))
             )
         );
-        final ComputationContext context = createContextFrom(state);
-        final OutputTracker<String> tracker = context.startTracking();
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
         context.perform("sample-table");
-        tracker.events().forEach(System.out::println);
         MatcherAssert.assertThat(
             "The table is computed correctly",
             state.locatorFor("market").state(),
-            Matchers.hasEntry("shop", "3")
-        );
-    }
-
-    private static URI tablesDirectory() {
-        return Path.of(
-            Paths.get("").toAbsolutePath().toString(),
-            "src/test/resources/tables"
-        ).toUri();
-    }
-
-    private static ComputationContext createContextFrom(final State state) {
-        return new ComputationContext(
-            state,
-            new CombinedCsvFileReader(tablesDirectory(), ".csv", ";").allTables()
+            Matchers.hasEntry(EndToEndTest.SHOP, "3")
         );
     }
 }

@@ -178,6 +178,15 @@ public final class Rule {
         this.assignments.forEach(a -> a.performIn(context));
     }
 
+    /**
+     * Checks whether this rule describes a command.
+     *
+     * @return True if this rule describes a command.
+     */
+    public boolean describesCommand() {
+        return !this.assignments.isEmpty();
+    }
+
     private String asString() {
         return this.name;
     }

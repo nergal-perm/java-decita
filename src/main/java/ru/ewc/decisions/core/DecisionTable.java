@@ -118,6 +118,16 @@ public final class DecisionTable implements Locator {
     }
 
     /**
+     * Checks whether this table describes a command.
+     *
+     * @return True if this table describes a command.
+     */
+    public boolean describesCommand() {
+        return StreamSupport.stream(this.rules.spliterator(), false)
+            .anyMatch(Rule::describesCommand);
+    }
+
+    /**
      * Converts the collection of {@link Rule}s into a {@link Stream}.
      *
      * @return A {@link Stream} of {@link Rule}s.

@@ -155,9 +155,8 @@ public final class ComputationContext {
     }
 
     @SuppressWarnings("unused")
-    @Deprecated
     public List<String> commandNames() {
-        return this.commands.names();
+        return this.tables.commands().stream().map(DecisionTable::tableName).toList();
     }
 
     @SuppressWarnings("unused")

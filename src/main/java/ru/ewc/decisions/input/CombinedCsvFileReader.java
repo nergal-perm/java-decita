@@ -25,17 +25,20 @@
 package ru.ewc.decisions.input;
 
 import java.net.URI;
+import java.util.List;
+import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecisionTables;
+import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
- * I am the specific implementation of the {@link DecisionReader} for the combined CSV format. My
+ * I am the specific implementation of the {@link ContentsReader} for the combined CSV format. My
  * main responsibility is to manage all the file-related operations and transform the file lines
  * into a {@link DecisionTable}.
  *
  * @since 0.8.0
  */
-public final class CombinedCsvFileReader implements DecisionReader {
+public final class CombinedCsvFileReader implements ContentsReader {
     /**
      * The folder with source data files.
      */
@@ -58,25 +61,32 @@ public final class CombinedCsvFileReader implements DecisionReader {
         this.delimiter = delimiter;
     }
 
-    @Override
+    /**
+     * Reads all the source data and returns the {@link Locator}s collection, that can be used to
+     * initialize the {@link ComputationContext}.
+     *
+     * @return A collection of {@link Locator}s , representing the contents of
+     *  {@link DecisionTable}s data sources.
+     */
     public DecisionTables allTables() {
-        return new DecisionTables(
-            this.folder.files().stream()
-                .map(this::readAsDecisionTable)
-                .toList()
+        return new DecisionTables(this.readAll().stream()
+            .map(RawContent::asDecisionTable)
+            .toList()
         );
     }
 
-    /**
-     * Reads the contents of the specified file as a {@link DecisionTable}.
-     *
-     * @param file The file to read.
-     * @return The file's contents as a {@link DecisionTable}.
-     */
-    private DecisionTable readAsDecisionTable(final FileContents file) {
-        return new RawContent(
-            SourceLines.fromLinesWithDelimiter(file.asStrings(), this.delimiter),
-            file.nameWithoutExtension()
-        ).asDecisionTable();
+    @Override
+    public List<RawContent> readAll() {
+        return this.folder.files()
+            .stream()
+            .map(
+                file -> {
+                    final SourceLines lines = SourceLines.fromLinesWithDelimiter(
+                        file.asStrings(),
+                        this.delimiter
+                    );
+                    return new RawContent(lines, file.nameWithoutExtension());
+                }
+            ).toList();
     }
 }

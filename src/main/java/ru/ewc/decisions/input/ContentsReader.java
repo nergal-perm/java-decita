@@ -22,9 +22,17 @@
  * SOFTWARE.
  */
 
+package ru.ewc.decisions.input;
+
+import java.util.List;
+
 /**
- * Contains the classes that are responsible for the commands creation based on external input.
+ * I am the interface for all the source data Readers. My implementors should know how to get data
+ * from their sources and then transform it into a format suitable for constructing
+ * {@code DecisionTables}.
  *
- * @since 0.5.0
+ * @since 0.2
  */
-package ru.ewc.commands.input;
+public interface ContentsReader {
+    List<RawContent> readAll();
+}

@@ -44,9 +44,9 @@ import ru.ewc.decisions.core.Rule;
  */
 public final class RawContent {
     /**
-     * The name of the source table.
+     * The name of the source file.
      */
-    private final String table;
+    private final String file;
 
     /**
      * Array of String values that form the Conditions part of a {@link DecisionTable}.
@@ -66,24 +66,15 @@ public final class RawContent {
     /**
      * Ctor.
      *
-     * @param conditions A 2D-array of Strings describing the Conditions part of the
-     *  {@link DecisionTable}.
-     * @param outcomes A 2D-array of Strings describing the Outcomes part of the
-     *  {@link DecisionTable}.
-     * @param assignments A 2D-array of Strings describing the Assignments part of the
-     *  {@link DecisionTable}.
-     * @param table Name of the source table.
+     * @param lines A {@link SourceLines} object that contains the source file contents as
+     *  categorized lines.
+     * @param file The name of the file.
      */
-    public RawContent(
-        final String[][] conditions,
-        final String[][] outcomes,
-        final String[][] assignments,
-        final String table
-    ) {
-        this.table = table;
-        this.conditions = conditions.clone();
-        this.outcomes = outcomes.clone();
-        this.assignments = assignments.clone();
+    public RawContent(final SourceLines lines, final String file) {
+        this.file = file;
+        this.conditions = lines.asArrayOf("CND").clone();
+        this.outcomes = lines.asArrayOf("OUT").clone();
+        this.assignments = lines.asArrayOf("ASG").clone();
     }
 
     /**
@@ -92,7 +83,7 @@ public final class RawContent {
      * @return The table name.
      */
     public String tableName() {
-        return this.table;
+        return this.file;
     }
 
     /**
@@ -103,7 +94,7 @@ public final class RawContent {
     public DecisionTable asDecisionTable() {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule("%s::rule_%02d".formatted(this.table, column));
+            final Rule rule = new Rule("%s::rule_%02d".formatted(this.file, column));
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
                     fullConditionFrom(Coordinate.from(condition[0]), condition[column])
@@ -125,7 +116,7 @@ public final class RawContent {
             }
             rules.add(rule);
         }
-        final Rule elserule = new Rule("%s::else".formatted(this.table));
+        final Rule elserule = new Rule("%s::else".formatted(this.file));
         if (this.outcomes[0].length > this.conditions[0].length) {
             for (final String[] outcome : this.outcomes) {
                 elserule.withOutcome(
@@ -136,7 +127,7 @@ public final class RawContent {
         } else {
             elserule.withOutcome("outcome", "undefined");
         }
-        return new DecisionTable(rules, elserule, this.table);
+        return new DecisionTable(rules, elserule, this.file);
     }
 
     /**

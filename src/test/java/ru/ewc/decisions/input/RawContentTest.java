@@ -23,6 +23,7 @@
  */
 package ru.ewc.decisions.input;
 
+import java.util.List;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,16 +38,16 @@ import ru.ewc.decisions.TestObjects;
 final class RawContentTest {
     @Test
     void shouldParseDifferentConditions() {
-        final RawContent target = new RawContent(
-            new String[][]{
-                {"10", "!>5", "<20"},
-                {"20", "!<30", "~"},
-                {"true", "false", "!false"},
-            },
-            new String[][]{{"outcome", "false", "true", "else"}},
-            new String[][]{},
-            "sample-table"
+        final SourceLines source = SourceLines.fromLinesWithDelimiter(
+            List.of(
+                "CND;10;!>5;<20",
+                "CND;20;!<30;~",
+                "CND;true;false;!false",
+                "OUT;outcome;false;true;else"
+            ),
+            ";"
         );
+        final RawContent target = new RawContent(source, "sample-table");
         MatcherAssert.assertThat(
             "The decision table is parsed correctly",
             target.asDecisionTable().outcome(TestObjects.defaultContext()),

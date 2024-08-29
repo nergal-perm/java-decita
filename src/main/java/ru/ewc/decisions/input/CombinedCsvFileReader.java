@@ -25,7 +25,6 @@
 package ru.ewc.decisions.input;
 
 import java.net.URI;
-import java.util.List;
 import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.core.DecisionTable;
 
@@ -59,10 +58,6 @@ public final class CombinedCsvFileReader implements DecisionReader {
         this.delimiter = delimiter;
     }
 
-    CombinedCsvFileReader(final String delimiter) {
-        this(null, ".any", delimiter);
-    }
-
     @Override
     public DecisionTables allTables() {
         return new DecisionTables(
@@ -70,39 +65,6 @@ public final class CombinedCsvFileReader implements DecisionReader {
                 .map(this::readAsDecisionTable)
                 .toList()
         );
-    }
-
-    String[][] conditionsFrom(final List<String> lines) {
-        return this.toArray(extract(lines, "CND"));
-    }
-
-    String[][] outcomesFrom(final List<String> lines) {
-        return this.toArray(extract(lines, "OUT"));
-    }
-
-    String[][] assignmentsFrom(final List<String> lines) {
-        return this.toArray(extract(lines, "ASG"));
-    }
-
-    private static List<String> extract(final List<String> lines, final String filter) {
-        return lines.stream()
-            .filter(line -> line.startsWith(filter))
-            .map(line -> line.substring(4))
-            .toList();
-    }
-
-    private String[][] toArray(final List<String> lines) {
-        final String[][] result;
-        if (lines.isEmpty()) {
-            result = new String[0][0];
-        } else {
-            final int width = lines.get(0).split(this.delimiter).length;
-            result = new String[lines.size()][width];
-            for (int idx = 0; idx < lines.size(); idx = idx + 1) {
-                result[idx] = lines.get(idx).split(this.delimiter);
-            }
-        }
-        return result;
     }
 
     /**
@@ -113,11 +75,8 @@ public final class CombinedCsvFileReader implements DecisionReader {
      */
     private DecisionTable readAsDecisionTable(final FileContents file) {
         return new RawContent(
-            this.conditionsFrom(file.asStrings()),
-            this.outcomesFrom(file.asStrings()),
-            this.assignmentsFrom(file.asStrings()),
+            SourceLines.fromLinesWithDelimiter(file.asStrings(), this.delimiter),
             file.nameWithoutExtension()
         ).asDecisionTable();
     }
-
 }

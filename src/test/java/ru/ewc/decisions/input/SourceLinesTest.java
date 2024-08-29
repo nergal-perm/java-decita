@@ -32,91 +32,70 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * I am the test for {@link CombinedCsvFileReader}.
+ * I am the test for {@link SourceLines}.
  *
  * @since 0.8.0
  */
-final class CombinedCsvFileReaderTest {
+final class SourceLinesTest {
 
     @ValueSource(strings = {"OUT;outcome", "EXE;command", "ASG:assign", "---", " ", ""})
     @ParameterizedTest(name = "{index}: Line \"{0}\" is not a condition")
     void whenThereAreNoConditionsShouldReturnEmptyArray(final String input) {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.conditionsFrom(Collections.singletonList(input));
         MatcherAssert.assertThat(
             "Should return empty array of Conditions when there are no CND lines in the file",
-            actual,
-            Matchers.emptyArray()
+            sourceLinesFor(input).lines().get("CND"),
+            Matchers.emptyCollectionOf(String.class)
         );
     }
 
     @ValueSource(strings = {"CND;condition", "EXE;command", "ASG:assign", "---", " ", ""})
     @ParameterizedTest(name = "{index}: Line \"{0}\" is not an outcome")
     void whenThereAreNoOutcomesShouldReturnEmptyArray(final String input) {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.outcomesFrom(Collections.singletonList(input));
         MatcherAssert.assertThat(
             "Should return empty array of Outcomes when there are no OUT lines in the file",
-            actual,
-            Matchers.emptyArray()
+            sourceLinesFor(input).lines().get("OUT"),
+            Matchers.emptyCollectionOf(String.class)
         );
     }
 
     @ValueSource(strings = {"CND;condition", "EXE;command", "OUT:outcome", "---", " ", ""})
     @ParameterizedTest(name = "{index}: Line \"{0}\" is not an assignment")
     void whereThereAreNoAssignmentsShouldReturnEmptyArray(final String input) {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.assignmentsFrom(Collections.singletonList(input));
         MatcherAssert.assertThat(
             "Should return empty array of Assignments when there are no ASG lines in the file",
-            actual,
-            Matchers.emptyArray()
+            sourceLinesFor(input).lines().get("ASG"),
+            Matchers.emptyCollectionOf(String.class)
         );
     }
 
     @Test
     void whenThereIsAConditionShouldReturnFilledArray() {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.conditionsFrom(Collections.singletonList("CND;hello"));
         MatcherAssert.assertThat(
             "",
-            actual[0],
-            Matchers.allOf(
-                Matchers.hasItemInArray("hello"),
-                Matchers.arrayWithSize(1)
-            )
+            sourceLinesFor("CND;hello").lines().get("CND"),
+            Matchers.contains("hello")
         );
     }
 
     @Test
     void whenThereIsAnOutcomeShouldReturnFilledArray() {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.outcomesFrom(Collections.singletonList("OUT;hello"));
         MatcherAssert.assertThat(
             "",
-            actual[0],
-            Matchers.allOf(
-                Matchers.hasItemInArray("hello"),
-                Matchers.arrayWithSize(1)
-            )
+            sourceLinesFor("OUT;hello").lines().get("OUT"),
+            Matchers.contains("hello")
         );
     }
 
     @Test
     void whenThereIsAnAssignmentShouldReturnFilledArray() {
-        final CombinedCsvFileReader target = readerWithSemicolonDelimiter();
-        final String[][] actual = target.assignmentsFrom(Collections.singletonList("ASG;hello"));
         MatcherAssert.assertThat(
             "",
-            actual[0],
-            Matchers.allOf(
-                Matchers.hasItemInArray("hello"),
-                Matchers.arrayWithSize(1)
-            )
+            sourceLinesFor("ASG;hello").lines().get("ASG"),
+            Matchers.contains("hello")
         );
     }
 
-    private static CombinedCsvFileReader readerWithSemicolonDelimiter() {
-        return new CombinedCsvFileReader(";");
+    private static SourceLines sourceLinesFor(final String input) {
+        return SourceLines.fromLinesWithDelimiter(Collections.singletonList(input), ";");
     }
 }

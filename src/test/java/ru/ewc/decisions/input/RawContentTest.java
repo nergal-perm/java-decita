@@ -38,7 +38,16 @@ import ru.ewc.decisions.TestObjects;
 final class RawContentTest {
     @Test
     void shouldParseDifferentConditions() {
-        final SourceLines source = SourceLines.fromLinesWithDelimiter(
+        final RawContent target = new RawContent(RawContentTest.sourceLines(), "sample-table");
+        MatcherAssert.assertThat(
+            "The decision table is parsed correctly",
+            target.asDecisionTable().outcome(TestObjects.defaultContext()),
+            Matchers.is(Map.of("outcome", "true"))
+        );
+    }
+
+    private static SourceLines sourceLines() {
+        return SourceLines.fromLinesWithDelimiter(
             List.of(
                 "CND;10;!>5;<20",
                 "CND;20;!<30;~",
@@ -47,11 +56,6 @@ final class RawContentTest {
             ),
             ";"
         );
-        final RawContent target = new RawContent(source, "sample-table");
-        MatcherAssert.assertThat(
-            "The decision table is parsed correctly",
-            target.asDecisionTable().outcome(TestObjects.defaultContext()),
-            Matchers.is(Map.of("outcome", "true"))
-        );
     }
+
 }

@@ -46,7 +46,7 @@ public final class RawContent {
     /**
      * The name of the source file.
      */
-    private final String file;
+    private final String name;
 
     /**
      * Array of String values that form the Conditions part of a {@link DecisionTable}.
@@ -68,10 +68,10 @@ public final class RawContent {
      *
      * @param lines A {@link SourceLines} object that contains the source file contents as
      *  categorized lines.
-     * @param file The name of the file.
+     * @param name The name of the file.
      */
-    public RawContent(final SourceLines lines, final String file) {
-        this.file = file;
+    public RawContent(final SourceLines lines, final String name) {
+        this.name = name;
         this.conditions = lines.asArrayOf("CND").clone();
         this.outcomes = lines.asArrayOf("OUT").clone();
         this.assignments = lines.asArrayOf("ASG").clone();
@@ -83,7 +83,7 @@ public final class RawContent {
      * @return The table name.
      */
     public String tableName() {
-        return this.file;
+        return this.name;
     }
 
     /**
@@ -92,9 +92,17 @@ public final class RawContent {
      * @return The {@link DecisionTable} created from the source file.
      */
     public DecisionTable asDecisionTable() {
+        return new DecisionTable(
+            this.specifiedRules("rule"),
+            this.elseRule(),
+            this.name
+        );
+    }
+
+    private List<Rule> specifiedRules(final String type) {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule("%s::rule_%02d".formatted(this.file, column));
+            final Rule rule = new Rule("%s::%s_%02d".formatted(this.name, type, column));
             for (final String[] condition : this.conditions) {
                 rule.withCondition(
                     fullConditionFrom(Coordinate.from(condition[0]), condition[column])
@@ -116,7 +124,11 @@ public final class RawContent {
             }
             rules.add(rule);
         }
-        final Rule elserule = new Rule("%s::else".formatted(this.file));
+        return rules;
+    }
+
+    private Rule elseRule() {
+        final Rule elserule = new Rule("%s::else".formatted(this.name));
         if (this.outcomes[0].length > this.conditions[0].length) {
             for (final String[] outcome : this.outcomes) {
                 elserule.withOutcome(
@@ -127,7 +139,7 @@ public final class RawContent {
         } else {
             elserule.withOutcome("outcome", "undefined");
         }
-        return new DecisionTable(rules, elserule, this.file);
+        return elserule;
     }
 
     /**

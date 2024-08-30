@@ -25,7 +25,7 @@
 package ru.ewc.decisions.api;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import ru.ewc.decisions.core.ConstantLocator;
@@ -145,8 +145,8 @@ public final class ComputationContext {
     }
 
     private static State extendedWithConstant(final State state) {
-        final Map<String, Locator> locators = new HashMap<>(state.locators());
-        locators.put("constant", new ConstantLocator());
+        final List<Locator> locators = new ArrayList<>(state.locators().values());
+        locators.add(new ConstantLocator());
         return new State(locators);
     }
 

@@ -43,21 +43,29 @@ public final class InMemoryLocator implements Locator {
     private final Map<String, Object> storage;
 
     /**
+     * The name of the locator.
+     */
+    private final String name;
+
+    /**
      * Ctor.
      *
+     * @param name The name of the locator.
      * @param storage The pre-filled key-value storage to start with.
      */
-    public InMemoryLocator(final Map<String, Object> storage) {
+    public InMemoryLocator(final String name, final Map<String, Object> storage) {
         this.storage = new HashMap<>(storage);
+        this.name = name;
     }
 
     /**
      * I am a simple method that creates an empty {@link InMemoryLocator}.
      *
+     * @param name The name of the locator.
      * @return An instance of {@link InMemoryLocator} with empty storage.
      */
-    public static InMemoryLocator empty() {
-        return new InMemoryLocator(new HashMap<>());
+    public static InMemoryLocator empty(final String name) {
+        return new InMemoryLocator(name, new HashMap<>());
     }
 
     @Override
@@ -73,5 +81,10 @@ public final class InMemoryLocator implements Locator {
     @Override
     public Map<String, Object> state() {
         return new HashMap<>(this.storage);
+    }
+
+    @Override
+    public String locatorName() {
+        return this.name;
     }
 }

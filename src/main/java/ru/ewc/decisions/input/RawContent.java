@@ -26,6 +26,7 @@ package ru.ewc.decisions.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
@@ -91,7 +92,7 @@ public final class RawContent {
      *
      * @return The {@link DecisionTable} created from the source file.
      */
-    public DecisionTable asDecisionTable() {
+    public Locator asDecisionTable() {
         return new DecisionTable(
             this.specifiedRules("rule"),
             this.elseRule(),

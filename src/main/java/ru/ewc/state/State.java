@@ -24,7 +24,9 @@
 
 package ru.ewc.state;
 
-import java.util.Map;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.BaseLocators;
 
@@ -34,18 +36,17 @@ import ru.ewc.decisions.core.BaseLocators;
  *
  * @since 0.6.0
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public class State extends BaseLocators {
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.
      */
-    public static final State EMPTY = new State(Map.of());
+    public static final State EMPTY = new State(List.of());
 
-    /**
-     * Ctor.
-     *
-     * @param collection The {@link Locator}s to be managed by this instance.
-     */
-    public State(final Map<String, Locator> collection) {
-        super(collection);
+    public State(final List<Locator> collection) {
+        super(collection
+            .stream()
+            .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
+        );
     }
 }

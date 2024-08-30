@@ -80,6 +80,11 @@ public final class DecisionTable implements Locator {
         this.name = name;
     }
 
+    @Override
+    public String locatorName() {
+        return this.name;
+    }
+
     public String tableName() {
         return this.name;
     }

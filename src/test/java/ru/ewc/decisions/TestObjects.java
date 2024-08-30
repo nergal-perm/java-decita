@@ -68,12 +68,14 @@ public final class TestObjects {
     }
 
     public static ComputationContext ticTacToeContext() {
-        final Map<String, Locator> locators = Map.of(
-            "request", InMemoryLocator.empty(),
-            "table", InMemoryLocator.empty(),
-            "cells", InMemoryLocator.empty()
+        final List<Locator> locators = List.of(
+            InMemoryLocator.empty("request"),
+            InMemoryLocator.empty("table"),
+            InMemoryLocator.empty("cells")
         );
-        return defaultLocatorsWith(new State(locators));
+        return defaultLocatorsWith(
+            new State(locators)
+        );
     }
 
     /**

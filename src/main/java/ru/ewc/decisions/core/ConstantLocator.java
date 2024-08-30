@@ -44,4 +44,9 @@ public final class ConstantLocator implements Locator {
     public void setFragmentValue(final String fragment, final String value) {
         // no-op method, nothing changes
     }
+
+    @Override
+    public String locatorName() {
+        return "constant";
+    }
 }

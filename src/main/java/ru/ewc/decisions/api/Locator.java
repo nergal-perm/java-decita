@@ -74,4 +74,11 @@ public interface Locator {
     default Map<String, String> outcome(final ComputationContext context) throws DecitaException {
         return Collections.singletonMap("outcome", "undefined");
     }
+
+    /**
+     * Returns the name of the locator.
+     *
+     * @return The name of the locator.
+     */
+    String locatorName();
 }

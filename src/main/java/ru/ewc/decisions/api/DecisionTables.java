@@ -47,7 +47,7 @@ public final class DecisionTables extends BaseLocators {
     public static DecisionTables using(final ContentsReader contents) {
         return new DecisionTables(
             contents.readAll().stream().map(RawContent::asDecisionTable)
-                .collect(Collectors.toMap(DecisionTable::tableName, Function.identity()))
+                .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
         );
     }
 
@@ -56,6 +56,6 @@ public final class DecisionTables extends BaseLocators {
             .filter(DecisionTable.class::isInstance)
             .map(DecisionTable.class::cast)
             .filter(DecisionTable::describesCommand)
-            .collect(Collectors.toMap(DecisionTable::tableName, DecisionTable::commandArgs));
+            .collect(Collectors.toMap(Locator::locatorName, DecisionTable::commandArgs));
     }
 }

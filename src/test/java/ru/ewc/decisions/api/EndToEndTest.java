@@ -24,6 +24,7 @@
 
 package ru.ewc.decisions.api;
 
+import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
@@ -52,10 +53,10 @@ final class EndToEndTest {
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
         final State state = new State(
-            Map.of(
-                "data", new InMemoryLocator(Map.of("is-stored", "true")),
-                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 2)),
-                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
+            List.of(
+                new InMemoryLocator("data", Map.of("is-stored", "true")),
+                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 2)),
+                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene"))
             )
         );
         MatcherAssert.assertThat(
@@ -71,10 +72,10 @@ final class EndToEndTest {
     @Test
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
         final State state = new State(
-            Map.of(
-                "data", new InMemoryLocator(Map.of("is-stored", false)),
-                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 3)),
-                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene"))
+            List.of(
+                new InMemoryLocator("data", Map.of("is-stored", false)),
+                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 3)),
+                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene"))
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
@@ -97,10 +98,10 @@ final class EndToEndTest {
     @Test
     void shouldResolveDynamicCoordinates() {
         final State state = new State(
-            Map.of(
-                "cells", new InMemoryLocator(Map.of("A1", "empty", "A2", "X", "A3", "O")),
-                "request", new InMemoryLocator(Map.of("move", "A1", "player", "X")),
-                "game", new InMemoryLocator(Map.of("currentPlayer", "X"))
+            List.of(
+                new InMemoryLocator("cells", Map.of("A1", "empty", "A2", "X", "A3", "O")),
+                new InMemoryLocator("request", Map.of("move", "A1", "player", "X")),
+                new InMemoryLocator("game", Map.of("currentPlayer", "X"))
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
@@ -116,8 +117,8 @@ final class EndToEndTest {
     @Test
     void shouldThrowIfSeveralRulesResolveToTrue() {
         final State state = new State(
-            Map.of(
-                "data", new InMemoryLocator(Map.of("value", 1))
+            List.of(
+                new InMemoryLocator("data", Map.of("value", 1))
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
@@ -130,11 +131,11 @@ final class EndToEndTest {
     @Test
     void shouldPerformCommandFromTable() {
         final State state = new State(
-            Map.of(
-                "data", new InMemoryLocator(Map.of("is-stored", "true")),
-                "market", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 2)),
-                "currentPlayer", new InMemoryLocator(Map.of("name", "Eugene")),
-                "request", new InMemoryLocator(Map.of(EndToEndTest.SHOP, 3))
+            List.of(
+                new InMemoryLocator("data", Map.of("is-stored", "true")),
+                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 2)),
+                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene")),
+                new InMemoryLocator("request", Map.of(EndToEndTest.SHOP, 3))
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);

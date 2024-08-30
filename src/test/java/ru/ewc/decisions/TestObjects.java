@@ -134,12 +134,12 @@ public final class TestObjects {
             List.of(alwaysTrueEqualsTrueRule()),
             "always_true"
         );
-        return new ComputationContext(state, new DecisionTables(List.of(truthy)));
+        return new ComputationContext(state, new DecisionTables(Map.of("always_true", truthy)));
     }
 
     private static ComputationContext createContextFrom(final State state, final String folder) {
         return new ComputationContext(
-            state, new CombinedCsvFileReader(uriTo(folder), ".csv", ";").allTables()
+            state, DecisionTables.using(new CombinedCsvFileReader(uriTo(folder), ".csv", ";"))
         );
     }
 

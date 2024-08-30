@@ -26,9 +26,6 @@ package ru.ewc.decisions.input;
 
 import java.net.URI;
 import java.util.List;
-import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.DecisionTables;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.DecisionTable;
 
 /**
@@ -59,20 +56,6 @@ public final class CombinedCsvFileReader implements ContentsReader {
     public CombinedCsvFileReader(final URI dir, final String extension, final String delimiter) {
         this.folder = new SourceFilesFolder(dir, extension);
         this.delimiter = delimiter;
-    }
-
-    /**
-     * Reads all the source data and returns the {@link Locator}s collection, that can be used to
-     * initialize the {@link ComputationContext}.
-     *
-     * @return A collection of {@link Locator}s , representing the contents of
-     *  {@link DecisionTable}s data sources.
-     */
-    public DecisionTables allTables() {
-        return new DecisionTables(this.readAll().stream()
-            .map(RawContent::asDecisionTable)
-            .toList()
-        );
     }
 
     @Override

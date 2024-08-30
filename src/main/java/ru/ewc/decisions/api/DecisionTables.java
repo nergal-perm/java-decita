@@ -25,34 +25,37 @@
 package ru.ewc.decisions.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
+import ru.ewc.decisions.input.ContentsReader;
+import ru.ewc.decisions.input.RawContent;
 
 /**
  * I am a set of decision tables.
  *
  * @since 0.6.0
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class DecisionTables extends BaseLocators {
-    /**
-     * Ctor.
-     *
-     * @param collection The {@link Locator}s to be managed by this instance.
-     */
-    public DecisionTables(final List<DecisionTable> collection) {
-        super(collection
-            .stream()
-            .collect(Collectors.toMap(DecisionTable::tableName, Function.identity()))
+    public DecisionTables(final Map<String, Locator> tables) {
+        super(tables);
+    }
+
+    public static DecisionTables using(final ContentsReader contents) {
+        return new DecisionTables(
+            contents.readAll().stream().map(RawContent::asDecisionTable)
+                .collect(Collectors.toMap(DecisionTable::tableName, Function.identity()))
         );
     }
 
-    public List<DecisionTable> commands() {
+    public Map<String, List<String>> commandsData() {
         return this.locators().values().stream()
             .filter(DecisionTable.class::isInstance)
             .map(DecisionTable.class::cast)
             .filter(DecisionTable::describesCommand)
-            .toList();
+            .collect(Collectors.toMap(DecisionTable::tableName, DecisionTable::commandArgs));
     }
 }

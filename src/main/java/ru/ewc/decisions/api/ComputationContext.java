@@ -32,7 +32,6 @@ import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
-import ru.ewc.decisions.input.RawContent;
 import ru.ewc.state.State;
 
 /**
@@ -137,16 +136,12 @@ public final class ComputationContext {
 
     @SuppressWarnings("unused")
     public List<String> commandNames() {
-        return this.tables.commands().stream().map(DecisionTable::tableName).toList();
+        return this.commandData().keySet().stream().toList();
     }
 
     @SuppressWarnings("unused")
     public Map<String, List<String>> commandData() {
-        return this.tables.commands().stream().collect(
-            HashMap::new,
-            (map, table) -> map.put(table.tableName(), table.commandArgs()),
-            HashMap::putAll
-        );
+        return this.tables.commandsData();
     }
 
     private static State extendedWithConstant(final State state) {
@@ -156,12 +151,6 @@ public final class ComputationContext {
     }
 
     private static DecisionTables getAllTables(final URI tables) {
-        return new DecisionTables(
-            new CombinedCsvFileReader(tables, ".csv", ";")
-                .readAll()
-                .stream()
-                .map(RawContent::asDecisionTable)
-                .toList()
-        );
+        return DecisionTables.using(new CombinedCsvFileReader(tables, ".csv", ";"));
     }
 }

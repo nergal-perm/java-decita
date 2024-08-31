@@ -27,13 +27,6 @@ package ru.ewc.decisions.input;
 import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.commands.Assignment;
-import ru.ewc.decisions.conditions.Condition;
-import ru.ewc.decisions.conditions.EqualsCondition;
-import ru.ewc.decisions.conditions.GreaterThanCondition;
-import ru.ewc.decisions.conditions.LessThanCondition;
-import ru.ewc.decisions.conditions.NotCondition;
-import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 
@@ -94,34 +87,24 @@ public final class RawContent {
      */
     public Locator asDecisionTable() {
         return new DecisionTable(
-            this.specifiedRules("rule"),
+            this.specifiedRules(),
             this.elseRule(),
             this.name
         );
     }
 
-    private List<Rule> specifiedRules(final String type) {
+    private List<Rule> specifiedRules() {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule("%s::%s_%02d".formatted(this.name, type, column));
+            final Rule rule = new Rule("%s::rule_%02d".formatted(this.name, column));
             for (final String[] condition : this.conditions) {
-                rule.withCondition(
-                    fullConditionFrom(Coordinate.from(condition[0]), condition[column])
-                );
+                rule.withCondition(condition[0], condition[column]);
             }
             for (final String[] outcome : this.outcomes) {
-                rule.withOutcome(
-                    outcome[0],
-                    outcome[column]
-                );
+                rule.withOutcome(outcome[0], outcome[column]);
             }
             for (final String[] assignment : this.assignments) {
-                rule.withAssignment(
-                    new Assignment(
-                        Coordinate.from(assignment[0]),
-                        Coordinate.from(assignment[column])
-                    )
-                );
+                rule.withAssignment(assignment[0], assignment[column]);
             }
             rules.add(rule);
         }
@@ -141,29 +124,5 @@ public final class RawContent {
             elserule.withOutcome("outcome", "undefined");
         }
         return elserule;
-    }
-
-    /**
-     * Creates a {@link Condition} based on a string representation.
-     *
-     * @param base The base {@link Coordinate} for the condition.
-     * @param argument String representation of a condition.
-     * @return A concrete {@link Condition} based on given string representation.
-     */
-    private static Condition fullConditionFrom(final Coordinate base, final String argument) {
-        final Condition result;
-        final char operation = argument.charAt(0);
-        if (operation == '~') {
-            result = new EqualsCondition(base, base);
-        } else if (operation == '!') {
-            result = new NotCondition(fullConditionFrom(base, argument.substring(1)));
-        } else if (operation == '>') {
-            result = new GreaterThanCondition(base, Coordinate.from(argument.substring(1)));
-        } else if (operation == '<') {
-            result = new LessThanCondition(base, Coordinate.from(argument.substring(1)));
-        } else {
-            result = new EqualsCondition(base, Coordinate.from(argument));
-        }
-        return result;
     }
 }

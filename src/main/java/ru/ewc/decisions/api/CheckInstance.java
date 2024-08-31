@@ -22,35 +22,34 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.conditions;
+package ru.ewc.decisions.api;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import ru.ewc.decisions.core.Rule;
 
 /**
- * I represent a unary {@link Condition} that adds some checks to the provided base
- * {@link Condition}.
+ * I am a collection of {@link Rule}s to check.
  *
- * @since 0.3
+ * @since 0.8.0
  */
-public abstract class UnaryCondition implements Condition {
+public final class CheckInstance {
     /**
-     * The base {@link Condition} to compute against.
+     * The collection of {@link Rule}s to check.
      */
-    private final Condition delegate;
+    private final List<Rule> rules;
 
-    /**
-     * Ctor.
-     *
-     * @param delegate The base {@link Condition} to compute against.
-     */
-    protected UnaryCondition(final Condition delegate) {
-        this.delegate = delegate;
+    public CheckInstance(final List<Rule> rules) {
+        this.rules = rules;
     }
 
-    /**
-     * Provides access to the base {@link Condition}.
-     *
-     * @return The base {@link Condition}.
-     */
-    protected Condition baseCondition() {
-        return this.delegate;
+    public Map<String, String> outcome(final ComputationContext context) throws DecitaException {
+        return this.rules.stream().collect(
+            Collectors.toMap(
+                Rule::asString,
+                rule -> String.join("\n", rule.test(context))
+            )
+        );
     }
 }

@@ -71,4 +71,9 @@ public final class NotCondition extends UnaryCondition {
     public String asString() {
         return "!(%s)".formatted(this.baseCondition().asString());
     }
+
+    @Override
+    public String result() {
+        return "%s".formatted(this.baseCondition().asString());
+    }
 }

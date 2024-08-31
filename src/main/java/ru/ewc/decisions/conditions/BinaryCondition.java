@@ -103,6 +103,15 @@ public abstract class BinaryCondition implements Condition {
         );
     }
 
+    @Override
+    public final String result() {
+        return "%s %s %s".formatted(
+            this.left.asString(),
+            this.comparisonAsString(),
+            this.right.asString()
+        );
+    }
+
     /**
      * Creates a {@link Matcher} that corresponds to the given operation and {@link Coordinate}.
      *

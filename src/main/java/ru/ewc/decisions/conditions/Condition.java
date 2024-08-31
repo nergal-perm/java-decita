@@ -34,7 +34,32 @@ import ru.ewc.decisions.core.Coordinate;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public interface Condition {
+    /**
+     * Creates a {@link Condition} based on a string representation.
+     *
+     * @param base The base {@link Coordinate} for the condition.
+     * @param argument String representation of a condition.
+     * @return A concrete {@link Condition} based on given string representation.
+     */
+    static Condition from(final Coordinate base, final String argument) {
+        final Condition result;
+        final char operation = argument.charAt(0);
+        if (operation == '~') {
+            result = new EqualsCondition(base, base);
+        } else if (operation == '!') {
+            result = new NotCondition(Condition.from(base, argument.substring(1)));
+        } else if (operation == '>') {
+            result = new GreaterThanCondition(base, Coordinate.from(argument.substring(1)));
+        } else if (operation == '<') {
+            result = new LessThanCondition(base, Coordinate.from(argument.substring(1)));
+        } else {
+            result = new EqualsCondition(base, Coordinate.from(argument));
+        }
+        return result;
+    }
+
     /**
      * Evaluates all the parts of the {@link Condition} and provides the result of that evaluation.
      *
@@ -68,4 +93,6 @@ public interface Condition {
     }
 
     String asString();
+
+    String result();
 }

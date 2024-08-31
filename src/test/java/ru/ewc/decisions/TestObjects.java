@@ -32,10 +32,8 @@ import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.api.Locator;
-import ru.ewc.decisions.conditions.AlwaysTrueCondition;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
-import ru.ewc.decisions.conditions.NotCondition;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
@@ -67,6 +65,13 @@ public final class TestObjects {
         return defaultLocatorsWith(State.EMPTY);
     }
 
+    /**
+     * The {@link ComputationContext} with some predefined {@link Locator}s for the Tic-Tac-Toe
+     * game. There are empty {@link Locator}s for the {@code request}, {@code table} and
+     * {@code cells}.
+     *
+     * @return A prefilled {@link ComputationContext} for the Tic-Tac-Toe game.
+     */
     public static ComputationContext ticTacToeContext() {
         final List<Locator> locators = List.of(
             InMemoryLocator.empty("request"),
@@ -109,7 +114,7 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsTrueRule() {
         return new Rule("always_true")
-            .withCondition(new AlwaysTrueCondition())
+            .withCondition("true", "true")
             .withOutcome("outcome", "Hello");
     }
 
@@ -121,7 +126,7 @@ public final class TestObjects {
      */
     static Rule alwaysTrueEqualsFalseRule() {
         return new Rule("always_false")
-            .withCondition(new NotCondition(new AlwaysTrueCondition()))
+            .withCondition("true", "false")
             .withOutcome("outcome", "World");
     }
 

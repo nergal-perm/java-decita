@@ -24,11 +24,14 @@
 
 package ru.ewc.state;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.BaseLocators;
+import ru.ewc.decisions.core.ConstantLocator;
+import ru.ewc.decisions.core.InMemoryLocator;
 
 /**
  * I am a stored application state. My main responsibility is to provide access to the stored data
@@ -37,16 +40,43 @@ import ru.ewc.decisions.core.BaseLocators;
  * @since 0.6.0
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-public class State extends BaseLocators {
+public final class State extends BaseLocators {
     /**
      * The empty set of predefined {@link Locator}s that should be used to get data from a system.
      */
     public static final State EMPTY = new State(List.of());
 
+    /**
+     * Ctor.
+     *
+     * @param collection The collection of {@link Locator}s to be managed by this instance.
+     */
     public State(final List<Locator> collection) {
         super(collection
             .stream()
             .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
         );
+    }
+
+    public static State withEmptyLocators(final Collection<String> locators) {
+        return new State(
+            locators.stream()
+                .map(InMemoryLocator::empty)
+                .collect(Collectors.toList())
+        );
+    }
+
+    public State extendedWithConstant() {
+        if (!this.locators().containsKey("constant")) {
+            this.locators().put("constant", new ConstantLocator());
+        }
+        return this;
+    }
+
+    public State emptyCopy() {
+        return this.locators().keySet().stream()
+            .filter(locator -> !"constant".equals(locator))
+            .map(InMemoryLocator::empty)
+            .collect(Collectors.collectingAndThen(Collectors.toList(), State::new));
     }
 }

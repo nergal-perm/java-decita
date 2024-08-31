@@ -57,6 +57,10 @@ public final class Assignment {
         this.value = value;
     }
 
+    public Assignment(final String target, final String value) {
+        this(Coordinate.from(target), Coordinate.from(value));
+    }
+
     /**
      * The method that performs the assignment of the value to the target {@link Coordinate}.
      *

@@ -50,16 +50,6 @@ final class ComputationContextTest {
     }
 
     @Test
-    void shouldGetAllCommandNames() {
-        final ComputationContext context = TestObjects.tablesFolderWithState(State.EMPTY);
-        MatcherAssert.assertThat(
-            "The context should have all the command names",
-            context.commandNames(),
-            Matchers.containsInAnyOrder("sample-table")
-        );
-    }
-
-    @Test
     void shouldGetCommandsUnresolvedParts() {
         final ComputationContext context = TestObjects.tablesFolderWithState(State.EMPTY);
         MatcherAssert.assertThat(

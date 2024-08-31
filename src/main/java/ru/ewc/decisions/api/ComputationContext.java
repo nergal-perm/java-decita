@@ -25,10 +25,8 @@
 package ru.ewc.decisions.api;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import ru.ewc.decisions.core.ConstantLocator;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
@@ -67,9 +65,13 @@ public final class ComputationContext {
      * @param tables The {@link DecisionTables} instance to use.
      */
     public ComputationContext(final State state, final DecisionTables tables) {
-        this.state = ComputationContext.extendedWithConstant(state);
+        this.state = state.extendedWithConstant();
         this.tables = tables;
         this.publisher = new OutputPublisher<>();
+    }
+
+    public ComputationContext emptyStateCopy() {
+        return new ComputationContext(this.state.emptyCopy(), this.tables);
     }
 
     public OutputTracker<String> startTracking() {
@@ -92,7 +94,6 @@ public final class ComputationContext {
         return this.tables.locatorFor(name).outcome(this);
     }
 
-    @SuppressWarnings("unused")
     public void perform(final String command) {
         ((DecisionTable) this.tables.locatorFor(command)).perform(this);
     }
@@ -134,23 +135,12 @@ public final class ComputationContext {
         return this.state.state();
     }
 
-    @SuppressWarnings("unused")
-    public List<String> commandNames() {
-        return this.commandData().keySet().stream().toList();
-    }
-
-    @SuppressWarnings("unused")
     public Map<String, List<String>> commandData() {
         return this.tables.commandsData();
-    }
-
-    private static State extendedWithConstant(final State state) {
-        final List<Locator> locators = new ArrayList<>(state.locators().values());
-        locators.add(new ConstantLocator());
-        return new State(locators);
     }
 
     private static DecisionTables getAllTables(final URI tables) {
         return DecisionTables.using(new CombinedCsvFileReader(tables, ".csv", ";"));
     }
+
 }

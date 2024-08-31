@@ -71,13 +71,16 @@ public final class Rule {
     }
 
     /**
-     * Adds a {@link Condition} to this rule.
+     * Adds a {@link Condition} to this rule. The condition is created from the given string
+     * description of the base {@code Coordinate} and the value to compare it with. The value can
+     * be a constant or another {@code Coordinate} description.
      *
-     * @param condition The {@link Condition} to add.
+     * @param target The String description of the left-hand side {@code Coordinate} to add.
+     * @param value The String representation of the right-hand side {@code Coordinate} to add.
      * @return Itself, in order to implement fluent API.
      */
-    public Rule withCondition(final Condition condition) {
-        this.conditions.add(condition);
+    public Rule withCondition(final String target, final String value) {
+        this.conditions.add(Condition.from(Coordinate.from(target), value));
         return this;
     }
 
@@ -96,11 +99,14 @@ public final class Rule {
     /**
      * Adds an assignment to this rule.
      *
-     * @param assignment An {@link Assignment} to add.
+     * @param target The String description of the left-hand side {@code Coordinate} of the
+     *  assignment.
+     * @param value The String representation of the right-hand side {@code Coordinate} of the
+     *  assignment.
      * @return Itself, in order to implement fluent API.
      */
-    public Rule withAssignment(final Assignment assignment) {
-        this.assignments.add(assignment);
+    public Rule withAssignment(final String target, final String value) {
+        this.assignments.add(new Assignment(target, value));
         return this;
     }
 
@@ -147,17 +153,31 @@ public final class Rule {
                 .findFirst()
                 .ifPresent(c -> c.evaluate(context));
         }
-        if (this.isSatisfied()) {
-            context.logComputation(
-                OutputTracker.EventType.RL,
-                "%s => true".formatted(this.asString())
-            );
-        } else {
-            context.logComputation(
-                OutputTracker.EventType.RL,
-                "%s => false".formatted(this.asString())
-            );
+        context.logComputation(
+            OutputTracker.EventType.RL,
+            "%s => %s".formatted(this.asString(), this.isSatisfied())
+        );
+    }
+
+    /**
+     * Performs a test based on this rule. This effectively means running all the assignments first,
+     * then executing the specified command and checking all the conditions after that.
+     *
+     * @param context The {@link ComputationContext} to perform the test in. This is just the base
+     *  for creating an empty-state copy for the test.
+     * @return A list of strings, containing the results of the test. Will be empty if the test
+     *  passed.
+     */
+    public List<String> test(final ComputationContext context) {
+        final ComputationContext copy = context.emptyStateCopy();
+        this.assignments.forEach(a -> a.performIn(copy));
+        if (this.outcomes.containsKey("execute")) {
+            copy.perform(this.outcomes.get("execute"));
         }
+        return this.conditions.stream()
+            .filter(c -> !c.evaluate(copy))
+            .map(c -> "Expected: %n\t%s%n, but was: %n\t%s".formatted(c.asString(), c.result()))
+            .toList();
     }
 
     /**
@@ -194,7 +214,7 @@ public final class Rule {
             .toList();
     }
 
-    private String asString() {
+    public String asString() {
         return this.name;
     }
 }

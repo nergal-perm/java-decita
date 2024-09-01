@@ -107,4 +107,35 @@ final class CheckInstanceTest {
             Matchers.emptyString()
         );
     }
+
+    @Test
+    void multipleTestsWithCommand() {
+        final State state = State.withEmptyLocators(
+            List.of("data", "market", "currentPlayer", "request")
+        );
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
+        final CheckInstance target = new CheckInstance(
+            List.of(
+                new Rule("first check")
+                    .withAssignment("market::shop", "2")
+                    .withAssignment("data::is-stored", "true")
+                    .withAssignment("currentPlayer::name", "Eugene")
+                    .withAssignment("request::shop", "3")
+                    .withOutcome("execute", "sample-table")
+                    .withCondition("market::shop", "3"),
+                new Rule("second check")
+                    .withAssignment("market::shop", "2")
+                    .withAssignment("data::is-stored", "true")
+                    .withAssignment("currentPlayer::name", "Eugene")
+                    .withAssignment("request::shop", "4")
+                    .withOutcome("execute", "sample-table")
+                    .withCondition("market::shop", "4")
+            )
+        );
+        MatcherAssert.assertThat(
+            "Should perform Command during the test",
+            target.outcome(context).get("second check"),
+            Matchers.emptyString()
+        );
+    }
 }

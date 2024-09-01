@@ -91,7 +91,7 @@ public final class ComputationContext {
      * @throws DecitaException If the table could not be found or computed.
      */
     public Map<String, String> decisionFor(final String name) throws DecitaException {
-        return this.tables.locatorFor(name).outcome(this);
+        return ((DecisionTable) this.tables.locatorFor(name)).outcome(this);
     }
 
     public void perform(final String command) {

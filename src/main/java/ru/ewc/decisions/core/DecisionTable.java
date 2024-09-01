@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import ru.ewc.decisions.api.ComputableLocator;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
-import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.api.OutputTracker;
 
 /**
@@ -39,7 +39,7 @@ import ru.ewc.decisions.api.OutputTracker;
  *
  * @since 0.1
  */
-public final class DecisionTable implements Locator {
+public final class DecisionTable implements ComputableLocator {
     /**
      * A collection of table's {@link Rule}s.
      */

@@ -24,10 +24,8 @@
 
 package ru.ewc.decisions.api;
 
-import java.util.Collections;
 import java.util.Map;
 import ru.ewc.decisions.core.Coordinate;
-import ru.ewc.decisions.core.Rule;
 
 /**
  * I am the Locator service. My main responsibility is to find requested Fragment of the application
@@ -62,17 +60,6 @@ public interface Locator {
 
     default Map<String, Object> state() {
         return Map.of();
-    }
-
-    /**
-     * Computes this table's outcomes by checking all of its {@link Rule}s.
-     *
-     * @param context The specific {@link ComputationContext} to make a decision in.
-     * @return The simple dictionary of the table's outcomes.
-     * @throws DecitaException If any of the {@link Rule}s cannot be checked.
-     */
-    default Map<String, String> outcome(final ComputationContext context) throws DecitaException {
-        return Collections.singletonMap("outcome", "undefined");
     }
 
     /**

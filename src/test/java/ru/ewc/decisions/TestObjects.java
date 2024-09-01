@@ -93,16 +93,6 @@ public final class TestObjects {
         return new EqualsCondition(Coordinate.TRUE, Coordinate.TRUE);
     }
 
-    /**
-     * Convenience method to get an instance of {@link Coordinate} pointing to the {@link Condition}
-     * that always resolves to {@code true}.
-     *
-     * @return A {@link Coordinate} of the always true {@link Condition}.
-     */
-    public static Coordinate alwaysTrueConditionCoordinate() {
-        return Coordinate.from("always_true::outcome");
-    }
-
     public static ComputationContext tablesFolderWithState(final State state) {
         return TestObjects.createContextFrom(state, "tables");
     }

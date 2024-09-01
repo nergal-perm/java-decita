@@ -44,7 +44,8 @@ public final class CheckInstance {
         this.rules = rules;
     }
 
-    public Map<String, List<String>> outcome(final ComputationContext context) throws DecitaException {
+    public Map<String, List<String>> outcome(final ComputationContext context)
+        throws DecitaException {
         return this.rules.stream().collect(
             Collectors.toMap(
                 Rule::asString,

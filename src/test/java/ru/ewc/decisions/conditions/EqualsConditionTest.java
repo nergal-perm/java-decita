@@ -40,16 +40,6 @@ import ru.ewc.decisions.core.Coordinate;
  */
 final class EqualsConditionTest {
     @Test
-    void testInstantiating() {
-        final Condition target = TestObjects.alwaysTrueConstantCondition();
-        MatcherAssert.assertThat(
-            "The condition is instantiated",
-            target,
-            Matchers.notNullValue()
-        );
-    }
-
-    @Test
     void testEvaluatingToTrue() throws DecitaException {
         final Condition target = TestObjects.alwaysTrueConstantCondition();
         final ComputationContext context = TestObjects.defaultContext();
@@ -69,7 +59,7 @@ final class EqualsConditionTest {
     @Test
     void testNotComputedCondition() {
         final Condition target = new EqualsCondition(
-            TestObjects.alwaysTrueConditionCoordinate(),
+            Coordinate.from("always_true::outcome"),
             Coordinate.TRUE
         );
         MatcherAssert.assertThat(

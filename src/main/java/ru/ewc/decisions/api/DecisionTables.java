@@ -40,10 +40,13 @@ import ru.ewc.decisions.input.RawContent;
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class DecisionTables extends BaseLocators {
+    /**
+     * The reader providing the source data for the decision tables.
+     */
     private final ContentsReader contents;
 
-    private DecisionTables(ContentsReader contents, Map<String, Locator> collect) {
-        super(collect);
+    private DecisionTables(final ContentsReader contents, final Map<String, Locator> locators) {
+        super(locators);
         this.contents = contents;
     }
 

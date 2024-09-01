@@ -116,16 +116,15 @@ final class CheckInstanceTest {
                     .withCondition("currentPlayer::name", "Alice")
             )
         );
-        final List<String> checkResult = target.outcome(context).get("first check");
         MatcherAssert.assertThat(
             "Should perform all the asserts in the test and report all the eliminated conditions",
-            checkResult,
+            target.outcome(context).get("first check"),
             Matchers.hasSize(2)
         );
     }
 
-    private static Rule arrangeAndAct(String rule) {
-        return new Rule(rule)
+    private static Rule arrangeAndAct(final String name) {
+        return new Rule(name)
             .withAssignment("market::shop", "2")
             .withAssignment("data::is-stored", "true")
             .withAssignment("currentPlayer::name", "Eugene")

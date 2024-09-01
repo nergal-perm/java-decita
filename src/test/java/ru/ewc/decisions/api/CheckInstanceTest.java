@@ -54,11 +54,11 @@ final class CheckInstanceTest {
                     .withCondition(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
             )
         );
-        final Map<String, String> actual = target.outcome(context);
+        final Map<String, List<String>> actual = target.outcome(context);
         MatcherAssert.assertThat(
             "should perform a check in a predefined context",
             actual.get("assertOnly"),
-            Matchers.emptyString()
+            Matchers.emptyCollectionOf(String.class)
         );
     }
 
@@ -76,66 +76,65 @@ final class CheckInstanceTest {
                     .withCondition("table::maxPlayers", "2")
             )
         );
-        final Map<String, String> actual = target.outcome(context);
+        final Map<String, List<String>> actual = target.outcome(context);
         MatcherAssert.assertThat(
             "Multiple rules should run on separate Contexts",
             actual.get("change max players"),
-            Matchers.emptyString()
-        );
-    }
-
-    @Test
-    void shouldPerformCommandsDuringTheTest() {
-        final State state = State.withEmptyLocators(
-            List.of("data", "market", "currentPlayer", "request")
-        );
-        final ComputationContext context = TestObjects.tablesFolderWithState(state);
-        final CheckInstance target = new CheckInstance(
-            List.of(
-                new Rule("run a command")
-                    .withAssignment("market::shop", "2")
-                    .withAssignment("data::is-stored", "true")
-                    .withAssignment("currentPlayer::name", "Eugene")
-                    .withAssignment("request::shop", "3")
-                    .withOutcome("execute", "sample-table")
-                    .withCondition("market::shop", "3")
-            )
-        );
-        MatcherAssert.assertThat(
-            "Should perform Command during the test",
-            target.outcome(context).get("run a command"),
-            Matchers.emptyString()
+            Matchers.emptyCollectionOf(String.class)
         );
     }
 
     @Test
     void multipleTestsWithCommand() {
-        final State state = State.withEmptyLocators(
-            List.of("data", "market", "currentPlayer", "request")
-        );
-        final ComputationContext context = TestObjects.tablesFolderWithState(state);
+        final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
         final CheckInstance target = new CheckInstance(
             List.of(
-                new Rule("first check")
-                    .withAssignment("market::shop", "2")
-                    .withAssignment("data::is-stored", "true")
-                    .withAssignment("currentPlayer::name", "Eugene")
+                arrangeAndAct("first check")
                     .withAssignment("request::shop", "3")
-                    .withOutcome("execute", "sample-table")
                     .withCondition("market::shop", "3"),
-                new Rule("second check")
-                    .withAssignment("market::shop", "2")
-                    .withAssignment("data::is-stored", "true")
-                    .withAssignment("currentPlayer::name", "Eugene")
+                arrangeAndAct("second check")
                     .withAssignment("request::shop", "4")
-                    .withOutcome("execute", "sample-table")
                     .withCondition("market::shop", "4")
             )
         );
         MatcherAssert.assertThat(
             "Should perform Command during the test",
             target.outcome(context).get("second check"),
-            Matchers.emptyString()
+            Matchers.emptyCollectionOf(String.class)
+        );
+    }
+
+    @Test
+    void shouldPerformAllTheAssertsInTheTest() {
+        final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
+        final CheckInstance target = new CheckInstance(
+            List.of(
+                arrangeAndAct("first check")
+                    .withAssignment("request::shop", "3")
+                    .withCondition("market::shop", "3")
+                    .withCondition("data::is-stored", "false")
+                    .withCondition("currentPlayer::name", "Alice")
+            )
+        );
+        final List<String> checkResult = target.outcome(context).get("first check");
+        MatcherAssert.assertThat(
+            "Should perform all the asserts in the test and report all the eliminated conditions",
+            checkResult,
+            Matchers.hasSize(2)
+        );
+    }
+
+    private static Rule arrangeAndAct(String rule) {
+        return new Rule(rule)
+            .withAssignment("market::shop", "2")
+            .withAssignment("data::is-stored", "true")
+            .withAssignment("currentPlayer::name", "Eugene")
+            .withOutcome("execute", "sample-table");
+    }
+
+    private static State initialState() {
+        return State.withEmptyLocators(
+            List.of("data", "market", "currentPlayer", "request")
         );
     }
 }

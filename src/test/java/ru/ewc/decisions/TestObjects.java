@@ -28,7 +28,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecisionTables;
 import ru.ewc.decisions.api.Locator;
@@ -36,10 +35,12 @@ import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
-import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
+import ru.ewc.decisions.input.ContentsReader;
+import ru.ewc.decisions.input.RawContent;
+import ru.ewc.decisions.input.SourceLines;
 import ru.ewc.state.State;
 
 /**
@@ -137,11 +138,19 @@ public final class TestObjects {
      * @return A collection of required {@link Locator}s.
      */
     private static ComputationContext defaultLocatorsWith(final State state) {
-        final DecisionTable truthy = new DecisionTable(
-            List.of(alwaysTrueEqualsTrueRule()),
-            "always_true"
+        return new ComputationContext(state, DecisionTables.using(alwaysTrueTableReader()));
+    }
+
+    private static ContentsReader alwaysTrueTableReader() {
+        return () -> List.of(
+            new RawContent(
+                SourceLines.fromLinesWithDelimiter(
+                    List.of("CND;constant::true;true", "OUT;outcome;Hello"),
+                    ";"
+                ),
+                "always_true"
+            )
         );
-        return new ComputationContext(state, new DecisionTables(Map.of("always_true", truthy)));
     }
 
     private static ComputationContext createContextFrom(final State state, final String folder) {

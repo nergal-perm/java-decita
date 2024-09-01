@@ -71,7 +71,7 @@ public final class ComputationContext {
     }
 
     public ComputationContext emptyStateCopy() {
-        return new ComputationContext(this.state.emptyCopy(), this.tables);
+        return new ComputationContext(this.state.emptyCopy(), this.tables.reset());
     }
 
     public OutputTracker<String> startTracking() {

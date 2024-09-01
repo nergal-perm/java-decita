@@ -40,12 +40,16 @@ import ru.ewc.decisions.input.RawContent;
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class DecisionTables extends BaseLocators {
-    public DecisionTables(final Map<String, Locator> tables) {
-        super(tables);
+    private final ContentsReader contents;
+
+    private DecisionTables(ContentsReader contents, Map<String, Locator> collect) {
+        super(collect);
+        this.contents = contents;
     }
 
     public static DecisionTables using(final ContentsReader contents) {
         return new DecisionTables(
+            contents,
             contents.readAll().stream().map(RawContent::asDecisionTable)
                 .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
         );
@@ -57,5 +61,9 @@ public final class DecisionTables extends BaseLocators {
             .map(DecisionTable.class::cast)
             .filter(DecisionTable::describesCommand)
             .collect(Collectors.toMap(Locator::locatorName, DecisionTable::commandArgs));
+    }
+
+    public DecisionTables reset() {
+        return DecisionTables.using(this.contents);
     }
 }

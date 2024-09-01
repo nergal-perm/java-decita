@@ -26,31 +26,8 @@ package ru.ewc.decisions.api;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import ru.ewc.decisions.core.Rule;
 
-/**
- * I am a collection of {@link Rule}s to check.
- *
- * @since 0.8.0
- */
-public final class CheckInstance {
-    /**
-     * The collection of {@link Rule}s to check.
-     */
-    private final List<Rule> rules;
-
-    public CheckInstance(final List<Rule> rules) {
-        this.rules = rules;
-    }
-
-    public Map<String, List<String>> outcome(final ComputationContext context)
-        throws DecitaException {
-        return this.rules.stream().collect(
-            Collectors.toMap(
-                Rule::asString,
-                rule -> rule.test(context)
-            )
-        );
-    }
+public interface MultipleOutcomes {
+    Map<String, List<String>> testResult(ComputationContext context)
+        throws DecitaException;
 }

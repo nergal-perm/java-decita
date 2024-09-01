@@ -27,6 +27,8 @@ package ru.ewc.decisions.input;
 import java.util.ArrayList;
 import java.util.List;
 import ru.ewc.decisions.api.ComputableLocator;
+import ru.ewc.decisions.api.MultipleOutcomes;
+import ru.ewc.decisions.core.CheckInstance;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 
@@ -72,31 +74,26 @@ public final class RawContent {
     }
 
     /**
-     * Answers the table name.
-     *
-     * @return The table name.
-     */
-    public String tableName() {
-        return this.name;
-    }
-
-    /**
      * Creates a {@link DecisionTable} from the raw contents.
      *
      * @return The {@link DecisionTable} created from the source file.
      */
     public ComputableLocator asDecisionTable() {
         return new DecisionTable(
-            this.specifiedRules(),
+            this.specifiedRules("rule"),
             this.elseRule(),
             this.name
         );
     }
 
-    private List<Rule> specifiedRules() {
+    public MultipleOutcomes asCheckInstance() {
+        return new CheckInstance(this.specifiedRules("test"));
+    }
+
+    private List<Rule> specifiedRules(final String type) {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule("%s::rule_%02d".formatted(this.name, column));
+            final Rule rule = new Rule("%s::%s_%02d".formatted(this.name, type, column));
             for (final String[] condition : this.conditions) {
                 rule.withCondition(condition[0], condition[column]);
             }

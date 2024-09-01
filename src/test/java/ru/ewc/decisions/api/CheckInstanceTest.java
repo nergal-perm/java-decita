@@ -30,6 +30,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.core.CheckInstance;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.state.State;
 
@@ -47,14 +48,14 @@ final class CheckInstanceTest {
     @Test
     void shouldPerformArrangeSection() {
         final ComputationContext context = TestObjects.ticTacToeContext();
-        final CheckInstance target = new CheckInstance(
+        final MultipleOutcomes target = new CheckInstance(
             List.of(
                 new Rule("assertOnly")
                     .withAssignment(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
                     .withCondition(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
             )
         );
-        final Map<String, List<String>> actual = target.outcome(context);
+        final Map<String, List<String>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "should perform a check in a predefined context",
             actual.get("assertOnly"),
@@ -65,7 +66,7 @@ final class CheckInstanceTest {
     @Test
     void multipleRulesShouldRunOnSeparateContexts() {
         final ComputationContext context = TestObjects.ticTacToeContext();
-        final CheckInstance target = new CheckInstance(
+        final MultipleOutcomes target = new CheckInstance(
             List.of(
                 new Rule("change name")
                     .withAssignment(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
@@ -76,7 +77,7 @@ final class CheckInstanceTest {
                     .withCondition("table::maxPlayers", "2")
             )
         );
-        final Map<String, List<String>> actual = target.outcome(context);
+        final Map<String, List<String>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "Multiple rules should run on separate Contexts",
             actual.get("change max players"),
@@ -87,7 +88,7 @@ final class CheckInstanceTest {
     @Test
     void multipleTestsWithCommand() {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
-        final CheckInstance target = new CheckInstance(
+        final MultipleOutcomes target = new CheckInstance(
             List.of(
                 arrangeAndAct("first check")
                     .withAssignment("request::shop", "3")
@@ -99,7 +100,7 @@ final class CheckInstanceTest {
         );
         MatcherAssert.assertThat(
             "Should perform Command during the test",
-            target.outcome(context).get("second check"),
+            target.testResult(context).get("second check"),
             Matchers.emptyCollectionOf(String.class)
         );
     }
@@ -107,7 +108,7 @@ final class CheckInstanceTest {
     @Test
     void shouldPerformAllTheAssertsInTheTest() {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
-        final CheckInstance target = new CheckInstance(
+        final MultipleOutcomes target = new CheckInstance(
             List.of(
                 arrangeAndAct("first check")
                     .withAssignment("request::shop", "3")
@@ -118,7 +119,7 @@ final class CheckInstanceTest {
         );
         MatcherAssert.assertThat(
             "Should perform all the asserts in the test and report all the eliminated conditions",
-            target.outcome(context).get("first check"),
+            target.testResult(context).get("first check"),
             Matchers.hasSize(2)
         );
     }

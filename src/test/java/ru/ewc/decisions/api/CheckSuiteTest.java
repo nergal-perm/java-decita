@@ -24,38 +24,41 @@
 
 package ru.ewc.decisions.api;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import ru.ewc.decisions.input.ContentsReader;
-import ru.ewc.decisions.input.RawContent;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.TestObjects;
+import ru.ewc.state.State;
 
 /**
- * I represent a collection of test-cases to perform. My main responsibility is to run all the tests
- * and collect the results.
+ * End-to-end tests for the {@link CheckSuite}.
  *
  * @since 0.8.0
  */
-@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-public final class CheckSuite {
-    /**
-     * Collection of test files, each containing multiple tests and outcomes.
-     */
-    private final Collection<MultipleOutcomes> tests;
-
-    private CheckSuite(final Collection<MultipleOutcomes> tests) {
-        this.tests = tests;
+final class CheckSuiteTest {
+    @Test
+    void shouldPassSingleTest() {
+        final CheckSuite target = TestObjects.readTestsFrom("single_passing");
+        final ComputationContext context = TestObjects.tablesFolderWithState(
+            State.withEmptyLocators(List.of("market", "data", "currentPlayer", "request"))
+        );
+        MatcherAssert.assertThat(
+            "",
+            target.perform(context),
+            Matchers.allOf(
+                Matchers.hasEntry("single-test::test_01", this.emptyList()),
+                Matchers.hasEntry(
+                    "single-test::test_02",
+                    List.of(
+                        "Expected:\n\tmarket::shop = constant::3\nbut was:\n\tconstant::4 = constant::3"
+                    )
+                )
+            )
+        );
     }
 
-    public static CheckSuite using(final ContentsReader reader) {
-        return new CheckSuite(reader.readAll().stream().map(RawContent::asCheckInstance).toList());
-    }
-
-    public Map<String, List<String>> perform(final ComputationContext context) {
-        return this.tests.stream()
-            .map(test -> test.testResult(context))
-            .flatMap(map -> map.entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private List<String> emptyList() {
+        return List.of();
     }
 }

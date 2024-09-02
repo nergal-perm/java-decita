@@ -27,6 +27,11 @@ package ru.ewc.decisions.api;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * I am a computable test-case with multiple outcomes.
+ *
+ * @since 0.8.0
+ */
 public interface MultipleOutcomes {
     Map<String, List<String>> testResult(ComputationContext context)
         throws DecitaException;

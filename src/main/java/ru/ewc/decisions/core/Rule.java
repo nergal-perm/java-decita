@@ -176,7 +176,7 @@ public final class Rule {
         }
         return this.conditions.stream()
             .filter(c -> !c.evaluate(copy))
-            .map(c -> "Expected: %n\t%s%n, but was: %n\t%s".formatted(c.asString(), c.result()))
+            .map(c -> "Expected:%n\t%s%nbut was:%n\t%s".formatted(c.asString(), c.result()))
             .toList();
     }
 

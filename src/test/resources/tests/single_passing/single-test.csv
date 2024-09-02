@@ -1,0 +1,6 @@
+ASG;market::shop;2;2
+ASG;data::is-stored;true;true
+ASG;currentPlayer::name;Eugene;Eugene
+ASG;request::shop;3;4
+OUT;execute;sample-table;sample-table
+CND;market::shop;3;3

@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.8.0](https://github.com/nergal-perm/java-decita/compare/v0.7.2...v0.8.0) (2024-09-03)
+
+
+### Features
+
+* **commands:** simple Assignment class ([a031ac9](https://github.com/nergal-perm/java-decita/commit/a031ac9370e6d589fe5ea66b2b798918bfe272be)), closes [#140](https://github.com/nergal-perm/java-decita/issues/140)
+* **commands:** unconditionally performing commands based on table description ([8304112](https://github.com/nergal-perm/java-decita/commit/8304112d59690f362d58cc535c8c418b5d2f4be6)), closes [#140](https://github.com/nergal-perm/java-decita/issues/140)
+* **coordinates:** dynamic Coordinates resolution ([c83c7b9](https://github.com/nergal-perm/java-decita/commit/c83c7b9e32d4598f8c851a18e556012df46b9dd0)), closes [#138](https://github.com/nergal-perm/java-decita/issues/138)
+* **input:** ability to select Conditions rows from the CSV-file ([dcf63e0](https://github.com/nergal-perm/java-decita/commit/dcf63e00a12061682693a82984a4c095f0b224d6)), closes [#139](https://github.com/nergal-perm/java-decita/issues/139)
+* **input:** ability to select Outcome rows from the CSV-file ([c902be2](https://github.com/nergal-perm/java-decita/commit/c902be28709ee98c97597e53ac4d08cfacb39825)), closes [#139](https://github.com/nergal-perm/java-decita/issues/139)
+* **input:** full-fledged Combined CSV file reader ([0755ba4](https://github.com/nergal-perm/java-decita/commit/0755ba40b587910ebc2f33485c68d59153135b8b)), closes [#139](https://github.com/nergal-perm/java-decita/issues/139)
+* **input:** reading assignments from the csv files ([b25917e](https://github.com/nergal-perm/java-decita/commit/b25917e8f580d69ac44b0f10d3ccc7f75875e374)), closes [#140](https://github.com/nergal-perm/java-decita/issues/140)
+* **testing:** naive instance of the single test ([24b21ed](https://github.com/nergal-perm/java-decita/commit/24b21ed33ed9ab213318fc12ac3e2bbb1f8a5502)), closes [#148](https://github.com/nergal-perm/java-decita/issues/148)
+* **testing:** performing the tests and collecting the result ([d81b628](https://github.com/nergal-perm/java-decita/commit/d81b628abd2f4c1f503835845bdfb476dab740e7)), closes [#149](https://github.com/nergal-perm/java-decita/issues/149)
+* **testing:** reading all the tests as the CheckSuite ([115da08](https://github.com/nergal-perm/java-decita/commit/115da08166726b67eccd666a8f40d7b53893898f)), closes [#149](https://github.com/nergal-perm/java-decita/issues/149)
+* **testing:** reloading tables between test stages ([302fd1f](https://github.com/nergal-perm/java-decita/commit/302fd1f49069f6e29107a6bd84128bdeacde5868)), closes [#149](https://github.com/nergal-perm/java-decita/issues/149)
+
 ### [0.7.2](https://github.com/nergal-perm/java-decita/compare/v0.7.1...v0.7.2) (2024-08-24)
 
 

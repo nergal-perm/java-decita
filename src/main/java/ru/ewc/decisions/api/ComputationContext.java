@@ -42,7 +42,7 @@ public final class ComputationContext {
     /**
      * The storage of decision tables.
      */
-    private final DecisionTables tables;
+    private DecisionTables tables;
 
     /**
      * The storage of the current state of the system.
@@ -65,13 +65,21 @@ public final class ComputationContext {
      * @param tables The {@link DecisionTables} instance to use.
      */
     public ComputationContext(final State state, final DecisionTables tables) {
+        this(state.extendedWithConstant(), tables, new OutputPublisher<>());
+    }
+
+    public ComputationContext(
+        final State state,
+        final DecisionTables tables,
+        final OutputPublisher<String> publisher
+    ) {
         this.state = state.extendedWithConstant();
         this.tables = tables;
-        this.publisher = new OutputPublisher<>();
+        this.publisher = publisher;
     }
 
     public ComputationContext emptyStateCopy() {
-        return new ComputationContext(this.state.emptyCopy(), this.tables.reset());
+        return new ComputationContext(this.state.emptyCopy(), this.tables.reset(), this.publisher);
     }
 
     public OutputTracker<String> startTracking() {
@@ -139,8 +147,11 @@ public final class ComputationContext {
         return this.tables.commandsData();
     }
 
+    public void reloadTables() {
+        this.tables = this.tables.reset();
+    }
+
     private static DecisionTables getAllTables(final URI tables) {
         return DecisionTables.using(new CombinedCsvFileReader(tables, ".csv", ";"));
     }
-
 }

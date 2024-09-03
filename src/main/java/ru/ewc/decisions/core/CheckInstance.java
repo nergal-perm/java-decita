@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.MultipleOutcomes;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * I am a collection of {@link Rule}s to check.
@@ -52,8 +53,29 @@ public final class CheckInstance implements MultipleOutcomes {
         return this.rules.stream().collect(
             Collectors.toMap(
                 Rule::asString,
-                rule -> rule.test(context)
+                rule -> CheckInstance.performAndLog(context, rule)
             )
         );
+    }
+
+    private static List<String> performAndLog(final ComputationContext context, final Rule rule) {
+        logCheckpoint(context, "%s - started".formatted(rule.asString()));
+        final List<String> result = rule.test(context);
+        logCheckpoint(context, "%s - %s".formatted(rule.asString(), CheckInstance.desc(result)));
+        return result;
+    }
+
+    private static String desc(final List<String> messages) {
+        final String result;
+        if (messages.isEmpty()) {
+            result = "PASSED";
+        } else {
+            result = "FAILED";
+        }
+        return result;
+    }
+
+    private static void logCheckpoint(final ComputationContext context, final String formatted) {
+        context.logComputation(OutputTracker.EventType.CH, formatted);
     }
 }

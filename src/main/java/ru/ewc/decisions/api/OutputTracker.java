@@ -68,6 +68,10 @@ public final class OutputTracker<T> {
          */
         TB,
         /**
+         * The computation of the Check or Test.
+         */
+        CH,
+        /**
          * The computation of the Condition.
          */
         CN

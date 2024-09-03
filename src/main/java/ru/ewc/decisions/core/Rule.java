@@ -174,6 +174,7 @@ public final class Rule {
         if (this.outcomes.containsKey("execute")) {
             copy.perform(this.outcomes.get("execute"));
         }
+        copy.reloadTables();
         return this.conditions.stream()
             .filter(c -> !c.evaluate(copy))
             .map(c -> "Expected:%n\t%s%nbut was:%n\t%s".formatted(c.asString(), c.result()))

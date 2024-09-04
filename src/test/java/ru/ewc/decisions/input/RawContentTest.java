@@ -29,6 +29,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.OutputTracker;
 
 /**
  * Tests for {@link RawContent}.
@@ -43,6 +45,35 @@ final class RawContentTest {
             "The decision table is parsed correctly",
             target.asDecisionTable().outcome(TestObjects.defaultContext()),
             Matchers.is(Map.of("outcome", "true"))
+        );
+    }
+
+    @Test
+    void shouldUseHeaderRow() {
+        final RawContent target = new RawContent(RawContentTest.sourceWithHeader(), "sample-table");
+        final ComputationContext context = TestObjects.defaultContext();
+        final OutputTracker<String> tracker = context.startTracking();
+        target.asDecisionTable().outcome(context);
+        MatcherAssert.assertThat(
+            "",
+            tracker.events(),
+            Matchers.hasItems(
+                "RL: sample-table::evaluate to false => false",
+                "RL: sample-table::evaluate to true => true"
+            )
+        );
+    }
+
+    private static SourceLines sourceWithHeader() {
+        return SourceLines.fromLinesWithDelimiter(
+            List.of(
+                "HDR;header-example;evaluate to false;evaluate to true",
+                "CND;10;!>5;<20",
+                "CND;20;!<30;~",
+                "CND;true;false;!false",
+                "OUT;outcome;false;true;else"
+            ),
+            ";"
         );
     }
 

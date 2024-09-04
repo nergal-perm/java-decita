@@ -60,6 +60,11 @@ public final class RawContent {
     private final String[][] assignments;
 
     /**
+     * The array of String values that form the Header part of a {@link DecisionTable}.
+     */
+    private final String[][] header;
+
+    /**
      * Ctor.
      *
      * @param lines A {@link SourceLines} object that contains the source file contents as
@@ -71,6 +76,7 @@ public final class RawContent {
         this.conditions = lines.asArrayOf("CND").clone();
         this.outcomes = lines.asArrayOf("OUT").clone();
         this.assignments = lines.asArrayOf("ASG").clone();
+        this.header = lines.asArrayOf("HDR").clone();
     }
 
     /**
@@ -93,7 +99,7 @@ public final class RawContent {
     private List<Rule> specifiedRules(final String type) {
         final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
         for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule("%s::%s_%02d".formatted(this.name, type, column));
+            final Rule rule = new Rule(this.getRuleName(type, column));
             for (final String[] condition : this.conditions) {
                 rule.withCondition(condition[0], condition[column]);
             }
@@ -106,6 +112,16 @@ public final class RawContent {
             rules.add(rule);
         }
         return rules;
+    }
+
+    private String getRuleName(final String type, final int column) {
+        final String result;
+        if (this.header.length == 0) {
+            result = "%s::%s_%02d".formatted(this.name, type, column);
+        } else {
+            result = "%s::%s".formatted(this.name, this.header[0][column]);
+        }
+        return result;
     }
 
     private Rule elseRule() {

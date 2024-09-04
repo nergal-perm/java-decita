@@ -57,7 +57,7 @@ public final class SourceLines {
     ) {
         return new SourceLines(
             Stream
-                .of("CND", "OUT", "ASG")
+                .of("CND", "OUT", "ASG", "HDR")
                 .collect(Collectors.toMap(s -> s, s -> filteredList(s, lines))),
             delimiter
         );

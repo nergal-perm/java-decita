@@ -51,14 +51,14 @@ final class CheckSuiteTest {
                 Matchers.hasEntry(
                     "single-test::test_02",
                     List.of(
-                        "Expected:\n\tmarket::shop = constant::3\nbut was:\n\tconstant::4 = constant::3"
+                        new CheckFailure("market::shop = constant::3", "constant::4 = constant::3")
                     )
                 )
             )
         );
     }
 
-    private List<String> emptyList() {
+    private List<CheckFailure> emptyList() {
         return List.of();
     }
 }

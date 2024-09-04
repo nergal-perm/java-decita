@@ -27,6 +27,7 @@ package ru.ewc.decisions.core;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.MultipleOutcomes;
@@ -48,7 +49,7 @@ public final class CheckInstance implements MultipleOutcomes {
     }
 
     @Override
-    public Map<String, List<String>> testResult(final ComputationContext context)
+    public Map<String, List<CheckFailure>> testResult(final ComputationContext context)
         throws DecitaException {
         return this.rules.stream().collect(
             Collectors.toMap(
@@ -58,14 +59,14 @@ public final class CheckInstance implements MultipleOutcomes {
         );
     }
 
-    private static List<String> performAndLog(final ComputationContext context, final Rule rule) {
-        logCheckpoint(context, "%s - started".formatted(rule.asString()));
-        final List<String> result = rule.test(context);
-        logCheckpoint(context, "%s - %s".formatted(rule.asString(), CheckInstance.desc(result)));
+    private static List<CheckFailure> performAndLog(final ComputationContext ctx, final Rule rule) {
+        logCheckpoint(ctx, "%s - started".formatted(rule.asString()));
+        final List<CheckFailure> result = rule.test(ctx);
+        logCheckpoint(ctx, "%s - %s".formatted(rule.asString(), CheckInstance.desc(result)));
         return result;
     }
 
-    private static String desc(final List<String> messages) {
+    private static String desc(final List<CheckFailure> messages) {
         final String result;
         if (messages.isEmpty()) {
             result = "PASSED";

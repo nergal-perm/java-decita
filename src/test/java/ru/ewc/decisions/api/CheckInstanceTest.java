@@ -55,11 +55,11 @@ final class CheckInstanceTest {
                     .withCondition(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
             )
         );
-        final Map<String, List<String>> actual = target.testResult(context);
+        final Map<String, List<CheckFailure>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "should perform a check in a predefined context",
             actual.get("assertOnly"),
-            Matchers.emptyCollectionOf(String.class)
+            Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
 
@@ -77,11 +77,11 @@ final class CheckInstanceTest {
                     .withCondition("table::maxPlayers", "2")
             )
         );
-        final Map<String, List<String>> actual = target.testResult(context);
+        final Map<String, List<CheckFailure>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "Multiple rules should run on separate Contexts",
             actual.get("change max players"),
-            Matchers.emptyCollectionOf(String.class)
+            Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
 
@@ -101,7 +101,7 @@ final class CheckInstanceTest {
         MatcherAssert.assertThat(
             "Should perform Command during the test",
             target.testResult(context).get("second check"),
-            Matchers.emptyCollectionOf(String.class)
+            Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
 

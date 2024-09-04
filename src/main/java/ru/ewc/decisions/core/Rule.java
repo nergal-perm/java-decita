@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
+import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
@@ -165,10 +166,10 @@ public final class Rule {
      *
      * @param context The {@link ComputationContext} to perform the test in. This is just the base
      *  for creating an empty-state copy for the test.
-     * @return A list of strings, containing the results of the test. Will be empty if the test
-     *  passed.
+     * @return A list of {@link CheckFailure} objects, each of which describes a single failing
+     *  assertion. Will be empty if the test passed successfully.
      */
-    public List<String> test(final ComputationContext context) {
+    public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();
         this.assignments.forEach(a -> a.performIn(copy));
         if (this.outcomes.containsKey("execute")) {
@@ -177,7 +178,7 @@ public final class Rule {
         copy.reloadTables();
         return this.conditions.stream()
             .filter(c -> !c.evaluate(copy))
-            .map(c -> "Expected:%n\t%s%nbut was:%n\t%s".formatted(c.asString(), c.result()))
+            .map(c -> new CheckFailure(c.asString(), c.result()))
             .toList();
     }
 

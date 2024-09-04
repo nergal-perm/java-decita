@@ -52,7 +52,7 @@ public final class CheckSuite {
         return new CheckSuite(reader.readAll().stream().map(RawContent::asCheckInstance).toList());
     }
 
-    public Map<String, List<String>> perform(final ComputationContext context) {
+    public Map<String, List<CheckFailure>> perform(final ComputationContext context) {
         return this.tests.stream()
             .map(test -> test.testResult(context))
             .flatMap(map -> map.entrySet().stream())

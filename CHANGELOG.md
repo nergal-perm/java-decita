@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.1](https://github.com/nergal-perm/java-decita/compare/v0.8.0...v0.8.1) (2024-09-05)
+
+
+### Features
+
+* **tables:** support the HDR row for rules and checks names ([d289711](https://github.com/nergal-perm/java-decita/commit/d2897113b0228d33f49a3e1dd0d7ef5105e56f7d)), closes [#150](https://github.com/nergal-perm/java-decita/issues/150)
+* **testing:** structured check failure descriptions ([115ecbc](https://github.com/nergal-perm/java-decita/commit/115ecbcca80e867fb286650b9aee780446d006f9)), closes [#151](https://github.com/nergal-perm/java-decita/issues/151)
+
 ## [0.8.0](https://github.com/nergal-perm/java-decita/compare/v0.7.2...v0.8.0) (2024-09-03)
 
 

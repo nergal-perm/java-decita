@@ -101,13 +101,13 @@ public final class RawContent {
         for (int column = 1; column < this.conditions[0].length; column += 1) {
             final Rule rule = new Rule(this.getRuleName(type, column));
             for (final String[] condition : this.conditions) {
-                rule.withCondition(condition[0], condition[column]);
+                rule.withCondition(condition[0].trim(), condition[column].trim());
             }
             for (final String[] outcome : this.outcomes) {
-                rule.withOutcome(outcome[0], outcome[column]);
+                rule.withOutcome(outcome[0].trim(), outcome[column].trim());
             }
             for (final String[] assignment : this.assignments) {
-                rule.withAssignment(assignment[0], assignment[column]);
+                rule.withAssignment(assignment[0].trim(), assignment[column].trim());
             }
             rules.add(rule);
         }
@@ -119,7 +119,7 @@ public final class RawContent {
         if (this.header.length == 0) {
             result = "%s::%s_%02d".formatted(this.name, type, column);
         } else {
-            result = "%s::%s".formatted(this.name, this.header[0][column]);
+            result = "%s::%s".formatted(this.header[0][0].trim(), this.header[0][column].trim());
         }
         return result;
     }
@@ -129,8 +129,8 @@ public final class RawContent {
         if (this.outcomes[0].length > this.conditions[0].length) {
             for (final String[] outcome : this.outcomes) {
                 elserule.withOutcome(
-                    outcome[0],
-                    outcome[this.conditions[0].length]
+                    outcome[0].trim(),
+                    outcome[this.conditions[0].length].trim()
                 );
             }
         } else {

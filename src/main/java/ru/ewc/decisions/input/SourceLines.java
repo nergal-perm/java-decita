@@ -24,6 +24,7 @@
 
 package ru.ewc.decisions.input;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public final class SourceLines {
         return new SourceLines(
             Stream
                 .of("CND", "OUT", "ASG", "HDR")
-                .collect(Collectors.toMap(s -> s, s -> filteredList(s, lines))),
+                .collect(Collectors.toMap(s -> s, s -> filteredList(s, lines, delimiter))),
             delimiter
         );
     }
@@ -71,10 +72,18 @@ public final class SourceLines {
         return this.toArray(this.grouped.getOrDefault(key, List.of()));
     }
 
-    private static List<String> filteredList(final String key, final List<String> source) {
+    private static List<String> filteredList(
+        final String key,
+        final List<String> source,
+        final String delimiter
+    ) {
         return source.stream()
             .filter(line -> line.startsWith(key))
-            .map(line -> line.substring(key.length() + 1))
+            .map(
+                line -> Arrays.stream(line.split(delimiter))
+                    .skip(1)
+                    .collect(Collectors.joining(delimiter))
+            )
             .toList();
     }
 

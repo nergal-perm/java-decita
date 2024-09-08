@@ -29,6 +29,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
+import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.OutputTracker;
 
@@ -58,9 +59,21 @@ final class RawContentTest {
             "",
             tracker.events(),
             Matchers.hasItems(
-                "RL: sample-table::evaluate to false => false",
-                "RL: sample-table::evaluate to true => true"
+                "RL: header-example::evaluate to false => false",
+                "RL: header-example::evaluate to true => true"
             )
+        );
+    }
+
+    @Test
+    void shouldTrimWhitespaces() {
+        final RawContent target = new RawContent(RawContentTest.withWhitespace(), "sample-table");
+        final ComputationContext context = TestObjects.ticTacToeContext();
+        final Map<String, List<CheckFailure>> out = target.asCheckInstance().testResult(context);
+        MatcherAssert.assertThat(
+            "",
+            out.get("test whitespaces::long names"),
+            Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
 
@@ -77,6 +90,18 @@ final class RawContentTest {
         );
     }
 
+    private static SourceLines withWhitespace() {
+        return SourceLines.fromLinesWithDelimiter(
+            List.of(
+                "HDR ;test whitespaces        ;long names",
+                "ASG ;request::player         ;Nikita",
+                "ASG ;cells::A1               ;empty",
+                "CND ;cells::A1               ;empty"
+            ),
+            ";"
+        );
+    }
+
     private static SourceLines sourceLines() {
         return SourceLines.fromLinesWithDelimiter(
             List.of(
@@ -88,5 +113,4 @@ final class RawContentTest {
             ";"
         );
     }
-
 }

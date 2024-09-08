@@ -187,6 +187,7 @@
                 </goals>
                 <configuration>
                   <additionalOptions>${javadoc.opts}</additionalOptions>
+                  <source>16</source>
                 </configuration>
               </execution>
             </executions>

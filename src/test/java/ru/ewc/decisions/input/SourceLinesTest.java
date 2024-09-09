@@ -100,6 +100,7 @@ final class SourceLinesTest {
     @Test
     void iteratorShouldPreserveLinesOrder() {
         final Iterator<String[]> target = SourceLines.fromLinesWithDelimiter(
+            "preserve_order",
             List.of(
                 "CND;hello",
                 "OUT;world",
@@ -135,6 +136,10 @@ final class SourceLinesTest {
     }
 
     private static SourceLines sourceLinesFor(final String input) {
-        return SourceLines.fromLinesWithDelimiter(Collections.singletonList(input), ";");
+        return SourceLines.fromLinesWithDelimiter(
+            "test_line",
+            Collections.singletonList(input),
+            ";"
+        );
     }
 }

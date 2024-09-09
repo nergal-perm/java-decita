@@ -148,10 +148,10 @@ public final class TestObjects {
         return () -> List.of(
             new RawContent(
                 SourceLines.fromLinesWithDelimiter(
+                    "always_true",
                     List.of("CND;constant::true;true", "OUT;outcome;Hello"),
                     ";"
-                ),
-                "always_true"
+                )
             )
         );
     }

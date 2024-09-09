@@ -69,10 +69,9 @@ public final class RawContent {
      *
      * @param lines A {@link SourceLines} object that contains the source file contents as
      *  categorized lines.
-     * @param name The name of the file.
      */
-    public RawContent(final SourceLines lines, final String name) {
-        this.name = name;
+    public RawContent(final SourceLines lines) {
+        this.name = lines.fileName();
         this.conditions = lines.asArrayOf("CND").clone();
         this.outcomes = lines.asArrayOf("OUT").clone();
         this.assignments = lines.asArrayOf("ASG").clone();

@@ -65,10 +65,11 @@ public final class CombinedCsvFileReader implements ContentsReader {
             .map(
                 file -> {
                     final SourceLines lines = SourceLines.fromLinesWithDelimiter(
+                        file.nameWithoutExtension(),
                         file.asStrings(),
                         this.delimiter
                     );
-                    return new RawContent(lines, file.nameWithoutExtension());
+                    return new RawContent(lines);
                 }
             ).toList();
     }

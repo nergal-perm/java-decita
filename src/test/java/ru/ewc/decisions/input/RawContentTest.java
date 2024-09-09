@@ -41,7 +41,7 @@ import ru.ewc.decisions.api.OutputTracker;
 final class RawContentTest {
     @Test
     void shouldParseDifferentConditions() {
-        final RawContent target = new RawContent(RawContentTest.sourceLines(), "sample-table");
+        final RawContent target = new RawContent(RawContentTest.sourceLines());
         MatcherAssert.assertThat(
             "The decision table is parsed correctly",
             target.asDecisionTable().outcome(TestObjects.defaultContext()),
@@ -51,7 +51,7 @@ final class RawContentTest {
 
     @Test
     void shouldUseHeaderRow() {
-        final RawContent target = new RawContent(RawContentTest.sourceWithHeader(), "sample-table");
+        final RawContent target = new RawContent(RawContentTest.sourceWithHeader());
         final ComputationContext context = TestObjects.defaultContext();
         final OutputTracker<String> tracker = context.startTracking();
         target.asDecisionTable().outcome(context);
@@ -67,7 +67,7 @@ final class RawContentTest {
 
     @Test
     void shouldTrimWhitespaces() {
-        final RawContent target = new RawContent(RawContentTest.withWhitespace(), "sample-table");
+        final RawContent target = new RawContent(RawContentTest.withWhitespace());
         final ComputationContext context = TestObjects.ticTacToeContext();
         final Map<String, List<CheckFailure>> out = target.asCheckInstance().testResult(context);
         MatcherAssert.assertThat(
@@ -79,6 +79,7 @@ final class RawContentTest {
 
     private static SourceLines sourceWithHeader() {
         return SourceLines.fromLinesWithDelimiter(
+            "table-with-header",
             List.of(
                 "HDR;header-example;evaluate to false;evaluate to true",
                 "CND;10;!>5;<20",
@@ -92,6 +93,7 @@ final class RawContentTest {
 
     private static SourceLines withWhitespace() {
         return SourceLines.fromLinesWithDelimiter(
+            "table-with-whitespace",
             List.of(
                 "HDR ;test whitespaces        ;long names",
                 "ASG ;request::player         ;Nikita",
@@ -104,6 +106,7 @@ final class RawContentTest {
 
     private static SourceLines sourceLines() {
         return SourceLines.fromLinesWithDelimiter(
+            "some-source-lines",
             List.of(
                 "CND;10;!>5;<20",
                 "CND;20;!<30;~",

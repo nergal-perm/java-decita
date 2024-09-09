@@ -38,6 +38,11 @@ import java.util.stream.Stream;
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class SourceLines implements Iterable<String[]> {
     /**
+     * The name of the source file.
+     */
+    private final String file;
+
+    /**
      * All the lines from the source file, preserving the order.
      */
     private final List<String> ungrouped;
@@ -48,18 +53,21 @@ public final class SourceLines implements Iterable<String[]> {
     private final String delimiter;
 
     private SourceLines(
+        final String file,
         final List<String> lines,
         final String delimiter
     ) {
+        this.file = file;
         this.ungrouped = lines;
         this.delimiter = delimiter;
     }
 
     public static SourceLines fromLinesWithDelimiter(
+        final String file,
         final List<String> lines,
         final String delimiter
     ) {
-        return new SourceLines(lines, delimiter);
+        return new SourceLines(file, lines, delimiter);
     }
 
     @Override
@@ -69,6 +77,10 @@ public final class SourceLines implements Iterable<String[]> {
 
     public String[][] asArrayOf(final String key) {
         return this.toArray(this.filteredList(key));
+    }
+
+    public String fileName() {
+        return this.file;
     }
 
     private List<String> filteredList(final String key) {

@@ -25,6 +25,8 @@
 package ru.ewc.decisions.input;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -43,8 +45,8 @@ final class SourceLinesTest {
     void whenThereAreNoConditionsShouldReturnEmptyArray(final String input) {
         MatcherAssert.assertThat(
             "Should return empty array of Conditions when there are no CND lines in the file",
-            sourceLinesFor(input).lines().get("CND"),
-            Matchers.emptyCollectionOf(String.class)
+            sourceLinesFor(input).asArrayOf("CND"),
+            Matchers.emptyArray()
         );
     }
 
@@ -53,8 +55,8 @@ final class SourceLinesTest {
     void whenThereAreNoOutcomesShouldReturnEmptyArray(final String input) {
         MatcherAssert.assertThat(
             "Should return empty array of Outcomes when there are no OUT lines in the file",
-            sourceLinesFor(input).lines().get("OUT"),
-            Matchers.emptyCollectionOf(String.class)
+            sourceLinesFor(input).asArrayOf("OUT"),
+            Matchers.emptyArray()
         );
     }
 
@@ -63,8 +65,8 @@ final class SourceLinesTest {
     void whereThereAreNoAssignmentsShouldReturnEmptyArray(final String input) {
         MatcherAssert.assertThat(
             "Should return empty array of Assignments when there are no ASG lines in the file",
-            sourceLinesFor(input).lines().get("ASG"),
-            Matchers.emptyCollectionOf(String.class)
+            sourceLinesFor(input).asArrayOf("ASG"),
+            Matchers.emptyArray()
         );
     }
 
@@ -72,8 +74,8 @@ final class SourceLinesTest {
     void whenThereIsAConditionShouldReturnFilledArray() {
         MatcherAssert.assertThat(
             "",
-            sourceLinesFor("CND;hello").lines().get("CND"),
-            Matchers.contains("hello")
+            sourceLinesFor("CND;hello").asArrayOf("CND"),
+            Matchers.arrayContaining(Matchers.arrayContaining("hello"))
         );
     }
 
@@ -81,8 +83,8 @@ final class SourceLinesTest {
     void whenThereIsAnOutcomeShouldReturnFilledArray() {
         MatcherAssert.assertThat(
             "",
-            sourceLinesFor("OUT;hello").lines().get("OUT"),
-            Matchers.contains("hello")
+            sourceLinesFor("OUT;hello").asArrayOf("OUT"),
+            Matchers.arrayContaining(Matchers.arrayContaining("hello"))
         );
     }
 
@@ -90,8 +92,45 @@ final class SourceLinesTest {
     void whenThereIsAnAssignmentShouldReturnFilledArray() {
         MatcherAssert.assertThat(
             "",
-            sourceLinesFor("ASG;hello").lines().get("ASG"),
-            Matchers.contains("hello")
+            sourceLinesFor("ASG;hello").asArrayOf("ASG"),
+            Matchers.arrayContaining(Matchers.arrayContaining("hello"))
+        );
+    }
+
+    @Test
+    void iteratorShouldPreserveLinesOrder() {
+        final Iterator<String[]> target = SourceLines.fromLinesWithDelimiter(
+            List.of(
+                "CND;hello",
+                "OUT;world",
+                "ASG;assignment"
+            ),
+            ";"
+        ).iterator();
+        MatcherAssert.assertThat(
+            "Should have next element at the beginning of the iteration",
+            target.hasNext(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Should extract the first line",
+            target.next(),
+            Matchers.arrayContaining("CND", "hello")
+        );
+        MatcherAssert.assertThat(
+            "Should extract the second line",
+            target.next(),
+            Matchers.arrayContaining("OUT", "world")
+        );
+        MatcherAssert.assertThat(
+            "Should extract the last line",
+            target.next(),
+            Matchers.arrayContaining("ASG", "assignment")
+        );
+        MatcherAssert.assertThat(
+            "Should have no next element at the end of the iteration",
+            target.hasNext(),
+            Matchers.is(false)
         );
     }
 

@@ -25,8 +25,8 @@
 package ru.ewc.decisions.input;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,19 +36,22 @@ import java.util.stream.Stream;
  * @since 0.8.0
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-public final class SourceLines {
+public final class SourceLines implements Iterable<String[]> {
     /**
-     * All the lines from the source file, grouped by the type of the line.
+     * All the lines from the source file, preserving the order.
      */
-    private final Map<String, List<String>> grouped;
+    private final List<String> ungrouped;
 
     /**
      * The delimiter used in the source file.
      */
     private final String delimiter;
 
-    private SourceLines(final Map<String, List<String>> grouped, final String delimiter) {
-        this.grouped = grouped;
+    private SourceLines(
+        final List<String> lines,
+        final String delimiter
+    ) {
+        this.ungrouped = lines;
         this.delimiter = delimiter;
     }
 
@@ -56,33 +59,25 @@ public final class SourceLines {
         final List<String> lines,
         final String delimiter
     ) {
-        return new SourceLines(
-            Stream
-                .of("CND", "OUT", "ASG", "HDR")
-                .collect(Collectors.toMap(s -> s, s -> filteredList(s, lines, delimiter))),
-            delimiter
-        );
+        return new SourceLines(lines, delimiter);
     }
 
-    public Map<String, List<String>> lines() {
-        return this.grouped;
+    @Override
+    public Iterator<String[]> iterator() {
+        return Stream.of(this.toArray(this.ungrouped)).iterator();
     }
 
     public String[][] asArrayOf(final String key) {
-        return this.toArray(this.grouped.getOrDefault(key, List.of()));
+        return this.toArray(this.filteredList(key));
     }
 
-    private static List<String> filteredList(
-        final String key,
-        final List<String> source,
-        final String delimiter
-    ) {
-        return source.stream()
+    private List<String> filteredList(final String key) {
+        return this.ungrouped.stream()
             .filter(line -> line.startsWith(key))
             .map(
-                line -> Arrays.stream(line.split(delimiter))
+                line -> Arrays.stream(line.split(this.delimiter))
                     .skip(1)
-                    .collect(Collectors.joining(delimiter))
+                    .collect(Collectors.joining(this.delimiter))
             )
             .toList();
     }

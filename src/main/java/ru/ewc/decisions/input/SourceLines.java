@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import ru.ewc.decisions.core.Triplet;
+import ru.ewc.decisions.core.RuleFragment;
 
 /**
  * I am a class that represents the lines from the source file grouped by the type of the line.
@@ -110,9 +110,16 @@ public final class SourceLines implements Iterable<String[]> {
         return result;
     }
 
-    public List<Triplet> asTriplets(int index) {
+    public List<RuleFragment> asTriplets(int index) {
         return StreamSupport.stream(this.spliterator(), false)
-            .map(line -> new Triplet(line[0], line[1], line[index]))
+            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
             .toList();
+    }
+
+    public int columns() {
+        return this.ungrouped.stream()
+            .map(line -> line.split(this.delimiter).length)
+            .findFirst()
+            .orElse(0);
     }
 }

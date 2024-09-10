@@ -24,5 +24,5 @@
 
 package ru.ewc.decisions.core;
 
-public record Triplet(String type, String left, String right) {
+public record RuleFragment(String type, String left, String right) {
 }

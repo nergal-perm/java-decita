@@ -35,6 +35,7 @@ import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
+import ru.ewc.decisions.input.SourceLines;
 
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
@@ -71,6 +72,26 @@ public final class Rule {
         this.assignments = new ArrayList<>(2);
     }
 
+    public static Rule from(final SourceLines source, final int idx) {
+        final List<RuleFragment> fragments = source.asTriplets(idx);
+        final RuleFragment header = fragments.stream()
+            .filter(f -> "HDR".equals(f.type()))
+            .findFirst()
+            .orElse(new RuleFragment("HDR", source.fileName(), "rule_%02d".formatted(idx - 1)));
+        Rule result = new Rule("%s::%s".formatted(header.left(), header.right()));
+        fragments.forEach(f -> {
+            switch (f.type()) {
+                case "CND" -> result.withCondition(f.left(), f.right());
+                case "OUT" -> result.withOutcome(f.left(), f.right());
+                case "ASG" -> result.withAssignment(f.left(), f.right());
+                default -> {
+                    // do nothing
+                }
+            }
+        });
+        return result;
+    }
+
     /**
      * Adds a {@link Condition} to this rule. The condition is created from the given string
      * description of the base {@code Coordinate} and the value to compare it with. The value can
@@ -101,9 +122,9 @@ public final class Rule {
      * Adds an assignment to this rule.
      *
      * @param target The String description of the left-hand side {@code Coordinate} of the
-     *  assignment.
+     *     assignment.
      * @param value The String representation of the right-hand side {@code Coordinate} of the
-     *  assignment.
+     *     assignment.
      * @return Itself, in order to implement fluent API.
      */
     public Rule withAssignment(final String target, final String value) {
@@ -165,9 +186,9 @@ public final class Rule {
      * then executing the specified command and checking all the conditions after that.
      *
      * @param context The {@link ComputationContext} to perform the test in. This is just the base
-     *  for creating an empty-state copy for the test.
+     *     for creating an empty-state copy for the test.
      * @return A list of {@link CheckFailure} objects, each of which describes a single failing
-     *  assertion. Will be empty if the test passed successfully.
+     *     assertion. Will be empty if the test passed successfully.
      */
     public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();

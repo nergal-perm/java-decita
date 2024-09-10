@@ -146,4 +146,28 @@ final class EndToEndTest {
             Matchers.hasEntry(EndToEndTest.SHOP, "3")
         );
     }
+
+    @Test
+    void shouldEvaluateElseRule() {
+        final State state = new State(
+            List.of(
+                new InMemoryLocator("data", Map.of("is-stored", "true")),
+                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 3)),
+                new InMemoryLocator("currentPlayer", Map.of("name", "Katie")),
+                new InMemoryLocator("request", Map.of(EndToEndTest.SHOP, 10))
+            )
+        );
+        final ComputationContext context = TestObjects.tablesFolderWithState(state);
+        context.perform("sample-table");
+        MatcherAssert.assertThat(
+            "The else rule is defined and computed correctly",
+            context.decisionFor("sample-table"),
+            Matchers.hasEntry("outcome", "else")
+        );
+        MatcherAssert.assertThat(
+            "An empty assignments list is handled correctly",
+            state.locatorFor("market").state(),
+            Matchers.hasEntry(EndToEndTest.SHOP, 3)
+        );
+    }
 }

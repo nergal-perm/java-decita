@@ -47,9 +47,9 @@ final class CheckSuiteTest {
             "",
             target.perform(context),
             Matchers.allOf(
-                Matchers.hasEntry("single-test::test_01", this.emptyList()),
+                Matchers.hasEntry("single-test::rule_01", this.emptyList()),
                 Matchers.hasEntry(
-                    "single-test::test_02",
+                    "single-test::rule_02",
                     List.of(
                         new CheckFailure("market::shop = constant::3", "constant::4 = constant::3")
                     )

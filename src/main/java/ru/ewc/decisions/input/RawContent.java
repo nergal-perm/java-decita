@@ -24,8 +24,8 @@
 
 package ru.ewc.decisions.input;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import ru.ewc.decisions.api.ComputableLocator;
 import ru.ewc.decisions.api.MultipleOutcomes;
 import ru.ewc.decisions.core.CheckInstance;
@@ -54,28 +54,19 @@ public final class RawContent {
      */
     private final String[][] outcomes;
 
-    /**
-     * The array of String values that form the Assignments part of a {@link DecisionTable}.
-     */
-    private final String[][] assignments;
-
-    /**
-     * The array of String values that form the Header part of a {@link DecisionTable}.
-     */
-    private final String[][] header;
+    private final SourceLines lines;
 
     /**
      * Ctor.
      *
      * @param lines A {@link SourceLines} object that contains the source file contents as
-     *  categorized lines.
+     *     categorized lines.
      */
     public RawContent(final SourceLines lines) {
         this.name = lines.fileName();
         this.conditions = lines.asArrayOf("CND").clone();
         this.outcomes = lines.asArrayOf("OUT").clone();
-        this.assignments = lines.asArrayOf("ASG").clone();
-        this.header = lines.asArrayOf("HDR").clone();
+        this.lines = lines;
     }
 
     /**
@@ -85,44 +76,24 @@ public final class RawContent {
      */
     public ComputableLocator asDecisionTable() {
         return new DecisionTable(
-            this.specifiedRules("rule"),
+            this.specifiedRules(),
             this.elseRule(),
             this.name
         );
     }
 
     public MultipleOutcomes asCheckInstance() {
-        return new CheckInstance(this.specifiedRules("test"));
+        return new CheckInstance(this.specifiedRules());
     }
 
-    private List<Rule> specifiedRules(final String type) {
-        final List<Rule> rules = new ArrayList<>(this.conditions[0].length - 1);
-        for (int column = 1; column < this.conditions[0].length; column += 1) {
-            final Rule rule = new Rule(this.getRuleName(type, column));
-            for (final String[] condition : this.conditions) {
-                rule.withCondition(condition[0].trim(), condition[column].trim());
-            }
-            for (final String[] outcome : this.outcomes) {
-                rule.withOutcome(outcome[0].trim(), outcome[column].trim());
-            }
-            for (final String[] assignment : this.assignments) {
-                rule.withAssignment(assignment[0].trim(), assignment[column].trim());
-            }
-            rules.add(rule);
-        }
-        return rules;
+    private List<Rule> specifiedRules() {
+        final int columns = this.lines.columns();
+        return IntStream.range(2, columns)
+            .mapToObj(i -> Rule.from(this.lines, i))
+            .toList();
     }
 
-    private String getRuleName(final String type, final int column) {
-        final String result;
-        if (this.header.length == 0) {
-            result = "%s::%s_%02d".formatted(this.name, type, column);
-        } else {
-            result = "%s::%s".formatted(this.header[0][0].trim(), this.header[0][column].trim());
-        }
-        return result;
-    }
-
+    // @todo #154 Specify Else rule based on SourceLines only
     private Rule elseRule() {
         final Rule elserule = new Rule("%s::else".formatted(this.name));
         if (this.outcomes[0].length > this.conditions[0].length) {

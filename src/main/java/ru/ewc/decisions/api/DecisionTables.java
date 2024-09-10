@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.input.ContentsReader;
-import ru.ewc.decisions.input.RawContent;
+import ru.ewc.decisions.input.SourceLines;
 
 /**
  * I am a set of decision tables.
@@ -53,7 +53,7 @@ public final class DecisionTables extends BaseLocators {
     public static DecisionTables using(final ContentsReader contents) {
         return new DecisionTables(
             contents,
-            contents.readAll().stream().map(RawContent::asDecisionTable)
+            contents.readAll().stream().map(SourceLines::asDecisionTable)
                 .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
         );
     }

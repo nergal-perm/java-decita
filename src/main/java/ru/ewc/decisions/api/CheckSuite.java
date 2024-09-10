@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import ru.ewc.decisions.input.ContentsReader;
-import ru.ewc.decisions.input.RawContent;
+import ru.ewc.decisions.input.SourceLines;
 
 /**
  * I represent a collection of test-cases to perform. My main responsibility is to run all the tests
@@ -49,7 +49,7 @@ public final class CheckSuite {
     }
 
     public static CheckSuite using(final ContentsReader reader) {
-        return new CheckSuite(reader.readAll().stream().map(RawContent::asCheckInstance).toList());
+        return new CheckSuite(reader.readAll().stream().map(SourceLines::asCheckInstance).toList());
     }
 
     public Map<String, List<CheckFailure>> perform(final ComputationContext context) {

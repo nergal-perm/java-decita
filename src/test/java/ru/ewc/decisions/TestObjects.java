@@ -39,7 +39,6 @@ import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.decisions.input.ContentsReader;
-import ru.ewc.decisions.input.RawContent;
 import ru.ewc.decisions.input.SourceLines;
 import ru.ewc.state.State;
 
@@ -121,12 +120,10 @@ public final class TestObjects {
 
     private static ContentsReader alwaysTrueTableReader() {
         return () -> List.of(
-            new RawContent(
-                SourceLines.fromLinesWithDelimiter(
-                    "always_true",
-                    List.of("CND;constant::true;true", "OUT;outcome;Hello"),
-                    ";"
-                )
+            SourceLines.fromLinesWithDelimiter(
+                "always_true",
+                List.of("CND;constant::true;true", "OUT;outcome;Hello"),
+                ";"
             )
         );
     }

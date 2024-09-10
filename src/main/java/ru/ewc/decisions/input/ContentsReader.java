@@ -34,5 +34,5 @@ import java.util.List;
  * @since 0.2
  */
 public interface ContentsReader {
-    List<RawContent> readAll();
+    List<SourceLines> readAll();
 }

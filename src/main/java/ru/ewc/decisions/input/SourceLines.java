@@ -28,8 +28,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import ru.ewc.decisions.api.ComputableLocator;
+import ru.ewc.decisions.api.MultipleOutcomes;
+import ru.ewc.decisions.core.CheckInstance;
+import ru.ewc.decisions.core.DecisionTable;
+import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.core.RuleFragment;
 
 /**
@@ -77,10 +83,6 @@ public final class SourceLines implements Iterable<String[]> {
         return Stream.of(this.toArray(this.ungrouped)).iterator();
     }
 
-    public String[][] asArrayOf(final String key) {
-        return this.toArray(this.filteredList(key));
-    }
-
     public String fileName() {
         return this.file;
     }
@@ -98,15 +100,29 @@ public final class SourceLines implements Iterable<String[]> {
             .orElse(0);
     }
 
-    private List<String> filteredList(final String key) {
-        return this.ungrouped.stream()
-            .filter(line -> line.startsWith(key))
-            .map(
-                line -> Arrays.stream(line.split(this.delimiter))
-                    .skip(1)
-                    .collect(Collectors.joining(this.delimiter))
-            )
-            .toList();
+    public ComputableLocator asDecisionTable() {
+        return new DecisionTable(
+            this.specifiedRules(),
+            this.elseRule(),
+            this.file
+        );
+    }
+
+    public MultipleOutcomes asCheckInstance() {
+        return new CheckInstance(this.specifiedRules());
+    }
+
+    String[][] asArrayOf(final String key) {
+        return this.toArray(
+            this.ungrouped.stream()
+                .filter(line -> line.startsWith(key))
+                .map(
+                    line -> Arrays.stream(line.split(this.delimiter))
+                        .skip(1)
+                        .collect(Collectors.joining(this.delimiter))
+                )
+                .toList()
+        );
     }
 
     private String[][] toArray(final List<String> source) {
@@ -121,5 +137,29 @@ public final class SourceLines implements Iterable<String[]> {
             }
         }
         return result;
+    }
+
+    private List<Rule> specifiedRules() {
+        final int columns = this.columns();
+        return IntStream.range(2, columns)
+            .mapToObj(i -> Rule.from(this, i))
+            .toList();
+    }
+
+    private Rule elseRule() {
+        final Rule elserule = new Rule("%s::else".formatted(this.file));
+        final String[][] outcomes = this.asArrayOf("OUT");
+        final String[][] conditions = this.asArrayOf("CND");
+        if (outcomes[0].length > conditions[0].length) {
+            for (final String[] outcome : outcomes) {
+                elserule.withOutcome(
+                    outcome[0].trim(),
+                    outcome[conditions[0].length].trim()
+                );
+            }
+        } else {
+            elserule.withOutcome("outcome", "undefined");
+        }
+        return elserule;
     }
 }

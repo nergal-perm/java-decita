@@ -59,18 +59,15 @@ public final class CombinedCsvFileReader implements ContentsReader {
     }
 
     @Override
-    public List<RawContent> readAll() {
+    public List<SourceLines> readAll() {
         return this.folder.files()
             .stream()
             .map(
-                file -> {
-                    final SourceLines lines = SourceLines.fromLinesWithDelimiter(
-                        file.nameWithoutExtension(),
-                        file.asStrings(),
-                        this.delimiter
-                    );
-                    return new RawContent(lines);
-                }
+                file -> SourceLines.fromLinesWithDelimiter(
+                    file.nameWithoutExtension(),
+                    file.asStrings(),
+                    this.delimiter
+                )
             ).toList();
     }
 }

@@ -27,6 +27,7 @@ package ru.ewc.decisions.conditions;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.core.Coordinate;
+import ru.ewc.decisions.core.RuleFragment;
 
 /**
  * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute
@@ -58,6 +59,16 @@ public interface Condition {
             result = new EqualsCondition(base, Coordinate.from(argument));
         }
         return result;
+    }
+
+    /**
+     * Creates a {@link Condition} based on a {@link RuleFragment}.
+     *
+     * @param fragment A {@link RuleFragment} to create a Condition from.
+     * @return A concrete {@link Condition} based on the given {@link RuleFragment}.
+     */
+    static Condition from(final RuleFragment fragment) {
+        return Condition.from(Coordinate.from(fragment.left()), fragment.right());
     }
 
     /**

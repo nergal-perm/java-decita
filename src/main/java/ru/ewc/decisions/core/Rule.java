@@ -44,6 +44,7 @@ import ru.ewc.decisions.input.SourceLines;
  * @since 0.1
  */
 @EqualsAndHashCode
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class Rule {
     /**
      * The rule's {@link Condition}s.
@@ -78,32 +79,19 @@ public final class Rule {
             .filter(f -> "HDR".equals(f.type()))
             .findFirst()
             .orElse(new RuleFragment("HDR", source.fileName(), "rule_%02d".formatted(idx - 1)));
-        Rule result = new Rule("%s::%s".formatted(header.left(), header.right()));
-        fragments.forEach(f -> {
-            switch (f.type()) {
-                case "CND" -> result.withCondition(f.left(), f.right());
-                case "OUT" -> result.withOutcome(f.left(), f.right());
-                case "ASG" -> result.withAssignment(f.left(), f.right());
-                default -> {
-                    // do nothing
+        final Rule result = new Rule("%s::%s".formatted(header.left(), header.right()));
+        fragments.forEach(
+            f -> {
+                switch (f.type()) {
+                    case "CND" -> result.conditions.add(Condition.from(f));
+                    case "OUT" -> result.withOutcome(f.left(), f.right());
+                    case "ASG" -> result.assignments.add(new Assignment(f.left(), f.right()));
+                    default -> {
+                    }
                 }
             }
-        });
+        );
         return result;
-    }
-
-    /**
-     * Adds a {@link Condition} to this rule. The condition is created from the given string
-     * description of the base {@code Coordinate} and the value to compare it with. The value can
-     * be a constant or another {@code Coordinate} description.
-     *
-     * @param target The String description of the left-hand side {@code Coordinate} to add.
-     * @param value The String representation of the right-hand side {@code Coordinate} to add.
-     * @return Itself, in order to implement fluent API.
-     */
-    public Rule withCondition(final String target, final String value) {
-        this.conditions.add(Condition.from(Coordinate.from(target), value));
-        return this;
     }
 
     /**
@@ -116,40 +104,6 @@ public final class Rule {
     public Rule withOutcome(final String outcome, final String value) {
         this.outcomes.put(outcome, value);
         return this;
-    }
-
-    /**
-     * Adds an assignment to this rule.
-     *
-     * @param target The String description of the left-hand side {@code Coordinate} of the
-     *     assignment.
-     * @param value The String representation of the right-hand side {@code Coordinate} of the
-     *     assignment.
-     * @return Itself, in order to implement fluent API.
-     */
-    public Rule withAssignment(final String target, final String value) {
-        this.assignments.add(new Assignment(target, value));
-        return this;
-    }
-
-    /**
-     * Checks whether this rule is computed, i.e. all of its {@link Condition}s were resolved
-     * successfully.
-     *
-     * @return True if the rule is computed.
-     */
-    public boolean isComputed() {
-        return this.conditions.stream().allMatch(Condition::isEvaluated);
-    }
-
-    /**
-     * Checks whether this rule is not satisfied (i.e. any of its {@link Condition}s resolved to
-     * {@code false}).
-     *
-     * @return True if the rule is dissatisfied.
-     */
-    public boolean isEliminated() {
-        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);
     }
 
     /**
@@ -186,9 +140,9 @@ public final class Rule {
      * then executing the specified command and checking all the conditions after that.
      *
      * @param context The {@link ComputationContext} to perform the test in. This is just the base
-     *     for creating an empty-state copy for the test.
+     *  for creating an empty-state copy for the test.
      * @return A list of {@link CheckFailure} objects, each of which describes a single failing
-     *     assertion. Will be empty if the test passed successfully.
+     *  assertion. Will be empty if the test passed successfully.
      */
     public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();
@@ -239,5 +193,15 @@ public final class Rule {
 
     public String asString() {
         return this.name;
+    }
+
+    /**
+     * Checks whether this rule is not satisfied (i.e. any of its {@link Condition}s resolved to
+     * {@code false}).
+     *
+     * @return True if the rule is dissatisfied.
+     */
+    private boolean isEliminated() {
+        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);
     }
 }

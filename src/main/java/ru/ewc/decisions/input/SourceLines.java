@@ -85,6 +85,19 @@ public final class SourceLines implements Iterable<String[]> {
         return this.file;
     }
 
+    public List<RuleFragment> asTriplets(final int index) {
+        return StreamSupport.stream(this.spliterator(), false)
+            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
+            .toList();
+    }
+
+    public int columns() {
+        return this.ungrouped.stream()
+            .map(line -> line.split(this.delimiter).length)
+            .findFirst()
+            .orElse(0);
+    }
+
     private List<String> filteredList(final String key) {
         return this.ungrouped.stream()
             .filter(line -> line.startsWith(key))
@@ -108,18 +121,5 @@ public final class SourceLines implements Iterable<String[]> {
             }
         }
         return result;
-    }
-
-    public List<RuleFragment> asTriplets(int index) {
-        return StreamSupport.stream(this.spliterator(), false)
-            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
-            .toList();
-    }
-
-    public int columns() {
-        return this.ungrouped.stream()
-            .map(line -> line.split(this.delimiter).length)
-            .findFirst()
-            .orElse(0);
     }
 }

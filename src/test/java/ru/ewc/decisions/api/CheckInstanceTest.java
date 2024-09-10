@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.core.CheckInstance;
 import ru.ewc.decisions.core.Rule;
+import ru.ewc.decisions.input.SourceLines;
 import ru.ewc.state.State;
 
 /**
@@ -40,25 +41,19 @@ import ru.ewc.state.State;
  * @since 0.8.0
  */
 final class CheckInstanceTest {
-    /**
-     * The name of the data fragment pointing to the name of the game table in tests.
-     */
-    public static final String TABLE_NAME = "table::name";
 
     @Test
     void shouldPerformArrangeSection() {
         final ComputationContext context = TestObjects.ticTacToeContext();
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                new Rule("assertOnly")
-                    .withAssignment(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
-                    .withCondition(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
+                CheckInstanceTest.ticTacToeTableNameCheckRule()
             )
         );
         final Map<String, List<CheckFailure>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "should perform a check in a predefined context",
-            actual.get("assertOnly"),
+            actual.get("nameCheck::rule_01"),
             Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
@@ -68,19 +63,14 @@ final class CheckInstanceTest {
         final ComputationContext context = TestObjects.ticTacToeContext();
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                new Rule("change name")
-                    .withAssignment(CheckInstanceTest.TABLE_NAME, "tic-tac-toe")
-                    .withCondition(CheckInstanceTest.TABLE_NAME, "tic-tac-toe"),
-                new Rule("change max players")
-                    .withAssignment("table::maxPlayers", "2")
-                    .withCondition(CheckInstanceTest.TABLE_NAME, "undefined")
-                    .withCondition("table::maxPlayers", "2")
+                CheckInstanceTest.ticTacToeTableNameCheckRule(),
+                CheckInstanceTest.ticTacToeTableMaxPlayersRule()
             )
         );
         final Map<String, List<CheckFailure>> actual = target.testResult(context);
         MatcherAssert.assertThat(
             "Multiple rules should run on separate Contexts",
-            actual.get("change max players"),
+            actual.get("change max players::rule_01"),
             Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
@@ -90,17 +80,41 @@ final class CheckInstanceTest {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                arrangeAndAct("first check")
-                    .withAssignment("request::shop", "3")
-                    .withCondition("market::shop", "3"),
-                arrangeAndAct("second check")
-                    .withAssignment("request::shop", "4")
-                    .withCondition("market::shop", "4")
+                Rule.from(
+                    SourceLines.fromLinesWithDelimiter(
+                        "first check",
+                        List.of(
+                            "ASG;market::shop;2",
+                            "ASG;data::is-stored;true",
+                            "ASG;currentPlayer::name;Eugene",
+                            "ASG;request::shop;3",
+                            "OUT;execute;sample-table",
+                            "CND;market::shop;3"
+                        ),
+                        ";"
+                    ),
+                    2
+                ),
+                Rule.from(
+                    SourceLines.fromLinesWithDelimiter(
+                        "second check",
+                        List.of(
+                            "ASG;market::shop;2",
+                            "ASG;data::is-stored;true",
+                            "ASG;currentPlayer::name;Eugene",
+                            "ASG;request::shop;4",
+                            "OUT;execute;sample-table",
+                            "CND;market::shop;4"
+                        ),
+                        ";"
+                    ),
+                    2
+                )
             )
         );
         MatcherAssert.assertThat(
             "Should perform Command during the test",
-            target.testResult(context).get("second check"),
+            target.testResult(context).get("second check::rule_01"),
             Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
@@ -110,31 +124,61 @@ final class CheckInstanceTest {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                arrangeAndAct("first check")
-                    .withAssignment("request::shop", "3")
-                    .withCondition("market::shop", "3")
-                    .withCondition("data::is-stored", "false")
-                    .withCondition("currentPlayer::name", "Alice")
+                Rule.from(
+                    SourceLines.fromLinesWithDelimiter(
+                        "first check",
+                        List.of(
+                            "ASG;market::shop;2",
+                            "ASG;data::is-stored;true",
+                            "ASG;currentPlayer::name;Eugene",
+                            "ASG;request::shop;3",
+                            "OUT;execute;sample-table",
+                            "CND;market::shop;3",
+                            "CND;data::is-stored;false",
+                            "CND;currentPlayer::name;Alice"
+                        ),
+                        ";"
+                    ),
+                    2
+                )
             )
         );
         MatcherAssert.assertThat(
             "Should perform all the asserts in the test and report all the eliminated conditions",
-            target.testResult(context).get("first check"),
+            target.testResult(context).get("first check::rule_01"),
             Matchers.hasSize(2)
         );
-    }
-
-    private static Rule arrangeAndAct(final String name) {
-        return new Rule(name)
-            .withAssignment("market::shop", "2")
-            .withAssignment("data::is-stored", "true")
-            .withAssignment("currentPlayer::name", "Eugene")
-            .withOutcome("execute", "sample-table");
     }
 
     private static State initialState() {
         return State.withEmptyLocators(
             List.of("data", "market", "currentPlayer", "request")
+        );
+    }
+
+    private static Rule ticTacToeTableNameCheckRule() {
+        return Rule.from(
+            SourceLines.fromLinesWithDelimiter(
+                "nameCheck",
+                List.of("ASG;table::name;tic-tac-toe", "CND;table::name;tic-tac-toe"),
+                ";"
+            ),
+            2
+        );
+    }
+
+    private static Rule ticTacToeTableMaxPlayersRule() {
+        return Rule.from(
+            SourceLines.fromLinesWithDelimiter(
+                "change max players",
+                List.of(
+                    "ASG;table::maxPlayers;2",
+                    "CND;table::maxPlayers;2",
+                    "CND;table::name;undefined"
+                ),
+                ";"
+            ),
+            2
         );
     }
 }

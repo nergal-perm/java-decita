@@ -37,7 +37,6 @@ import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
 import ru.ewc.decisions.core.InMemoryLocator;
-import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.decisions.input.ContentsReader;
 import ru.ewc.decisions.input.RawContent;
@@ -108,30 +107,6 @@ public final class TestObjects {
                 ";"
             )
         );
-    }
-
-    /**
-     * Convenience method to get an instance of {@link Rule} with the {@link Condition} that
-     * always resolves to {@code true}.
-     *
-     * @return Always succeeding {@link Rule} instance.
-     */
-    static Rule alwaysTrueEqualsTrueRule() {
-        return new Rule("always_true")
-            .withCondition("true", "true")
-            .withOutcome("outcome", "Hello");
-    }
-
-    /**
-     * Convenience method to get an instance of {@link Rule} with the {@link Condition} that
-     * always resolves to {@code false}.
-     *
-     * @return Always failing {@link Rule} instance.
-     */
-    static Rule alwaysTrueEqualsFalseRule() {
-        return new Rule("always_false")
-            .withCondition("true", "false")
-            .withOutcome("outcome", "World");
     }
 
     /**

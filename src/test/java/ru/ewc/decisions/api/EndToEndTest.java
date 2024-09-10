@@ -50,21 +50,31 @@ final class EndToEndTest {
      */
     public static final String SHOP = "shop";
 
+    /**
+     * Constant for the sample table name.
+     */
+    public static final String SAMPLE_TABLE = "sample-table";
+
+    /**
+     * Constant for a {@code String} value "true".
+     */
+    public static final String TRUE = "true";
+
     @Test
     void shouldComputeTheWholeTable() throws DecitaException {
         final State state = new State(
             List.of(
-                new InMemoryLocator("data", Map.of("is-stored", "true")),
-                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 2)),
-                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene"))
+                locatorDataIsStored(EndToEndTest.TRUE),
+                locatorShopsOnMarket(2),
+                locatorCurrentPlayer("Eugene")
             )
         );
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            TestObjects.tablesFolderWithState(state).decisionFor("sample-table"),
+            TestObjects.tablesFolderWithState(state).decisionFor(EndToEndTest.SAMPLE_TABLE),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUT), Matchers.equalTo("true")),
-                Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("hello world"))
+                Matchers.hasEntry(EndToEndTest.OUT, EndToEndTest.TRUE),
+                Matchers.hasEntry("text", "hello world")
             )
         );
     }
@@ -73,16 +83,16 @@ final class EndToEndTest {
     void shouldComputeTheWholeTableWithElseRule() throws DecitaException {
         final State state = new State(
             List.of(
-                new InMemoryLocator("data", Map.of("is-stored", false)),
-                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 3)),
-                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene"))
+                locatorDataIsStored("false"),
+                locatorShopsOnMarket(3),
+                locatorCurrentPlayer("Eugene")
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
         final OutputTracker<String> tracker = context.startTracking();
         MatcherAssert.assertThat(
             "The table is computed correctly",
-            context.decisionFor("sample-table"),
+            context.decisionFor(EndToEndTest.SAMPLE_TABLE),
             Matchers.allOf(
                 Matchers.hasEntry(Matchers.equalTo(EndToEndTest.OUT), Matchers.equalTo("else")),
                 Matchers.hasEntry(Matchers.equalTo("text"), Matchers.equalTo("no rule satisfied"))
@@ -109,7 +119,10 @@ final class EndToEndTest {
             "Should resolve dynamic coordinates while computing a table",
             context.decisionFor("dynamic-coordinate"),
             Matchers.allOf(
-                Matchers.hasEntry(Matchers.equalTo("moveAvailable"), Matchers.equalTo("true"))
+                Matchers.hasEntry(
+                    Matchers.equalTo("moveAvailable"),
+                    Matchers.equalTo(EndToEndTest.TRUE)
+                )
             )
         );
     }
@@ -132,14 +145,14 @@ final class EndToEndTest {
     void shouldPerformCommandFromTable() {
         final State state = new State(
             List.of(
-                new InMemoryLocator("data", Map.of("is-stored", "true")),
-                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 2)),
-                new InMemoryLocator("currentPlayer", Map.of("name", "Eugene")),
-                new InMemoryLocator("request", Map.of(EndToEndTest.SHOP, 3))
+                locatorDataIsStored(EndToEndTest.TRUE),
+                locatorShopsOnMarket(2),
+                locatorCurrentPlayer("Eugene"),
+                locatorShopsInRequest(3)
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
-        context.perform("sample-table");
+        context.perform(EndToEndTest.SAMPLE_TABLE);
         MatcherAssert.assertThat(
             "The table is computed correctly",
             state.locatorFor("market").state(),
@@ -151,17 +164,17 @@ final class EndToEndTest {
     void shouldEvaluateElseRule() {
         final State state = new State(
             List.of(
-                new InMemoryLocator("data", Map.of("is-stored", "true")),
-                new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, 3)),
-                new InMemoryLocator("currentPlayer", Map.of("name", "Katie")),
-                new InMemoryLocator("request", Map.of(EndToEndTest.SHOP, 10))
+                locatorDataIsStored(EndToEndTest.TRUE),
+                locatorShopsOnMarket(3),
+                locatorCurrentPlayer("Katie"),
+                locatorShopsInRequest(10)
             )
         );
         final ComputationContext context = TestObjects.tablesFolderWithState(state);
-        context.perform("sample-table");
+        context.perform(EndToEndTest.SAMPLE_TABLE);
         MatcherAssert.assertThat(
             "The else rule is defined and computed correctly",
-            context.decisionFor("sample-table"),
+            context.decisionFor(EndToEndTest.SAMPLE_TABLE),
             Matchers.hasEntry("outcome", "else")
         );
         MatcherAssert.assertThat(
@@ -169,5 +182,21 @@ final class EndToEndTest {
             state.locatorFor("market").state(),
             Matchers.hasEntry(EndToEndTest.SHOP, 3)
         );
+    }
+
+    private static InMemoryLocator locatorShopsInRequest(final int shops) {
+        return new InMemoryLocator("request", Map.of(EndToEndTest.SHOP, shops));
+    }
+
+    private static InMemoryLocator locatorCurrentPlayer(final String name) {
+        return new InMemoryLocator("currentPlayer", Map.of("name", name));
+    }
+
+    private static InMemoryLocator locatorShopsOnMarket(final int shops) {
+        return new InMemoryLocator("market", Map.of(EndToEndTest.SHOP, shops));
+    }
+
+    private static InMemoryLocator locatorDataIsStored(final String value) {
+        return new InMemoryLocator("data", Map.of("is-stored", value));
     }
 }

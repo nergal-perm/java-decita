@@ -54,13 +54,16 @@ public final class RawContent {
      */
     private final String[][] outcomes;
 
+    /**
+     * The source file contents as categorized lines.
+     */
     private final SourceLines lines;
 
     /**
      * Ctor.
      *
      * @param lines A {@link SourceLines} object that contains the source file contents as
-     *     categorized lines.
+     *  categorized lines.
      */
     public RawContent(final SourceLines lines) {
         this.name = lines.fileName();

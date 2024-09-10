@@ -107,32 +107,20 @@ public final class Rule {
     }
 
     /**
-     * Checks whether this rule is satisfied (i.e. all of its {@link Condition}s are computed and
-     * resolved to {@code true}).
-     *
-     * @return True if the rule is satisfied.
-     */
-    public boolean isSatisfied() {
-        return this.conditions.stream().allMatch(c -> c.isEvaluated() && !c.isNotSatisfied());
-    }
-
-    /**
      * Checks if this {@link Rule} is satisfied.
      *
      * @param context The {@link ComputationContext}'s instance.
+     * @return True if the rule is satisfied.
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
-    public void check(final ComputationContext context) throws DecitaException {
-        while (!this.isSatisfied() && !this.isEliminated()) {
-            this.conditions.stream()
-                .filter(c -> !c.isEvaluated())
-                .findFirst()
-                .ifPresent(c -> c.evaluate(context));
-        }
+    public boolean check(final ComputationContext context) throws DecitaException {
+        final boolean result = this.conditions.stream()
+            .allMatch(c -> c.evaluate(context));
         context.logComputation(
             OutputTracker.EventType.RL,
-            "%s => %s".formatted(this.asString(), this.isSatisfied())
+            "%s => %s".formatted(this.asString(), result)
         );
+        return result;
     }
 
     /**
@@ -193,15 +181,5 @@ public final class Rule {
 
     public String asString() {
         return this.name;
-    }
-
-    /**
-     * Checks whether this rule is not satisfied (i.e. any of its {@link Condition}s resolved to
-     * {@code false}).
-     *
-     * @return True if the rule is dissatisfied.
-     */
-    private boolean isEliminated() {
-        return this.conditions.stream().anyMatch(Condition::isNotSatisfied);
     }
 }

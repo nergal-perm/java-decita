@@ -85,10 +85,6 @@ public final class DecisionTable implements ComputableLocator {
         return this.name;
     }
 
-    public String tableName() {
-        return this.name;
-    }
-
     @Override
     public String fragmentBy(final String fragment, final ComputationContext context)
         throws DecitaException {
@@ -102,15 +98,7 @@ public final class DecisionTable implements ComputableLocator {
 
     @Override
     public Map<String, String> outcome(final ComputationContext context) throws DecitaException {
-        for (final Rule rule : this.rules) {
-            rule.check(context);
-        }
-        if (this.satisfiedRules().count() > 1) {
-            throw new DecitaException("Multiple rules are satisfied");
-        }
-        final Map<String, String> outcome = this.satisfiedRules()
-            .findFirst().orElse(this.elserule)
-            .outcome();
+        final Map<String, String> outcome = this.determineSatisfiedRuleIn(context).outcome();
         context.logComputation(
             OutputTracker.EventType.TB,
             "%s => %s".formatted(this.name, outcome)
@@ -119,8 +107,7 @@ public final class DecisionTable implements ComputableLocator {
     }
 
     public void perform(final ComputationContext context) {
-        this.outcome(context);
-        this.satisfiedRules().findFirst().orElse(this.elserule).perform(context);
+        this.determineSatisfiedRuleIn(context).perform(context);
     }
 
     /**
@@ -129,23 +116,24 @@ public final class DecisionTable implements ComputableLocator {
      * @return True if this table describes a command.
      */
     public boolean describesCommand() {
-        return StreamSupport.stream(this.rules.spliterator(), false)
-            .anyMatch(Rule::describesCommand);
+        return this.ruleStream().anyMatch(Rule::describesCommand);
     }
 
     public List<String> commandArgs() {
-        return StreamSupport.stream(this.rules.spliterator(), false)
-            .map(Rule::commandArgs)
-            .flatMap(List::stream)
-            .toList();
+        return this.ruleStream().map(Rule::commandArgs).flatMap(List::stream).toList();
     }
 
-    /**
-     * Converts the collection of {@link Rule}s into a {@link Stream}.
-     *
-     * @return A {@link Stream} of {@link Rule}s.
-     */
-    private Stream<Rule> satisfiedRules() {
-        return StreamSupport.stream(this.rules.spliterator(), false).filter(Rule::isSatisfied);
+    private Rule determineSatisfiedRuleIn(final ComputationContext context) {
+        final List<Rule> satisfied = this.ruleStream()
+            .filter(rule -> rule.check(context))
+            .toList();
+        if (satisfied.size() > 1) {
+            throw new DecitaException("Multiple rules are satisfied");
+        }
+        return satisfied.stream().findFirst().orElse(this.elserule);
+    }
+
+    private Stream<Rule> ruleStream() {
+        return StreamSupport.stream(this.rules.spliterator(), false);
     }
 }

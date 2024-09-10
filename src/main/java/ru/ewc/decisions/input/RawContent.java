@@ -38,7 +38,7 @@ import ru.ewc.decisions.core.Rule;
  *
  * @since 0.2
  */
-// @todo #153 Get rid of RawContent in favor of SourceLines
+// @todo #154 Get rid of RawContent in favor of SourceLines
 public final class RawContent {
     /**
      * The name of the source file.

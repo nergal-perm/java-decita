@@ -38,21 +38,12 @@ import ru.ewc.decisions.core.Rule;
  *
  * @since 0.2
  */
+// @todo #153 Get rid of RawContent in favor of SourceLines
 public final class RawContent {
     /**
      * The name of the source file.
      */
     private final String name;
-
-    /**
-     * Array of String values that form the Conditions part of a {@link DecisionTable}.
-     */
-    private final String[][] conditions;
-
-    /**
-     * Array of String values that form the Outcomes/Actions part of a {@link DecisionTable}.
-     */
-    private final String[][] outcomes;
 
     /**
      * The source file contents as categorized lines.
@@ -67,8 +58,6 @@ public final class RawContent {
      */
     public RawContent(final SourceLines lines) {
         this.name = lines.fileName();
-        this.conditions = lines.asArrayOf("CND").clone();
-        this.outcomes = lines.asArrayOf("OUT").clone();
         this.lines = lines;
     }
 
@@ -96,14 +85,15 @@ public final class RawContent {
             .toList();
     }
 
-    // @todo #154 Specify Else rule based on SourceLines only
     private Rule elseRule() {
         final Rule elserule = new Rule("%s::else".formatted(this.name));
-        if (this.outcomes[0].length > this.conditions[0].length) {
-            for (final String[] outcome : this.outcomes) {
+        final String[][] outcomes = this.lines.asArrayOf("OUT");
+        final String[][] conditions = this.lines.asArrayOf("CND");
+        if (outcomes[0].length > conditions[0].length) {
+            for (final String[] outcome : outcomes) {
                 elserule.withOutcome(
                     outcome[0].trim(),
-                    outcome[this.conditions[0].length].trim()
+                    outcome[conditions[0].length].trim()
                 );
             }
         } else {

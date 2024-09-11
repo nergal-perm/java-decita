@@ -63,7 +63,7 @@ public final class CombinedCsvFileReader implements ContentsReader {
         return this.folder.files()
             .stream()
             .map(
-                file -> SourceLines.fromLinesWithDelimiter(
+                file -> new SourceLines(
                     file.nameWithoutExtension(),
                     file.asStrings(),
                     this.delimiter

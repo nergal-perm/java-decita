@@ -32,18 +32,17 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import ru.ewc.decisions.api.ComputableLocator;
 import ru.ewc.decisions.api.MultipleOutcomes;
+import ru.ewc.decisions.api.RuleFragment;
 import ru.ewc.decisions.core.CheckInstance;
+import ru.ewc.decisions.core.DecisionRuleFragments;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
-import ru.ewc.decisions.core.RuleFragment;
-import ru.ewc.decisions.core.RuleFragments;
 
 /**
  * I am a class that represents the lines from the source file grouped by the type of the line.
  *
  * @since 0.8.0
  */
-@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class SourceLines implements Iterable<String[]> {
     /**
      * The name of the source file.
@@ -60,22 +59,10 @@ public final class SourceLines implements Iterable<String[]> {
      */
     private final String delimiter;
 
-    private SourceLines(
-        final String file,
-        final List<String> lines,
-        final String delimiter
-    ) {
+    public SourceLines(final String file, final List<String> lines, final String delimiter) {
         this.file = file;
         this.ungrouped = lines;
         this.delimiter = delimiter;
-    }
-
-    public static SourceLines fromLinesWithDelimiter(
-        final String file,
-        final List<String> lines,
-        final String delimiter
-    ) {
-        return new SourceLines(file, lines, delimiter);
     }
 
     @Override
@@ -136,11 +123,15 @@ public final class SourceLines implements Iterable<String[]> {
     private Rule elseRule() {
         final String[][] outcomes = this.asArrayOf("OUT");
         final String[][] conditions = this.asArrayOf("CND");
-        final RuleFragments fragments;
+        final DecisionRuleFragments fragments;
         if (outcomes[0].length > conditions[0].length) {
-            fragments = RuleFragments.from(this, outcomes[0].length);
+            fragments = DecisionRuleFragments.from(this, outcomes[0].length);
         } else {
-            fragments = new RuleFragments(List.of(new RuleFragment("OUT", "outcome", "undefined")));
+            fragments = new DecisionRuleFragments(
+                List.of(
+                    new RuleFragment("OUT", "outcome", "undefined")
+                )
+            );
         }
         return new Rule("%s::else".formatted(this.file), fragments);
     }

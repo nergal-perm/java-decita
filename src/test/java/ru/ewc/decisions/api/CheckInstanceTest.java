@@ -81,7 +81,7 @@ final class CheckInstanceTest {
         final MultipleOutcomes target = new CheckInstance(
             List.of(
                 Rule.from(
-                    SourceLines.fromLinesWithDelimiter(
+                    new SourceLines(
                         "first check",
                         List.of(
                             "ASG;market::shop;2",
@@ -96,7 +96,7 @@ final class CheckInstanceTest {
                     2
                 ),
                 Rule.from(
-                    SourceLines.fromLinesWithDelimiter(
+                    new SourceLines(
                         "second check",
                         List.of(
                             "ASG;market::shop;2",
@@ -125,7 +125,7 @@ final class CheckInstanceTest {
         final MultipleOutcomes target = new CheckInstance(
             List.of(
                 Rule.from(
-                    SourceLines.fromLinesWithDelimiter(
+                    new SourceLines(
                         "first check",
                         List.of(
                             "ASG;market::shop;2",
@@ -158,7 +158,7 @@ final class CheckInstanceTest {
 
     private static Rule ticTacToeTableNameCheckRule() {
         return Rule.from(
-            SourceLines.fromLinesWithDelimiter(
+            new SourceLines(
                 "nameCheck",
                 List.of("ASG;table::name;tic-tac-toe", "CND;table::name;tic-tac-toe"),
                 ";"
@@ -169,7 +169,7 @@ final class CheckInstanceTest {
 
     private static Rule ticTacToeTableMaxPlayersRule() {
         return Rule.from(
-            SourceLines.fromLinesWithDelimiter(
+            new SourceLines(
                 "change max players",
                 List.of(
                     "ASG;table::maxPlayers;2",

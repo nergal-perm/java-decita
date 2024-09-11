@@ -22,10 +22,38 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.core;
+package ru.ewc.decisions.api;
 
-public record RuleFragment(String type, String left, String right) {
-    boolean nonEmptyOfType(final String filter) {
-        return filter.equals(this.type()) && !"~".equals(this.right()) && !this.right().isBlank();
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import ru.ewc.decisions.input.SourceLines;
+
+/**
+ * I am a collection of {@link RuleFragment}s. My main responsibility is to provide convenient
+ * methods to access those fragments while leaving some domain-specific logic to the subclasses.
+ *
+ * @since 0.9.0
+ */
+public class RuleFragments {
+    /**
+     * The collection of {@link RuleFragment}s.
+     */
+    private final List<RuleFragment> fragments;
+
+    public RuleFragments(final List<RuleFragment> fragments) {
+        this.fragments = fragments;
+    }
+
+    public static List<RuleFragment> listFrom(final SourceLines lines, final int column) {
+        return StreamSupport
+            .stream(lines.spliterator(), false)
+            .filter(line -> line.length > column && !line[column].trim().isEmpty())
+            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[column].trim()))
+            .collect(Collectors.toList());
+    }
+
+    public final List<RuleFragment> getFragments() {
+        return this.fragments;
     }
 }

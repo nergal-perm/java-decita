@@ -26,8 +26,8 @@ package ru.ewc.decisions.conditions;
 
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
+import ru.ewc.decisions.api.RuleFragment;
 import ru.ewc.decisions.core.Coordinate;
-import ru.ewc.decisions.core.RuleFragment;
 
 /**
  * I am an assertion made for two {@link Coordinate}s. My main responsibility is to compute

@@ -31,6 +31,7 @@ import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
+import ru.ewc.decisions.api.RuleFragment;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.input.SourceLines;
@@ -52,15 +53,15 @@ public final class Rule {
     /**
      * The rule's fragments.
      */
-    private final RuleFragments fragments;
+    private final DecisionRuleFragments fragments;
 
-    public Rule(final String name, final RuleFragments fragments) {
+    public Rule(final String name, final DecisionRuleFragments fragments) {
         this.name = name;
         this.fragments = fragments;
     }
 
     public static Rule from(final SourceLines source, final int idx) {
-        final RuleFragments fragments = RuleFragments.from(source, idx);
+        final DecisionRuleFragments fragments = DecisionRuleFragments.from(source, idx);
         final String header = fragments.headerOrDefaultFor(source.fileName(), idx);
         return new Rule(header, fragments);
     }
@@ -68,7 +69,7 @@ public final class Rule {
     public static Rule elseRule(final String name) {
         return new Rule(
             "%s::else".formatted(name),
-            new RuleFragments(List.of(new RuleFragment("OUT", "outcome", "undefined")))
+            new DecisionRuleFragments(List.of(new RuleFragment("OUT", "outcome", "undefined")))
         );
     }
 

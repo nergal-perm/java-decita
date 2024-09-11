@@ -27,7 +27,8 @@ package ru.ewc.decisions.core;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import ru.ewc.decisions.api.RuleFragment;
+import ru.ewc.decisions.api.RuleFragments;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.input.SourceLines;
@@ -39,29 +40,20 @@ import ru.ewc.decisions.input.SourceLines;
  * @since 0.9.0
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-public final class RuleFragments {
-    /**
-     * The collection of {@link RuleFragment}s.
-     */
-    private final List<RuleFragment> fragments;
+public final class DecisionRuleFragments {
+    private final RuleFragments fragments;
 
-    public RuleFragments(final List<RuleFragment> fragments) {
-        this.fragments = fragments;
+    public DecisionRuleFragments(final List<RuleFragment> fragments) {
+        this.fragments = new RuleFragments(fragments);
     }
 
-    public static RuleFragments from(final SourceLines lines, final int index) {
-        return new RuleFragments(
-            StreamSupport
-                .stream(lines.spliterator(), false)
-                .filter(line -> line.length > index && !line[index].trim().isEmpty())
-                .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
-                .collect(Collectors.toList())
-        );
+    public static DecisionRuleFragments from(final SourceLines lines, final int column) {
+        return new DecisionRuleFragments(RuleFragments.listFrom(lines, column));
     }
 
     public List<Assignment> assignments() {
         return
-            this.fragments.stream()
+            this.fragments.getFragments().stream()
                 .filter(rf -> rf.nonEmptyOfType("ASG"))
                 .map(rf -> new Assignment(rf.left(), rf.right()))
                 .toList();
@@ -69,7 +61,7 @@ public final class RuleFragments {
 
     public List<Condition> conditions() {
         return
-            this.fragments.stream()
+            this.fragments.getFragments().stream()
                 .filter(rf -> rf.nonEmptyOfType("CND"))
                 .map(Condition::from)
                 .toList();
@@ -77,15 +69,15 @@ public final class RuleFragments {
 
     public Map<String, String> outcomes() {
         return
-            this.fragments.stream()
+            this.fragments.getFragments().stream()
                 .filter(rf -> rf.nonEmptyOfType("OUT"))
                 .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
     }
 
     public String headerOrDefaultFor(final String name, final int idx) {
         final RuleFragment header =
-            this.fragments.stream()
-                .filter(f -> "HDR".equals(f.type()))
+            this.fragments.getFragments().stream()
+                .filter(f -> f.nonEmptyOfType("HDR"))
                 .findFirst()
                 .orElse(new RuleFragment("HDR", name, "rule_%02d".formatted(idx - 1)));
         return "%s::%s".formatted(header.left(), header.right());

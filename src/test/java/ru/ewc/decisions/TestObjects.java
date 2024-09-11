@@ -120,7 +120,7 @@ public final class TestObjects {
 
     private static ContentsReader alwaysTrueTableReader() {
         return () -> List.of(
-            SourceLines.fromLinesWithDelimiter(
+            new SourceLines(
                 "always_true",
                 List.of("CND;constant::true;true", "OUT;outcome;Hello"),
                 ";"

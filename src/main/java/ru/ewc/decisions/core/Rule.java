@@ -24,7 +24,6 @@
 
 package ru.ewc.decisions.core;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,11 +46,6 @@ import ru.ewc.decisions.input.SourceLines;
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class Rule {
     /**
-     * The rule's {@link Condition}s.
-     */
-    private final List<Condition> conditions;
-
-    /**
      * The rule's name.
      */
     private final String name;
@@ -64,7 +58,6 @@ public final class Rule {
     public Rule(final String name, final List<RuleFragment> fragments) {
         this.name = name;
         this.fragments = fragments;
-        this.conditions = new ArrayList<>(5);
     }
 
     public static Rule from(final SourceLines source, final int idx) {
@@ -73,17 +66,7 @@ public final class Rule {
             .filter(f -> "HDR".equals(f.type()))
             .findFirst()
             .orElse(new RuleFragment("HDR", source.fileName(), "rule_%02d".formatted(idx - 1)));
-        final Rule result = new Rule("%s::%s".formatted(header.left(), header.right()), fragments);
-        fragments.forEach(
-            f -> {
-                switch (f.type()) {
-                    case "CND" -> result.conditions.add(Condition.from(f));
-                    default -> {
-                    }
-                }
-            }
-        );
-        return result;
+        return new Rule("%s::%s".formatted(header.left(), header.right()), fragments);
     }
 
     public static Rule elseRule(final String name) {
@@ -101,7 +84,7 @@ public final class Rule {
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
     public boolean check(final ComputationContext context) throws DecitaException {
-        final boolean result = this.conditions.stream()
+        final boolean result = this.conditions().stream()
             .allMatch(c -> c.evaluate(context));
         context.logComputation(
             OutputTracker.EventType.RL,
@@ -126,7 +109,7 @@ public final class Rule {
             copy.perform(this.outcome().get("execute"));
         }
         copy.reloadTables();
-        return this.conditions.stream()
+        return this.conditions().stream()
             .filter(c -> !c.evaluate(copy))
             .map(c -> new CheckFailure(c.asString(), c.result()))
             .toList();
@@ -136,6 +119,13 @@ public final class Rule {
         return this.fragments.stream()
             .filter(rf -> "ASG".equals(rf.type()) && !"~".equals(rf.right()) && !rf.right().isBlank())
             .map(rf -> new Assignment(rf.left(), rf.right()))
+            .toList();
+    }
+
+    private List<Condition> conditions() {
+        return this.fragments.stream()
+            .filter(rf -> "CND".equals(rf.type()) && !"~".equals(rf.right()) && !rf.right().isBlank())
+            .map(Condition::from)
             .toList();
     }
 

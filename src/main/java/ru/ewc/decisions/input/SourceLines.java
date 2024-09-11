@@ -89,8 +89,9 @@ public final class SourceLines implements Iterable<String[]> {
 
     public List<RuleFragment> asFragments(final int index) {
         return StreamSupport.stream(this.spliterator(), false)
+            .filter(line -> line.length > index && !line[index].trim().isEmpty())
             .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public ComputableLocator asDecisionTable() {
@@ -140,19 +141,14 @@ public final class SourceLines implements Iterable<String[]> {
     }
 
     private Rule elseRule() {
-        final Rule elserule = new Rule("%s::else".formatted(this.file));
         final String[][] outcomes = this.asArrayOf("OUT");
         final String[][] conditions = this.asArrayOf("CND");
+        final List<RuleFragment> fragments;
         if (outcomes[0].length > conditions[0].length) {
-            for (final String[] outcome : outcomes) {
-                elserule.withOutcome(
-                    outcome[0].trim(),
-                    outcome[conditions[0].length].trim()
-                );
-            }
+            fragments = this.asFragments(outcomes[0].length);
         } else {
-            elserule.withOutcome("outcome", "undefined");
+            fragments = List.of(new RuleFragment("OUT", "outcome", "undefined"));
         }
-        return elserule;
+        return new Rule("%s::else".formatted(this.file), fragments);
     }
 }

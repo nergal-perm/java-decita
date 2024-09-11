@@ -25,9 +25,9 @@
 package ru.ewc.decisions.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
@@ -52,11 +52,6 @@ public final class Rule {
     private final List<Condition> conditions;
 
     /**
-     * The rule's outcomes.
-     */
-    private final Map<String, String> outcomes;
-
-    /**
      * The rule's assignments.
      */
     private final List<Assignment> assignments;
@@ -66,9 +61,14 @@ public final class Rule {
      */
     private final String name;
 
-    public Rule(final String name) {
+    /**
+     * The rule's fragments, i.e. the triplets containing the type, left and right parts.
+     */
+    private final List<RuleFragment> fragments;
+
+    public Rule(final String name, final List<RuleFragment> fragments) {
         this.name = name;
-        this.outcomes = new HashMap<>();
+        this.fragments = fragments;
         this.conditions = new ArrayList<>(5);
         this.assignments = new ArrayList<>(2);
     }
@@ -79,12 +79,11 @@ public final class Rule {
             .filter(f -> "HDR".equals(f.type()))
             .findFirst()
             .orElse(new RuleFragment("HDR", source.fileName(), "rule_%02d".formatted(idx - 1)));
-        final Rule result = new Rule("%s::%s".formatted(header.left(), header.right()));
+        final Rule result = new Rule("%s::%s".formatted(header.left(), header.right()), fragments);
         fragments.forEach(
             f -> {
                 switch (f.type()) {
                     case "CND" -> result.conditions.add(Condition.from(f));
-                    case "OUT" -> result.withOutcome(f.left(), f.right());
                     case "ASG" -> result.assignments.add(new Assignment(f.left(), f.right()));
                     default -> {
                     }
@@ -94,16 +93,11 @@ public final class Rule {
         return result;
     }
 
-    /**
-     * Adds an outcome to this rule.
-     *
-     * @param outcome The key of an outcome to add.
-     * @param value The string representation of an outcome's value to add.
-     * @return Itself, in order to implement fluent API.
-     */
-    public Rule withOutcome(final String outcome, final String value) {
-        this.outcomes.put(outcome, value);
-        return this;
+    public static Rule elseRule(final String name) {
+        return new Rule(
+            "%s::else".formatted(name),
+            List.of(new RuleFragment("OUT", "outcome", "undefined"))
+        );
     }
 
     /**
@@ -135,8 +129,8 @@ public final class Rule {
     public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();
         this.assignments.forEach(a -> a.performIn(copy));
-        if (this.outcomes.containsKey("execute")) {
-            copy.perform(this.outcomes.get("execute"));
+        if (this.outcome().containsKey("execute")) {
+            copy.perform(this.outcome().get("execute"));
         }
         copy.reloadTables();
         return this.conditions.stream()
@@ -151,7 +145,9 @@ public final class Rule {
      * @return The simple dictionary, containing all this rule's outcomes.
      */
     public Map<String, String> outcome() {
-        return this.outcomes;
+        return this.fragments.stream()
+            .filter(f -> "OUT".equals(f.type()))
+            .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
     }
 
     /**

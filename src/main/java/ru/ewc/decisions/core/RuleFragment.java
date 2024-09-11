@@ -24,5 +24,6 @@
 
 package ru.ewc.decisions.core;
 
+// @todo #154 Wrap with a dedicated collection class
 public record RuleFragment(String type, String left, String right) {
 }

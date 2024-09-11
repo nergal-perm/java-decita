@@ -52,11 +52,6 @@ public final class Rule {
     private final List<Condition> conditions;
 
     /**
-     * The rule's assignments.
-     */
-    private final List<Assignment> assignments;
-
-    /**
      * The rule's name.
      */
     private final String name;
@@ -70,7 +65,6 @@ public final class Rule {
         this.name = name;
         this.fragments = fragments;
         this.conditions = new ArrayList<>(5);
-        this.assignments = new ArrayList<>(2);
     }
 
     public static Rule from(final SourceLines source, final int idx) {
@@ -84,7 +78,6 @@ public final class Rule {
             f -> {
                 switch (f.type()) {
                     case "CND" -> result.conditions.add(Condition.from(f));
-                    case "ASG" -> result.assignments.add(new Assignment(f.left(), f.right()));
                     default -> {
                     }
                 }
@@ -128,7 +121,7 @@ public final class Rule {
      */
     public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();
-        this.assignments.forEach(a -> a.performIn(copy));
+        this.assignments().forEach(a -> a.performIn(copy));
         if (this.outcome().containsKey("execute")) {
             copy.perform(this.outcome().get("execute"));
         }
@@ -136,6 +129,13 @@ public final class Rule {
         return this.conditions.stream()
             .filter(c -> !c.evaluate(copy))
             .map(c -> new CheckFailure(c.asString(), c.result()))
+            .toList();
+    }
+
+    private List<Assignment> assignments() {
+        return this.fragments.stream()
+            .filter(rf -> "ASG".equals(rf.type()) && !"~".equals(rf.right()) && !rf.right().isBlank())
+            .map(rf -> new Assignment(rf.left(), rf.right()))
             .toList();
     }
 
@@ -156,7 +156,7 @@ public final class Rule {
      * @param context The {@link ComputationContext} to perform the assignments in.
      */
     public void perform(final ComputationContext context) {
-        this.assignments.forEach(a -> a.performIn(context));
+        this.assignments().forEach(a -> a.performIn(context));
     }
 
     /**
@@ -165,11 +165,11 @@ public final class Rule {
      * @return True if this rule describes a command.
      */
     public boolean describesCommand() {
-        return !this.assignments.isEmpty();
+        return !this.assignments().isEmpty();
     }
 
     public List<String> commandArgs() {
-        return this.assignments.stream()
+        return this.assignments().stream()
             .map(Assignment::commandArgs)
             .flatMap(List::stream)
             .toList();

@@ -87,17 +87,10 @@ public final class SourceLines implements Iterable<String[]> {
         return this.file;
     }
 
-    public List<RuleFragment> asTriplets(final int index) {
+    public List<RuleFragment> asFragments(final int index) {
         return StreamSupport.stream(this.spliterator(), false)
             .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
             .toList();
-    }
-
-    public int columns() {
-        return this.ungrouped.stream()
-            .map(line -> line.split(this.delimiter).length)
-            .findFirst()
-            .orElse(0);
     }
 
     public ComputableLocator asDecisionTable() {
@@ -140,7 +133,7 @@ public final class SourceLines implements Iterable<String[]> {
     }
 
     private List<Rule> specifiedRules() {
-        final int columns = this.columns();
+        final int columns = this.ungrouped.get(0).split(this.delimiter).length;
         return IntStream.range(2, columns)
             .mapToObj(i -> Rule.from(this, i))
             .toList();

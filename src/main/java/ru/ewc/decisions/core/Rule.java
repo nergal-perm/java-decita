@@ -74,7 +74,7 @@ public final class Rule {
     }
 
     public static Rule from(final SourceLines source, final int idx) {
-        final List<RuleFragment> fragments = source.asTriplets(idx);
+        final List<RuleFragment> fragments = source.asFragments(idx);
         final RuleFragment header = fragments.stream()
             .filter(f -> "HDR".equals(f.type()))
             .findFirst()

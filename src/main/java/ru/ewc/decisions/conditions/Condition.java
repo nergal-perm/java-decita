@@ -94,15 +94,6 @@ public interface Condition {
      */
     boolean isSatisfied();
 
-    /**
-     * Checks if this Condition resolves to {@code false}, meaning it is not satisfied.
-     *
-     * @return True, if this Condition is already computed and resolves to {@code false}.
-     */
-    default boolean isNotSatisfied() {
-        return this.isEvaluated() && !this.isSatisfied();
-    }
-
     String asString();
 
     String result();

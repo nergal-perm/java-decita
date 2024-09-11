@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import ru.ewc.decisions.api.ComputableLocator;
 import ru.ewc.decisions.api.MultipleOutcomes;
 import ru.ewc.decisions.core.CheckInstance;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 import ru.ewc.decisions.core.RuleFragment;
+import ru.ewc.decisions.core.RuleFragments;
 
 /**
  * I am a class that represents the lines from the source file grouped by the type of the line.
@@ -85,13 +85,6 @@ public final class SourceLines implements Iterable<String[]> {
 
     public String fileName() {
         return this.file;
-    }
-
-    public List<RuleFragment> asFragments(final int index) {
-        return StreamSupport.stream(this.spliterator(), false)
-            .filter(line -> line.length > index && !line[index].trim().isEmpty())
-            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
-            .collect(Collectors.toList());
     }
 
     public ComputableLocator asDecisionTable() {
@@ -143,11 +136,11 @@ public final class SourceLines implements Iterable<String[]> {
     private Rule elseRule() {
         final String[][] outcomes = this.asArrayOf("OUT");
         final String[][] conditions = this.asArrayOf("CND");
-        final List<RuleFragment> fragments;
+        final RuleFragments fragments;
         if (outcomes[0].length > conditions[0].length) {
-            fragments = this.asFragments(outcomes[0].length);
+            fragments = RuleFragments.from(this, outcomes[0].length);
         } else {
-            fragments = List.of(new RuleFragment("OUT", "outcome", "undefined"));
+            fragments = new RuleFragments(List.of(new RuleFragment("OUT", "outcome", "undefined")));
         }
         return new Rule("%s::else".formatted(this.file), fragments);
     }

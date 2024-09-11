@@ -27,8 +27,10 @@ package ru.ewc.decisions.core;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
+import ru.ewc.decisions.input.SourceLines;
 
 /**
  * I am a dedicated collection of {@link RuleFragment}s. My main responsibility is to provide
@@ -36,6 +38,7 @@ import ru.ewc.decisions.conditions.Condition;
  *
  * @since 0.9.0
  */
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class RuleFragments {
     /**
      * The collection of {@link RuleFragment}s.
@@ -44,6 +47,16 @@ public final class RuleFragments {
 
     public RuleFragments(final List<RuleFragment> fragments) {
         this.fragments = fragments;
+    }
+
+    public static RuleFragments from(final SourceLines lines, final int index) {
+        return new RuleFragments(
+            StreamSupport
+                .stream(lines.spliterator(), false)
+                .filter(line -> line.length > index && !line[index].trim().isEmpty())
+                .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[index].trim()))
+                .collect(Collectors.toList())
+        );
     }
 
     public List<Assignment> assignments() {
@@ -67,5 +80,14 @@ public final class RuleFragments {
             this.fragments.stream()
                 .filter(rf -> rf.nonEmptyOfType("OUT"))
                 .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
+    }
+
+    public String headerOrDefaultFor(final String name, final int idx) {
+        final RuleFragment header =
+            this.fragments.stream()
+                .filter(f -> "HDR".equals(f.type()))
+                .findFirst()
+                .orElse(new RuleFragment("HDR", name, "rule_%02d".formatted(idx - 1)));
+        return "%s::%s".formatted(header.left(), header.right());
     }
 }

@@ -54,24 +54,21 @@ public final class Rule {
      */
     private final RuleFragments fragments;
 
-    public Rule(final String name, final List<RuleFragment> fragments) {
+    public Rule(final String name, final RuleFragments fragments) {
         this.name = name;
-        this.fragments = new RuleFragments(fragments);
+        this.fragments = fragments;
     }
 
     public static Rule from(final SourceLines source, final int idx) {
-        final List<RuleFragment> fragments = source.asFragments(idx);
-        final RuleFragment header = fragments.stream()
-            .filter(f -> "HDR".equals(f.type()))
-            .findFirst()
-            .orElse(new RuleFragment("HDR", source.fileName(), "rule_%02d".formatted(idx - 1)));
-        return new Rule("%s::%s".formatted(header.left(), header.right()), fragments);
+        final RuleFragments fragments = RuleFragments.from(source, idx);
+        final String header = fragments.headerOrDefaultFor(source.fileName(), idx);
+        return new Rule(header, fragments);
     }
 
     public static Rule elseRule(final String name) {
         return new Rule(
             "%s::else".formatted(name),
-            List.of(new RuleFragment("OUT", "outcome", "undefined"))
+            new RuleFragments(List.of(new RuleFragment("OUT", "outcome", "undefined")))
         );
     }
 

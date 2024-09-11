@@ -26,7 +26,6 @@ package ru.ewc.decisions.core;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
@@ -51,13 +50,13 @@ public final class Rule {
     private final String name;
 
     /**
-     * The rule's fragments, i.e. the triplets containing the type, left and right parts.
+     * The rule's fragments.
      */
-    private final List<RuleFragment> fragments;
+    private final RuleFragments fragments;
 
     public Rule(final String name, final List<RuleFragment> fragments) {
         this.name = name;
-        this.fragments = fragments;
+        this.fragments = new RuleFragments(fragments);
     }
 
     public static Rule from(final SourceLines source, final int idx) {
@@ -84,7 +83,7 @@ public final class Rule {
      * @throws DecitaException If the rule's {@link Condition}s could not be resolved.
      */
     public boolean check(final ComputationContext context) throws DecitaException {
-        final boolean result = this.conditions().stream()
+        final boolean result = this.fragments.conditions().stream()
             .allMatch(c -> c.evaluate(context));
         context.logComputation(
             OutputTracker.EventType.RL,
@@ -104,28 +103,14 @@ public final class Rule {
      */
     public List<CheckFailure> test(final ComputationContext context) {
         final ComputationContext copy = context.emptyStateCopy();
-        this.assignments().forEach(a -> a.performIn(copy));
+        this.perform(copy);
         if (this.outcome().containsKey("execute")) {
             copy.perform(this.outcome().get("execute"));
         }
         copy.reloadTables();
-        return this.conditions().stream()
+        return this.fragments.conditions().stream()
             .filter(c -> !c.evaluate(copy))
             .map(c -> new CheckFailure(c.asString(), c.result()))
-            .toList();
-    }
-
-    private List<Assignment> assignments() {
-        return this.fragments.stream()
-            .filter(rf -> "ASG".equals(rf.type()) && !"~".equals(rf.right()) && !rf.right().isBlank())
-            .map(rf -> new Assignment(rf.left(), rf.right()))
-            .toList();
-    }
-
-    private List<Condition> conditions() {
-        return this.fragments.stream()
-            .filter(rf -> "CND".equals(rf.type()) && !"~".equals(rf.right()) && !rf.right().isBlank())
-            .map(Condition::from)
             .toList();
     }
 
@@ -135,9 +120,7 @@ public final class Rule {
      * @return The simple dictionary, containing all this rule's outcomes.
      */
     public Map<String, String> outcome() {
-        return this.fragments.stream()
-            .filter(f -> "OUT".equals(f.type()))
-            .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
+        return this.fragments.outcomes();
     }
 
     /**
@@ -146,7 +129,7 @@ public final class Rule {
      * @param context The {@link ComputationContext} to perform the assignments in.
      */
     public void perform(final ComputationContext context) {
-        this.assignments().forEach(a -> a.performIn(context));
+        this.fragments.assignments().forEach(a -> a.performIn(context));
     }
 
     /**
@@ -155,11 +138,11 @@ public final class Rule {
      * @return True if this rule describes a command.
      */
     public boolean describesCommand() {
-        return !this.assignments().isEmpty();
+        return !this.fragments.assignments().isEmpty();
     }
 
     public List<String> commandArgs() {
-        return this.assignments().stream()
+        return this.fragments.assignments().stream()
             .map(Assignment::commandArgs)
             .flatMap(List::stream)
             .toList();

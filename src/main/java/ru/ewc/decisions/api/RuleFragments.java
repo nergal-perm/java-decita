@@ -35,7 +35,8 @@ import ru.ewc.decisions.input.SourceLines;
  *
  * @since 0.9.0
  */
-public class RuleFragments {
+@SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+public final class RuleFragments {
     /**
      * The collection of {@link RuleFragment}s.
      */
@@ -45,15 +46,29 @@ public class RuleFragments {
         this.fragments = fragments;
     }
 
-    public static List<RuleFragment> listFrom(final SourceLines lines, final int column) {
-        return StreamSupport
-            .stream(lines.spliterator(), false)
-            .filter(line -> line.length > column && !line[column].trim().isEmpty())
-            .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[column].trim()))
-            .collect(Collectors.toList());
+    public static RuleFragments listFrom(final SourceLines lines, final int column) {
+        final List<RuleFragment> list =
+            StreamSupport
+                .stream(lines.spliterator(), false)
+                .filter(line -> line.length > column && !line[column].trim().isEmpty())
+                .map(line -> new RuleFragment(line[0].trim(), line[1].trim(), line[column].trim()))
+                .collect(Collectors.toList());
+        if (list.stream().noneMatch(rf -> rf.nonEmptyOfType("HDR"))) {
+            list.add(new RuleFragment("HDR", lines.fileName(), "rule_%02d".formatted(column - 1)));
+        }
+        return new RuleFragments(list);
     }
 
-    public final List<RuleFragment> getFragments() {
+    public String header() {
+        final RuleFragment header =
+            this.fragments.stream()
+                .filter(f -> f.nonEmptyOfType("HDR"))
+                .findFirst()
+                .orElse(new RuleFragment("HDR", "missing_title", "rule"));
+        return "%s::%s".formatted(header.left(), header.right());
+    }
+
+    public List<RuleFragment> getFragments() {
         return this.fragments;
     }
 }

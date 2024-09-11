@@ -78,43 +78,27 @@ final class CheckInstanceTest {
     @Test
     void multipleTestsWithCommand() {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
+        final SourceLines source = new SourceLines(
+            "sample check",
+            List.of(
+                "ASG;market::shop;2;2",
+                "ASG;data::is-stored;true;true",
+                "ASG;currentPlayer::name;Eugene;Eugene",
+                "ASG;request::shop;3;4",
+                "OUT;execute;sample-table;sample-table",
+                "CND;market::shop;3;4"
+            ),
+            ";"
+        );
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                Rule.from(
-                    new SourceLines(
-                        "first check",
-                        List.of(
-                            "ASG;market::shop;2",
-                            "ASG;data::is-stored;true",
-                            "ASG;currentPlayer::name;Eugene",
-                            "ASG;request::shop;3",
-                            "OUT;execute;sample-table",
-                            "CND;market::shop;3"
-                        ),
-                        ";"
-                    ),
-                    2
-                ),
-                Rule.from(
-                    new SourceLines(
-                        "second check",
-                        List.of(
-                            "ASG;market::shop;2",
-                            "ASG;data::is-stored;true",
-                            "ASG;currentPlayer::name;Eugene",
-                            "ASG;request::shop;4",
-                            "OUT;execute;sample-table",
-                            "CND;market::shop;4"
-                        ),
-                        ";"
-                    ),
-                    2
-                )
+                new Rule(source.specifiedRulesFragments().get(0)),
+                new Rule(source.specifiedRulesFragments().get(1))
             )
         );
         MatcherAssert.assertThat(
             "Should perform Command during the test",
-            target.testResult(context).get("second check::rule_01"),
+            target.testResult(context).get("sample check::rule_01"),
             Matchers.emptyCollectionOf(CheckFailure.class)
         );
     }
@@ -124,7 +108,7 @@ final class CheckInstanceTest {
         final ComputationContext context = TestObjects.tablesFolderWithState(initialState());
         final MultipleOutcomes target = new CheckInstance(
             List.of(
-                Rule.from(
+                new Rule(
                     new SourceLines(
                         "first check",
                         List.of(
@@ -138,8 +122,7 @@ final class CheckInstanceTest {
                             "CND;currentPlayer::name;Alice"
                         ),
                         ";"
-                    ),
-                    2
+                    ).specifiedRulesFragments().get(0)
                 )
             )
         );
@@ -157,18 +140,17 @@ final class CheckInstanceTest {
     }
 
     private static Rule ticTacToeTableNameCheckRule() {
-        return Rule.from(
+        return new Rule(
             new SourceLines(
                 "nameCheck",
                 List.of("ASG;table::name;tic-tac-toe", "CND;table::name;tic-tac-toe"),
                 ";"
-            ),
-            2
+            ).specifiedRulesFragments().get(0)
         );
     }
 
     private static Rule ticTacToeTableMaxPlayersRule() {
-        return Rule.from(
+        return new Rule(
             new SourceLines(
                 "change max players",
                 List.of(
@@ -177,8 +159,7 @@ final class CheckInstanceTest {
                     "CND;table::name;undefined"
                 ),
                 ";"
-            ),
-            2
+            ).specifiedRulesFragments().get(0)
         );
     }
 }

@@ -32,9 +32,9 @@ import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
 import ru.ewc.decisions.api.RuleFragment;
+import ru.ewc.decisions.api.RuleFragments;
 import ru.ewc.decisions.commands.Assignment;
 import ru.ewc.decisions.conditions.Condition;
-import ru.ewc.decisions.input.SourceLines;
 
 /**
  * I am a single Rule (i.e. the column in the decision table). My main responsibility is to check
@@ -60,10 +60,12 @@ public final class Rule {
         this.fragments = fragments;
     }
 
-    public static Rule from(final SourceLines source, final int idx) {
-        final DecisionRuleFragments fragments = DecisionRuleFragments.from(source, idx);
-        final String header = fragments.headerOrDefaultFor(source.fileName(), idx);
-        return new Rule(header, fragments);
+    public Rule(final RuleFragments fragments) {
+        this(fragments.header(), new DecisionRuleFragments(fragments));
+    }
+
+    public Rule(final String name, final RuleFragments fragments) {
+        this(name, new DecisionRuleFragments(fragments));
     }
 
     public static Rule elseRule(final String name) {

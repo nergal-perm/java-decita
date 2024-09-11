@@ -41,10 +41,17 @@ import ru.ewc.decisions.input.SourceLines;
  */
 @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
 public final class DecisionRuleFragments {
+    /**
+     * The delegate {@link RuleFragments} to work with.
+     */
     private final RuleFragments fragments;
 
     public DecisionRuleFragments(final List<RuleFragment> fragments) {
-        this.fragments = new RuleFragments(fragments);
+        this(new RuleFragments(fragments));
+    }
+
+    public DecisionRuleFragments(final RuleFragments fragments) {
+        this.fragments = fragments;
     }
 
     public static DecisionRuleFragments from(final SourceLines lines, final int column) {
@@ -72,14 +79,5 @@ public final class DecisionRuleFragments {
             this.fragments.getFragments().stream()
                 .filter(rf -> rf.nonEmptyOfType("OUT"))
                 .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
-    }
-
-    public String headerOrDefaultFor(final String name, final int idx) {
-        final RuleFragment header =
-            this.fragments.getFragments().stream()
-                .filter(f -> f.nonEmptyOfType("HDR"))
-                .findFirst()
-                .orElse(new RuleFragment("HDR", name, "rule_%02d".formatted(idx - 1)));
-        return "%s::%s".formatted(header.left(), header.right());
     }
 }

@@ -33,8 +33,8 @@ import java.util.stream.Stream;
 import ru.ewc.decisions.api.ComputableLocator;
 import ru.ewc.decisions.api.MultipleOutcomes;
 import ru.ewc.decisions.api.RuleFragment;
+import ru.ewc.decisions.api.RuleFragments;
 import ru.ewc.decisions.core.CheckInstance;
-import ru.ewc.decisions.core.DecisionRuleFragments;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 
@@ -86,6 +86,13 @@ public final class SourceLines implements Iterable<String[]> {
         return new CheckInstance(this.specifiedRules());
     }
 
+    public List<RuleFragments> specifiedRulesFragments() {
+        final int columns = this.ungrouped.get(0).split(this.delimiter).length;
+        return IntStream.range(2, columns)
+            .mapToObj(i -> RuleFragments.listFrom(this, i))
+            .toList();
+    }
+
     String[][] asArrayOf(final String key) {
         return this.toArray(
             this.ungrouped.stream()
@@ -114,20 +121,19 @@ public final class SourceLines implements Iterable<String[]> {
     }
 
     private List<Rule> specifiedRules() {
-        final int columns = this.ungrouped.get(0).split(this.delimiter).length;
-        return IntStream.range(2, columns)
-            .mapToObj(i -> Rule.from(this, i))
+        return this.specifiedRulesFragments().stream()
+            .map(Rule::new)
             .toList();
     }
 
     private Rule elseRule() {
         final String[][] outcomes = this.asArrayOf("OUT");
         final String[][] conditions = this.asArrayOf("CND");
-        final DecisionRuleFragments fragments;
+        final RuleFragments fragments;
         if (outcomes[0].length > conditions[0].length) {
-            fragments = DecisionRuleFragments.from(this, outcomes[0].length);
+            fragments = RuleFragments.listFrom(this, outcomes[0].length);
         } else {
-            fragments = new DecisionRuleFragments(
+            fragments = new RuleFragments(
                 List.of(
                     new RuleFragment("OUT", "outcome", "undefined")
                 )

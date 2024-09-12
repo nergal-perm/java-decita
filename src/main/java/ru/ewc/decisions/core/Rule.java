@@ -27,7 +27,6 @@ package ru.ewc.decisions.core;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
-import ru.ewc.decisions.api.CheckFailure;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecitaException;
 import ru.ewc.decisions.api.OutputTracker;
@@ -90,28 +89,6 @@ public final class Rule {
             "%s => %s".formatted(this.asString(), result)
         );
         return result;
-    }
-
-    /**
-     * Performs a test based on this rule. This effectively means running all the assignments first,
-     * then executing the specified command and checking all the conditions after that.
-     *
-     * @param context The {@link ComputationContext} to perform the test in. This is just the base
-     *  for creating an empty-state copy for the test.
-     * @return A list of {@link CheckFailure} objects, each of which describes a single failing
-     *  assertion. Will be empty if the test passed successfully.
-     */
-    public List<CheckFailure> test(final ComputationContext context) {
-        final ComputationContext copy = context.emptyStateCopy();
-        this.perform(copy);
-        if (this.outcome().containsKey("execute")) {
-            copy.perform(this.outcome().get("execute"));
-        }
-        copy.reloadTables();
-        return this.fragments.conditions().stream()
-            .filter(c -> !c.evaluate(copy))
-            .map(c -> new CheckFailure(c.asString(), c.result()))
-            .toList();
     }
 
     /**

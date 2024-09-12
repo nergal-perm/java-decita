@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-package ru.ewc.decisions.core;
+package ru.ewc.decisions.api;
 
 import java.util.HashMap;
 import java.util.Map;
-import ru.ewc.decisions.api.ComputationContext;
-import ru.ewc.decisions.api.Locator;
 
 /**
  * I am a simple in-memory key-value storage. My main responsibility is to store and return the
@@ -86,5 +84,9 @@ public final class InMemoryLocator implements Locator {
     @Override
     public String locatorName() {
         return this.name;
+    }
+
+    public void reset() {
+        this.storage.clear();
     }
 }

@@ -24,14 +24,13 @@
 
 package ru.ewc.state;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import ru.ewc.decisions.api.InMemoryLocator;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.ConstantLocator;
-import ru.ewc.decisions.core.InMemoryLocator;
 
 /**
  * I am a stored application state. My main responsibility is to provide access to the stored data
@@ -55,14 +54,6 @@ public final class State extends BaseLocators {
         super(collection
             .stream()
             .collect(Collectors.toMap(Locator::locatorName, Function.identity()))
-        );
-    }
-
-    public static State withEmptyLocators(final Collection<String> locators) {
-        return new State(
-            locators.stream()
-                .map(InMemoryLocator::empty)
-                .collect(Collectors.toList())
         );
     }
 

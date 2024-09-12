@@ -31,10 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import ru.ewc.decisions.api.ComputableLocator;
-import ru.ewc.decisions.api.MultipleOutcomes;
 import ru.ewc.decisions.api.RuleFragment;
 import ru.ewc.decisions.api.RuleFragments;
-import ru.ewc.decisions.core.CheckInstance;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.core.Rule;
 
@@ -80,10 +78,6 @@ public final class SourceLines implements Iterable<String[]> {
             this.elseRule(),
             this.file
         );
-    }
-
-    public MultipleOutcomes asCheckInstance() {
-        return new CheckInstance(this.specifiedRules());
     }
 
     public List<RuleFragments> specifiedRulesFragments() {

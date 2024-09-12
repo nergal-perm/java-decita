@@ -78,10 +78,6 @@ public final class ComputationContext {
         this.publisher = publisher;
     }
 
-    public ComputationContext emptyStateCopy() {
-        return new ComputationContext(this.state.emptyCopy(), this.tables.reset(), this.publisher);
-    }
-
     public OutputTracker<String> startTracking() {
         return this.publisher.createTracker();
     }
@@ -147,8 +143,18 @@ public final class ComputationContext {
         return this.tables.commandsData();
     }
 
-    public void reloadTables() {
+    /**
+     * Used by client applications to reset the computation state, i.e. between tests or
+     * recalculations of {@link DecisionTables}.
+*
+     * @param loc The name of the incoming data locator, that should be cleared.
+     */
+    @SuppressWarnings("unused")
+    public void resetComputationState(final String loc) {
         this.tables = this.tables.reset();
+        if (this.state.hasLocator(loc) && this.state.locatorFor(loc) instanceof InMemoryLocator) {
+            ((InMemoryLocator) this.state.locatorFor(loc)).reset();
+        }
     }
 
     private static DecisionTables getAllTables(final URI tables) {

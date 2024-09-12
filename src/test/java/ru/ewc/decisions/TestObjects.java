@@ -28,15 +28,14 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import ru.ewc.decisions.api.CheckSuite;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.DecisionTables;
+import ru.ewc.decisions.api.InMemoryLocator;
 import ru.ewc.decisions.api.Locator;
 import ru.ewc.decisions.conditions.Condition;
 import ru.ewc.decisions.conditions.EqualsCondition;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.Coordinate;
-import ru.ewc.decisions.core.InMemoryLocator;
 import ru.ewc.decisions.input.CombinedCsvFileReader;
 import ru.ewc.decisions.input.ContentsReader;
 import ru.ewc.decisions.input.SourceLines;
@@ -95,16 +94,6 @@ public final class TestObjects {
     public static ComputationContext tablesFolderWithState(final State state) {
         return new ComputationContext(
             state, DecisionTables.using(new CombinedCsvFileReader(uriTo("tables"), ".csv", ";"))
-        );
-    }
-
-    public static CheckSuite readTestsFrom(final String subfolder) {
-        return CheckSuite.using(
-            new CombinedCsvFileReader(
-                uriTo("tests/%s".formatted(subfolder)),
-                ".csv",
-                ";"
-            )
         );
     }
 

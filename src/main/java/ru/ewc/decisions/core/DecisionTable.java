@@ -98,7 +98,7 @@ public final class DecisionTable implements ComputableLocator {
 
     @Override
     public Map<String, String> outcome(final ComputationContext context) throws DecitaException {
-        final Map<String, String> outcome = this.determineSatisfiedRuleIn(context).outcome();
+        final Map<String, String> outcome = this.determineSatisfiedRuleIn(context).outcome(context);
         context.logComputation(
             OutputTracker.EventType.TB,
             "%s => %s".formatted(this.name, outcome)

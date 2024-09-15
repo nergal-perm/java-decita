@@ -27,6 +27,7 @@ package ru.ewc.decisions.core;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.RuleFragment;
 import ru.ewc.decisions.api.RuleFragments;
 import ru.ewc.decisions.commands.Assignment;
@@ -74,10 +75,15 @@ public final class DecisionRuleFragments {
                 .toList();
     }
 
-    public Map<String, String> outcomes() {
+    public Map<String, String> outcomes(final ComputationContext context) {
         return
             this.fragments.getFragments().stream()
                 .filter(rf -> rf.nonEmptyOfType("OUT"))
-                .collect(Collectors.toMap(RuleFragment::left, RuleFragment::right));
+                .collect(
+                    Collectors.toMap(
+                        RuleFragment::left,
+                        rf -> Coordinate.from(rf.right()).valueIn(context)
+                    )
+                );
     }
 }

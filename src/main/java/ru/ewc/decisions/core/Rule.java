@@ -94,10 +94,11 @@ public final class Rule {
     /**
      * Returns this rule outcomes.
      *
+     * @param context The {@link ComputationContext} to get the outcomes in.
      * @return The simple dictionary, containing all this rule's outcomes.
      */
-    public Map<String, String> outcome() {
-        return this.fragments.outcomes();
+    public Map<String, String> outcome(final ComputationContext context) {
+        return this.fragments.outcomes(context);
     }
 
     /**

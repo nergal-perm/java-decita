@@ -100,7 +100,7 @@ final class EndToEndTest {
         MatcherAssert.assertThat(
             "Should have logged all the computations",
             tracker.events().size(),
-            Matchers.is(23)
+            Matchers.is(27)
         );
     }
 

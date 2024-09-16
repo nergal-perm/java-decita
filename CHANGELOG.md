@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/nergal-perm/java-decita/compare/v0.9.0...v0.9.1) (2024-09-16)
+
+
+### Features
+
+* **decisions:** outcomes now can use dynamic coordinates in them ([9ab1692](https://github.com/nergal-perm/java-decita/commit/9ab16927924605fb7e932b0f3b0940ca7f7d023f))
+
 ## [0.9.0](https://github.com/nergal-perm/java-decita/compare/v0.8.2...v0.9.0) (2024-09-12)
 
 

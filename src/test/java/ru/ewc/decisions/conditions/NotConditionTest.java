@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.TestObjects;
 import ru.ewc.decisions.api.ComputationContext;
 import ru.ewc.decisions.api.OutputTracker;
+import ru.ewc.decisions.commands.Assignment;
+import ru.ewc.decisions.core.Coordinate;
 
 /**
  * Unit tests for {@link NotCondition}.
@@ -50,6 +52,36 @@ final class NotConditionTest {
             "Should log correct number of events",
             tracker.events().size(),
             Matchers.is(1)
+        );
+    }
+
+    @Test
+    void testNotUndefined() {
+        final ComputationContext context = TestObjects.ticTacToeContext();
+        final Condition target = Condition.from(Coordinate.from("cells::A1"), "!undefined");
+        final OutputTracker<String> tracker = context.startTracking();
+        final boolean actual = target.evaluate(context);
+        tracker.events().forEach(System.out::println);
+        MatcherAssert.assertThat(
+            "Should evaluate '!undefined' as false",
+            actual,
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testUndefined() {
+        final ComputationContext context = TestObjects.ticTacToeContext();
+        final Coordinate cell = Coordinate.from("cells::A1");
+        new Assignment(cell, Coordinate.from("X")).performIn(context);
+        final Condition target = Condition.from(cell, "!undefined");
+        final OutputTracker<String> tracker = context.startTracking();
+        final boolean actual = target.evaluate(context);
+        tracker.events().forEach(System.out::println);
+        MatcherAssert.assertThat(
+            "Should evaluate '!undefined' as false",
+            actual,
+            Matchers.is(true)
         );
     }
 }

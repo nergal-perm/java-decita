@@ -234,7 +234,7 @@ public final class Coordinate implements Comparable<Coordinate> {
 
     private static String extractInnerMostCoordinate(final String description) {
         final int start = description.lastIndexOf("${");
-        final int end = description.indexOf('}');
+        final int end = description.indexOf('}', start);
         return description.substring(start + 2, end);
     }
 }

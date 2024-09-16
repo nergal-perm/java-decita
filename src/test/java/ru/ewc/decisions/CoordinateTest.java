@@ -104,6 +104,34 @@ final class CoordinateTest {
         }
 
         @Test
+        void whenBothPartsAreDynamicThenShouldResolve() {
+            final Coordinate target = Coordinate.from("${constant::cells}::${request::fragment}");
+            final ComputationContext context = TestObjects.ticTacToeContext();
+            context.setValueFor("request", "fragment", "A1");
+            target.resolveIn(context);
+            MatcherAssert.assertThat(
+                "Dynamic coordinate with two placeholders is resolved to a static coordinate",
+                target.asString(),
+                Matchers.is("cells::A1")
+            );
+        }
+
+        @Test
+        void whenThereAreNestedPlaceholdersThenShouldResolve() {
+            final Coordinate target = Coordinate.from(
+                "${constant::${constant::cells}}::${constant::${request::fragment}}"
+            );
+            final ComputationContext context = TestObjects.ticTacToeContext();
+            context.setValueFor("request", "fragment", "A1");
+            target.resolveIn(context);
+            MatcherAssert.assertThat(
+                "Dynamic coordinate with two placeholders is resolved to a static coordinate",
+                target.asString(),
+                Matchers.is("cells::A1")
+            );
+        }
+
+        @Test
         void testDynamicCoordinateNotResolvedAfterCreation() {
             final Coordinate target = Coordinate.from("outcome::${dynamically::defined}");
             MatcherAssert.assertThat(

@@ -128,7 +128,7 @@ public final class DecisionTable implements ComputableLocator {
             .filter(rule -> rule.check(context))
             .toList();
         if (satisfied.size() > 1) {
-            throw new DecitaException("Multiple rules are satisfied");
+            throw new DecitaException("%s - Multiple rules are satisfied".formatted(this.name));
         }
         return satisfied.stream().findFirst().orElse(this.elserule);
     }

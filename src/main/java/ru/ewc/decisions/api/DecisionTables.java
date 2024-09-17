@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import ru.ewc.decisions.core.BaseLocators;
 import ru.ewc.decisions.core.DecisionTable;
 import ru.ewc.decisions.input.ContentsReader;
@@ -59,14 +60,22 @@ public final class DecisionTables extends BaseLocators {
     }
 
     public Map<String, List<String>> commandsData() {
-        return this.locators().values().stream()
-            .filter(DecisionTable.class::isInstance)
-            .map(DecisionTable.class::cast)
+        return this.decisionTables()
             .filter(DecisionTable::describesCommand)
             .collect(Collectors.toMap(Locator::locatorName, DecisionTable::commandArgs));
     }
 
+    public List<String> tableNames() {
+        return this.decisionTables().map(Locator::locatorName).toList();
+    }
+
     public DecisionTables reset() {
         return DecisionTables.using(this.contents);
+    }
+
+    private Stream<DecisionTable> decisionTables() {
+        return this.locators().values().stream()
+            .filter(DecisionTable.class::isInstance)
+            .map(DecisionTable.class::cast);
     }
 }

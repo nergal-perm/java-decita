@@ -143,6 +143,10 @@ public final class ComputationContext {
         return this.tables.commandsData();
     }
 
+    public List<String> tableNames() {
+        return this.tables.tableNames();
+    }
+
     /**
      * Used by client applications to reset the computation state, i.e. between tests or
      * recalculations of {@link DecisionTables}.

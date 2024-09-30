@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.2](https://github.com/nergal-perm/java-decita/compare/v0.9.1...v0.9.2) (2024-09-30)
+
+
+### Features
+
+* **decisions:** returning all the decision table names ([2758f9f](https://github.com/nergal-perm/java-decita/commit/2758f9f7073f58f689d990fe523b42fa1f569067))
+
+
+### Bug Fixes
+
+* **coordinates:** resolving multiple placeholders correctly ([932ff18](https://github.com/nergal-perm/java-decita/commit/932ff182a19f261c05ac34b68aad1054ff2b586a)), closes [#161](https://github.com/nergal-perm/java-decita/issues/161)
+
 ### [0.9.1](https://github.com/nergal-perm/java-decita/compare/v0.9.0...v0.9.1) (2024-09-16)
 
 

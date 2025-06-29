@@ -6,6 +6,8 @@ Date: 2025-06-29
 
 Accepted
 
+is informed by [5. Pure Functional Core](0005-pure-functional-core.md)
+
 ## Brief summary
 
 We will use `Object` identity (the object reference itself) as the key for caching node evaluation

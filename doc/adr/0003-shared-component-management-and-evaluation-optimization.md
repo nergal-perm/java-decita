@@ -6,6 +6,8 @@ Date: 2025-06-29
 
 Accepted
 
+is supported by [5. Pure Functional Core](0005-pure-functional-core.md)
+
 ## Brief summary
 
 We will implement a stateless, immutable `DecisionGraph` to represent the decision logic, which will

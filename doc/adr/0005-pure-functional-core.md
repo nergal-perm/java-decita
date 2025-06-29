@@ -6,9 +6,13 @@ Date: 2025-06-29
 
 Accepted
 
-- amends [2. Separation of Engine and Connectors](0002-separation-of-engine-and-connectors.md)
-- supports [3. Shared Component Management and Evaluation Optimization](0003-shared-component-management-and-evaluation-optimization.md)
-- informs [4. Execution Context Key Strategy](0004-execution-context-key-strategy.md)
+amends [2. Separation of Engine and Connectors](0002-separation-of-engine-and-connectors.md)
+
+supports [3. Shared Component Management and Evaluation Optimization](0003-shared-component-management-and-evaluation-optimization.md)
+
+informs [4. Execution Context Key Strategy](0004-execution-context-key-strategy.md)
+
+is upheld by [6. ValueProvider Design for Remote Data and Composability](0006-valueprovider-design-for-remote-data-and-composability.md)
 
 ## Brief Summary
 

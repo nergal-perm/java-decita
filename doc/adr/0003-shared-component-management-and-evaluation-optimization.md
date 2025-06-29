@@ -8,6 +8,8 @@ Accepted
 
 is supported by [5. Pure Functional Core](0005-pure-functional-core.md)
 
+is implemented by [6. ValueProvider Design for Remote Data and Composability](0006-valueprovider-design-for-remote-data-and-composability.md)
+
 ## Brief summary
 
 We will implement a stateless, immutable `DecisionGraph` to represent the decision logic, which will

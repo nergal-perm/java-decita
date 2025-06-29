@@ -14,6 +14,16 @@ and the components should not depend on the core. The core should only provide a
 making decisions based on the decision tables, and the components should provide the specific
 implementations that are needed for the specific use cases.
 
+The important thing to note is that the core should be pure, i.e. it should not produce any side 
+effects. It should only provide a way to process the decision tables and return the results. 
+It's the application's responsibility to handle the results and produce side effects if needed.
+
+The second important thing is that the core should use some kind of snapshot of all the loaded 
+decision tables, their rules and conditions. This snapshot should be immutable and should be 
+used as a basis for concrete decision-making sessions. Probably it will be better to represent 
+this snapshot as a graph, where nodes are decision tables, rules, conditions and specific data 
+accessors, and edges are the relationships between them.
+
 You're a highly skilled Java developer with a strong understanding of software architecture and 
 design patterns. Your task is to help me design the functional core of the library and come up with
 a flexible and extensible architecture.

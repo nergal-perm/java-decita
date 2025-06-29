@@ -8,11 +8,10 @@ When working on this project, you must adhere to the following guidelines:
 2. **Create New ADRs When Appropriate:** For any significant architectural decision, you must 
    propose a new ADR, discuss it with user and then create the ADR doc. A decision is considered 
    "significant" if it affects the overall structure, dependencies, or technical approach of the 
-   project. New ADRs are created with the help of the `adr` tool, which should be already installed.
-   The command to create a new ADR is:
-   ```bash
-    adr new "Title of the ADR"
-    ```
+   project. New ADRs should be created by the user with the help of the `adr` tool. That's because
+   the tool assumes immediate editing of the newly created ADR interactively, which is not supported
+   by gemini-cli.
+
    A new ADR should be linked to the relevant existing ADRs, if applicable. The linking can be done
    using the `adr link` command, which allows you to specify the relationship type (e.g., 
    "amends"). The command to link an ADR is:

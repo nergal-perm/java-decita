@@ -8,8 +8,7 @@ STATUS
 
 ## Brief summary
 
-Short description along the lines of "We are going to do something because we want
-something else".
+Short description along the lines of "We are going to do something because we want something else".
 
 ## Context
 

@@ -16,6 +16,8 @@ is upheld by [6. ValueProvider Design for Remote Data and Composability](0006-va
 
 is upheld by [7. Type Discovery at Graph Construction Time](0007-type-discovery-at-graph-construction-time.md)
 
+is upheld by [8. Type Inference for Constants](0008-type-inference-for-constants.md)
+
 ## Brief Summary
 
 We are going to design the core decision engine as a pure, side-effect-free function because we want

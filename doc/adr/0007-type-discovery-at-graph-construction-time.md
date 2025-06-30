@@ -12,6 +12,8 @@ upholds [5. Pure Functional Core](0005-pure-functional-core.md)
 
 upholds [2. Separation of Engine and Connectors](0002-separation-of-engine-and-connectors.md)
 
+is refined by [8. Type Inference for Constants](0008-type-inference-for-constants.md)
+
 ## Brief summary
 
 We are going to discover the concrete generic types for `ValueProvider`s at graph construction time by introspecting registered `RemoteDataSource` SPIs and using reflection because we want to maintain a strongly-typed, type-safe `DecisionGraph` without coupling the decision logic to implementation-specific class names..

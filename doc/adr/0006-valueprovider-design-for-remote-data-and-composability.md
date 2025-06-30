@@ -12,6 +12,8 @@ implements [3. Shared Component Management and Evaluation Optimization](0003-sha
 
 upholds [5. Pure Functional Core](0005-pure-functional-core.md)
 
+is refined by [7. Type Discovery at Graph Construction Time](0007-type-discovery-at-graph-construction-time.md)
+
 ## Brief Summary
 
 We are going to implement a composable `ValueProvider` system, with separate providers for fetching

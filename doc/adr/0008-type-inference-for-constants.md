@@ -12,7 +12,7 @@ upholds [5. Pure Functional Core](0005-pure-functional-core.md)
 
 ## Brief summary
 
-We are going to infer the type of a constant literal based on the type of the other operand in a binary expression because we want to maintain a clean, declarative syntax in decision tables without sacrificing type safety..
+We are going to infer the type of a constant literal based on the type of the other operand in a binary expression because we want to maintain a clean, declarative syntax in decision tables without sacrificing type safety.
 
 ## Context
 

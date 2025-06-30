@@ -37,7 +37,7 @@ final class ConstantValueProviderTest {
      * A simple test to check that the provider returns the value it was created with.
      */
     @Test
-    void itShouldReturnValue() {
+    void returnsTheValueItWasCreatedWith() {
         final var provider = new ConstantValueProvider<>("Hello, World!");
         Assertions.assertThat(provider.valueFrom(null)).isEqualTo("Hello, World!");
     }

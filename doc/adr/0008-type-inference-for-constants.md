@@ -4,11 +4,11 @@ Date: 2025-06-30
 
 ## Status
 
-Accepted
-
 refines [7. Type Discovery at Graph Construction Time](0007-type-discovery-at-graph-construction-time.md)
 
 upholds [5. Pure Functional Core](0005-pure-functional-core.md)
+
+Superceded by [9. Authoritative Value-Typing via Contextual Providers](0009-authoritative-value-typing-via-contextual-providers.md)
 
 ## Brief summary
 

@@ -14,6 +14,8 @@ informs [4. Execution Context Key Strategy](0004-execution-context-key-strategy.
 
 is upheld by [6. ValueProvider Design for Remote Data and Composability](0006-valueprovider-design-for-remote-data-and-composability.md)
 
+is upheld by [7. Type Discovery at Graph Construction Time](0007-type-discovery-at-graph-construction-time.md)
+
 ## Brief Summary
 
 We are going to design the core decision engine as a pure, side-effect-free function because we want

@@ -10,6 +10,8 @@ is amended by [5. Pure Functional Core](0005-pure-functional-core.md)
 
 is realized by [6. ValueProvider Design for Remote Data and Composability](0006-valueprovider-design-for-remote-data-and-composability.md)
 
+is upheld by [7. Type Discovery at Graph Construction Time](0007-type-discovery-at-graph-construction-time.md)
+
 ## Brief summary
 
 We will separate the core decision-making engine from the data connectors to enhance modularity and

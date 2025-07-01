@@ -37,8 +37,8 @@ Always follow the instructions in `plan.md` file. When I say "go", find the next
 - Once tests pass, refactor code to improve structure, readability, and maintainability if needed. Run all tests after each change to ensure nothing is broken.
 - Cross off the test from the plan once it is implemented and passing.
 - Review the plan after each test to ensure the next test is the next logical step. If you find a test that is not in the plan, add it at the appropriate place in the list.
-- After each successful cycle (Red -> Green -> Refactor), you must immediately propose a commit for the changes using the recommendations in the "Commit discipline" section. Do not start a new test until the implementation for the previous test is committed. 
-- Signal when you are ready to start the next test using `say "I am done"` command, then stop answering until I review the changes and say "go", meaning we can continue.
+- After each successful cycle (Red -> Green -> Refactor), you must immediately propose a commit for the changes using the recommendations in the "Commit discipline" section. **You must not start a new test until the implementation for the previous test is committed.**
+- After proposing a commit, you must signal when you are ready to start the next test using `say "I am done"` command, then stop answering until I review the changes and say "go", meaning we can continue.
 
 Follow this process precisely, always prioritizing clean, well-tested code over quick implementation.
 

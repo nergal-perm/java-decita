@@ -24,6 +24,7 @@
 
 package ru.ewc.decita.core.value;
 
+import java.util.Objects;
 import ru.ewc.decisions.api.ComputationContext;
 
 /**
@@ -44,7 +45,7 @@ public final class ConstantValueProvider<T> implements ValueProvider<T> {
      * @param value The constant value to be provided.
      */
     public ConstantValueProvider(final T value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value, "Constant value cannot be null");
     }
 
     @Override

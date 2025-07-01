@@ -18,8 +18,8 @@ in the commit message.
 
 ## Fetching data from a constant value provider
 
-- Creating an empty `ConstantValueProvider` should not be possible.
-- Test creating a `ConstantValueProvider` with a single String value and getting that value back.
+- [x] Creating an empty `ConstantValueProvider` should not be possible.
+- [x] Test creating a `ConstantValueProvider` with a single String value and getting that value back.
 
 ## Fetching data from a complex object
 

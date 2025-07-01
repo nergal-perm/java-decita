@@ -18,6 +18,8 @@ is upheld by [7. Type Discovery at Graph Construction Time](0007-type-discovery-
 
 is upheld by [8. Type Inference for Constants](0008-type-inference-for-constants.md)
 
+is realized by [10. Handling Missing Fields in ComplexObjectValueProvider](0010-handling-missing-fields-in-complexobjectvalueprovider.md)
+
 ## Brief Summary
 
 We are going to design the core decision engine as a pure, side-effect-free function because we want

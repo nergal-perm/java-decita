@@ -53,11 +53,15 @@ Always follow the instructions in `plan.md` file. When I say "go", find the next
 
 ## TDD METHODOLOGY GUIDANCE
 
-- Start by writing a failing test that defines a small increment of functionality
+- Start by writing a single failing test that defines a small increment of functionality
 - Use meaningful test names that describe behavior (e.g., "shouldSumTwoPositiveNumbers")
 - Make test failures clear and informative
 - Write just enough code to make the test pass - no more
-- Once tests pass, consider if refactoring is needed
+- Once tests pass, refactor code to improve structure, readability, and maintainability if needed.
+  Run all tests after each change to ensure nothing is broken.
+- Cross off the test from the plan once it is implemented and passing.
+- Review the plan after each test to ensure the next test is the next logical step. If you find
+  a test that is not in the plan, add it at the appropriate place in the list.
 - After each successful cycle (Red -> Green -> Refactor), you must immediately propose a commit for
   the changes. Do not start a new test until the implementation for the previous test is committed.
   Repeat the cycle for new functionality.

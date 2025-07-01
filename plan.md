@@ -16,9 +16,15 @@ in the commit message.
 
 # Test plan for java-decita library
 
-## Basic structures
+## Fetching data from a constant value provider
 
-1. Test creating an empty `ComplexObjectValueProvider`.
-2. Test creating a `ComplexObjectValueProvider` with a single String data fragment inside.
-3. Test creating a `ComplexObjectValueProvider` with multiple data fragments of different types (say, Boolean, Double, String and LocalDate) inside.
-4. Test fetching a data fragment from a `CompexObjectValueProvider` by its string identifier. The result should be the ConstantValueProvider of the correct type.
+- Creating an empty `ConstantValueProvider` should not be possible.
+- Test creating a `ConstantValueProvider` with a single String value and getting that value back.
+
+## Fetching data from a complex object
+
+- Test creating an empty `ComplexObjectValueProvider`.
+- Test fetching a non-existing data fragment from a `ComplexObjectValueProvider` by its string identifier.
+- Test creating a `ComplexObjectValueProvider` with a single String data fragment inside.
+- Test fetching an existing data fragment from a `CompexObjectValueProvider` by its string identifier. The result should be the ConstantValueProvider of the correct type.
+- Test creating a `ComplexObjectValueProvider` with multiple data fragments of different types (say, Boolean, Double, String and LocalDate) inside.

@@ -80,7 +80,7 @@ Always follow the instructions in `plan.md` file. When I say "go", find the next
 
 - Only commit when:
     1. ALL tests are passing
-    2. ALL compiler/linter warnings have been resolved
+    2. ALL compiler/linter warnings have been resolved. Run the linter before committing, using `mvn clean verify -Pqulice` command.
     3. The change represents a single logical unit of work
     4. Commit messages clearly state whether the commit contains structural or behavioral changes
 - Use small, frequent commits rather than large, infrequent ones
@@ -111,8 +111,8 @@ When approaching a new feature:
 3. Run tests to confirm they pass (Green)
 4. Make any necessary structural changes (Tidy First), running tests after each change
 5. Commit structural changes separately
-6. Add another test for the next small increment of functionality
-7. Repeat until the feature is complete, committing behavioral changes separately from structural
+6. Write the next test for the next small part of the feature
+6. Repeat until the feature is complete, committing behavioral changes separately from structural
    ones
 
 Follow this process precisely, always prioritizing clean, well-tested code over quick

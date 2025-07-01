@@ -23,7 +23,7 @@ in the commit message.
 
 ## Fetching data from a complex object
 
-- [x] Test creating an empty `ComplexObjectValueProvider`.
+- Test creating an empty `ComplexObjectValueProvider`.
 - Test fetching a non-existing data fragment from a `ComplexObjectValueProvider` by its string identifier.
 - Test creating a `ComplexObjectValueProvider` with a single String data fragment inside.
 - Test fetching an existing data fragment from a `CompexObjectValueProvider` by its string identifier. The result should be the ConstantValueProvider of the correct type.

@@ -71,6 +71,7 @@ Always write one test at a time, make it run, then improve structure. Always run
 - Minimize state and side effects
 - Use the simplest solution that could possibly work
 - Always respect the package structure and naming conventions (i.e. no file in code sources root, no classes in the default package, etc.)
+- constructors should be logic-free, i.e. they should just initialize the instance state and not perform any logic. The only exception is the constructor arguments validation, like checking that the argument is not null. Such validation can be done using Java `Objects.requireNonNull()` method.
 - public static methods are not allowed, use instance methods instead. Private static methods are allowed, but should be used only for utility methods that do not depend on the instance state, i.e. for constructor arguments validation, like checking that the argument is not null.
 
 ## REFACTORING GUIDELINES

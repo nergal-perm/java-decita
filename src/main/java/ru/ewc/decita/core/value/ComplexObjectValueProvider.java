@@ -24,18 +24,39 @@
 
 package ru.ewc.decita.core.value;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * Provides access to named value fragments from a complex object.
  * @since 0.10.0
  */
 public final class ComplexObjectValueProvider {
     /**
-     * Ctor.
-     * Throws if no fragments are provided.
+     * Fragments map.
      */
-    public ComplexObjectValueProvider() {
-        throw new IllegalArgumentException(
-            "ComplexObjectValueProvider must have at least one fragment"
+    private final Map<String, ConstantValueProvider<?>> fragments;
+
+    /**
+     * Ctor for a single fragment.
+     * @param name Fragment name
+     * @param value Value provider
+     */
+    public ComplexObjectValueProvider(final String name, final ConstantValueProvider<?> value) {
+        this.fragments = new HashMap<>();
+        this.fragments.put(
+            Objects.requireNonNull(name, "Fragment name must not be null"),
+            Objects.requireNonNull(value, "Value provider must not be null")
         );
+    }
+
+    /**
+     * Get a fragment by name.
+     * @param name Fragment name
+     * @return Value provider or null if not found
+     */
+    public ConstantValueProvider<?> get(final String name) {
+        return this.fragments.get(name);
     }
 }

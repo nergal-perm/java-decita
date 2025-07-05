@@ -24,20 +24,26 @@
 
 package ru.ewc.decita.core.value;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ComplexObjectValueProvider}.
+ *
  * @since 0.10.0
  */
 final class ComplexObjectValueProviderTest {
     @Test
     void cannotCreateEmptyComplexObjectValueProvider() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            ComplexObjectValueProvider::new,
-            "Should not allow creating an empty ComplexObjectValueProvider"
-        );
+        ComplexObjectValueProvider target;
+        target = new ComplexObjectValueProvider("hey", null);
+        Assertions.assertThat(target).isNull();
+    }
+
+    @Test
+    void returnsNullWhenFetchingNonExistingFragment() {
+        final ComplexObjectValueProvider provider;
+        provider = new ComplexObjectValueProvider("foo", new ConstantValueProvider<>("bar"));
+        Assertions.assertThat(provider.get("baz")).isNull();
     }
 }

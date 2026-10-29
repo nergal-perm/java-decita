@@ -25,19 +25,19 @@
 package ru.ewc.decisions.core;
 
 import java.util.Objects;
-import ru.ewc.decisions.conditions.Condition;
+import ru.ewc.decisions.api.RuleFragment;
 
 /**
- * I am a concrete node in the DecisionGraph that represents a Condition.
- * I am immutable and provide a unique identifier based on the condition's properties.
+ * I am a concrete node in the DecisionGraph that represents a condition description.
+ * I am immutable and provide a unique identifier based on an explicit condition identifier.
  *
  * @since 0.9.2
  */
 public final class ConditionNode implements GraphNode {
     /**
-     * The condition this node represents.
+     * The condition description this node represents.
      */
-    private final Condition condition;
+    private final RuleFragment condition;
 
     /**
      * The unique identifier for this condition.
@@ -47,17 +47,19 @@ public final class ConditionNode implements GraphNode {
     /**
      * Constructor.
      *
-     * @param condition The condition this node represents.
+     * @param condition The condition description this node represents.
      * @param identifier A unique identifier for this condition.
      */
-    public ConditionNode(final Condition condition, final String identifier) {
+    public ConditionNode(final RuleFragment condition, final String identifier) {
         this.condition = Objects.requireNonNull(condition, "Condition cannot be null");
         this.identifier = Objects.requireNonNull(identifier, "Identifier cannot be null");
     }
 
+    // GraphNode defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return "condition:" + this.identifier;
+        return String.format("condition:%s", this.identifier);
     }
 
     @Override
@@ -66,20 +68,18 @@ public final class ConditionNode implements GraphNode {
     }
 
     @Override
-    public Object component() {
+    public RuleFragment component() {
         return this.condition;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof ConditionNode) {
+            final ConditionNode other = (ConditionNode) obj;
+            equal = Objects.equals(this.identifier, other.identifier);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final ConditionNode that = (ConditionNode) obj;
-        return Objects.equals(this.identifier, that.identifier);
+        return equal;
     }
 
     @Override
@@ -89,6 +89,6 @@ public final class ConditionNode implements GraphNode {
 
     @Override
     public String toString() {
-        return "ConditionNode{" + "identifier='" + this.identifier + '\'' + '}';
+        return String.format("ConditionNode{identifier='%s'}", this.identifier);
     }
 }

@@ -24,19 +24,21 @@
 
 package ru.ewc.decisions.core;
 
+import java.util.List;
 import java.util.Objects;
+import ru.ewc.decisions.api.RuleFragment;
 
 /**
- * I am a concrete node in the DecisionGraph that represents a Rule.
- * I am immutable and provide a unique identifier based on the rule's name.
+ * I am a concrete node in the DecisionGraph that represents immutable rule fragments.
+ * I am immutable and provide a unique identifier based on an explicit rule identifier.
  *
  * @since 0.9.2
  */
 public final class RuleNode implements GraphNode {
     /**
-     * The rule this node represents.
+     * The immutable fragments this node represents.
      */
-    private final Rule rule;
+    private final List<RuleFragment> rule;
 
     /**
      * The unique identifier for this rule.
@@ -46,17 +48,19 @@ public final class RuleNode implements GraphNode {
     /**
      * Constructor.
      *
-     * @param rule The rule this node represents.
+     * @param rule The immutable fragments this node represents.
      * @param identifier A unique identifier for this rule.
      */
-    public RuleNode(final Rule rule, final String identifier) {
-        this.rule = Objects.requireNonNull(rule, "Rule cannot be null");
+    public RuleNode(final List<RuleFragment> rule, final String identifier) {
+        this.rule = List.copyOf(Objects.requireNonNull(rule, "Rule cannot be null"));
         this.identifier = Objects.requireNonNull(identifier, "Identifier cannot be null");
     }
 
+    // GraphNode defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return "rule:" + this.identifier;
+        return String.format("rule:%s", this.identifier);
     }
 
     @Override
@@ -65,29 +69,28 @@ public final class RuleNode implements GraphNode {
     }
 
     @Override
-    public Object component() {
+    public List<RuleFragment> component() {
         return this.rule;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof RuleNode) {
+            final RuleNode other = (RuleNode) obj;
+            equal = Objects.equals(this.identifier, other.identifier)
+                && Objects.equals(this.rule, other.rule);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final RuleNode that = (RuleNode) obj;
-        return Objects.equals(this.identifier, that.identifier);
+        return equal;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.identifier);
+        return Objects.hash(this.identifier, this.rule);
     }
 
     @Override
     public String toString() {
-        return "RuleNode{" + "identifier='" + this.identifier + '\'' + '}';
+        return String.format("RuleNode{identifier='%s'}", this.identifier);
     }
 }

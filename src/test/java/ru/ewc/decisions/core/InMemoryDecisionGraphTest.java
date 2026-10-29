@@ -24,10 +24,11 @@
 
 package ru.ewc.decisions.core;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
+import java.util.HashSet;
 import java.util.Set;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link InMemoryDecisionGraph}.
@@ -35,88 +36,98 @@ import java.util.Set;
  * @since 0.9.2
  */
 final class InMemoryDecisionGraphTest {
+    /**
+     * First coordinate description.
+     */
+    private static final String FIRST = "test::value1";
+
+    /**
+     * Second coordinate description.
+     */
+    private static final String SECOND = "test::value2";
+
+    /**
+     * Relationship used by graph examples.
+     */
+    private static final String RELATION = "part_of";
+
+    @Test
+    void returnsUnmodifiableQueryResults() {
+        final CoordinateNode source = new CoordinateNode(Coordinate.from("query::source"));
+        final CoordinateNode target = new CoordinateNode(Coordinate.from("query::target"));
+        final DecisionGraph graph = new DecisionGraphBuilder()
+            .addPartOfRelationship(source, target).build();
+        org.junit.jupiter.api.Assertions.assertAll(
+            () -> Assertions.assertThatThrownBy(
+                () -> graph.nodesOfType(CoordinateNode.class).clear()
+            ).isInstanceOf(UnsupportedOperationException.class),
+            () -> Assertions.assertThatThrownBy(
+                () -> graph.edgesOfType(PartOfEdge.class).clear()
+            ).isInstanceOf(UnsupportedOperationException.class),
+            () -> Assertions.assertThatThrownBy(
+                () -> graph.edgesFrom(source).clear()
+            ).isInstanceOf(UnsupportedOperationException.class),
+            () -> Assertions.assertThatThrownBy(
+                () -> graph.edgesTo(target).clear()
+            ).isInstanceOf(UnsupportedOperationException.class)
+        );
+    }
+
+    @Test
+    void preservesMembershipAfterCallerClearsInputCollections() {
+        final CoordinateNode source = new CoordinateNode(Coordinate.from("caller::source"));
+        final CoordinateNode target = new CoordinateNode(Coordinate.from("caller::target"));
+        final Set<GraphNode> nodes = new HashSet<>(Set.of(source, target));
+        final Set<GraphEdge> edges = new HashSet<>(
+            Set.of(new BasicGraphEdge(source, target, InMemoryDecisionGraphTest.RELATION))
+        );
+        final DecisionGraph graph = new InMemoryDecisionGraph(nodes, edges);
+        nodes.clear();
+        edges.clear();
+        Assertions.assertThat(graph.nodes()).hasSize(2);
+        Assertions.assertThat(graph.edges()).hasSize(1);
+    }
+
     @Test
     void shouldCreateEmptyGraph() {
         final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(), Set.of());
-        
         Assertions.assertThat(graph.nodes()).isEmpty();
         Assertions.assertThat(graph.edges()).isEmpty();
     }
 
     @Test
     void shouldCreateGraphWithNodes() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of());
-        
+        final CoordinateNode first = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+        );
+        final CoordinateNode second = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+        );
+        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+            Set.of(first, second), Set.of()
+        );
         Assertions.assertThat(graph.nodes()).hasSize(2);
-        Assertions.assertThat(graph.nodes()).contains(node1, node2);
+        Assertions.assertThat(graph.nodes()).contains(first, second);
         Assertions.assertThat(graph.edges()).isEmpty();
     }
 
     @Test
     void shouldCreateGraphWithNodesAndEdges() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final BasicGraphEdge edge = new BasicGraphEdge(node1, node2, "part_of");
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of(edge));
-        
+        final CoordinateNode first = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+        );
+        final CoordinateNode second = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+        );
+        final BasicGraphEdge edge = new BasicGraphEdge(
+            first, second, InMemoryDecisionGraphTest.RELATION
+        );
+        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+            Set.of(first, second), Set.of(edge)
+        );
         Assertions.assertThat(graph.nodes()).hasSize(2);
         Assertions.assertThat(graph.edges()).hasSize(1);
         Assertions.assertThat(graph.edges()).contains(edge);
-    }
-
-    @Test
-    void shouldFilterNodesByType() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of());
-        
-        final Set<CoordinateNode> coordinateNodes = graph.nodesOfType(CoordinateNode.class);
-        Assertions.assertThat(coordinateNodes).hasSize(2);
-        Assertions.assertThat(coordinateNodes).contains(node1, node2);
-    }
-
-    @Test
-    void shouldFilterEdgesByType() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final BasicGraphEdge edge = new BasicGraphEdge(node1, node2, "part_of");
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of(edge));
-        
-        final Set<BasicGraphEdge> basicEdges = graph.edgesOfType(BasicGraphEdge.class);
-        Assertions.assertThat(basicEdges).hasSize(1);
-        Assertions.assertThat(basicEdges).contains(edge);
-    }
-
-    @Test
-    void shouldFindEdgesFromNode() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final BasicGraphEdge edge = new BasicGraphEdge(node1, node2, "part_of");
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of(edge));
-        
-        final Set<GraphEdge> edgesFromNode1 = graph.edgesFrom(node1);
-        Assertions.assertThat(edgesFromNode1).hasSize(1);
-        Assertions.assertThat(edgesFromNode1).contains(edge);
-        
-        final Set<GraphEdge> edgesFromNode2 = graph.edgesFrom(node2);
-        Assertions.assertThat(edgesFromNode2).isEmpty();
-    }
-
-    @Test
-    void shouldFindEdgesToNode() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final BasicGraphEdge edge = new BasicGraphEdge(node1, node2, "part_of");
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of(edge));
-        
-        final Set<GraphEdge> edgesToNode1 = graph.edgesTo(node1);
-        Assertions.assertThat(edgesToNode1).isEmpty();
-        
-        final Set<GraphEdge> edgesToNode2 = graph.edgesTo(node2);
-        Assertions.assertThat(edgesToNode2).hasSize(1);
-        Assertions.assertThat(edgesToNode2).contains(edge);
     }
 
     @Test
@@ -135,18 +146,109 @@ final class InMemoryDecisionGraphTest {
 
     @Test
     void shouldReturnImmutableCollections() {
-        final CoordinateNode node1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode node2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final BasicGraphEdge edge = new BasicGraphEdge(node1, node2, "part_of");
-        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(Set.of(node1, node2), Set.of(edge));
-        
+        final CoordinateNode first = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+        );
+        final CoordinateNode second = new CoordinateNode(
+            Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+        );
+        final BasicGraphEdge edge = new BasicGraphEdge(
+            first, second, InMemoryDecisionGraphTest.RELATION
+        );
+        final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+            Set.of(first, second), Set.of(edge)
+        );
         final Set<GraphNode> nodes = graph.nodes();
         final Set<GraphEdge> edges = graph.edges();
-        
-        Assertions.assertThatThrownBy(() -> nodes.add(new CoordinateNode(Coordinate.from("test::value3"))))
+        Assertions.assertThatThrownBy(
+            () -> nodes.add(new CoordinateNode(Coordinate.from("test::value3")))
+        )
             .isInstanceOf(UnsupportedOperationException.class);
-        
-        Assertions.assertThatThrownBy(() -> edges.add(new BasicGraphEdge(node1, node2, "test")))
+        Assertions.assertThatThrownBy(() -> edges.add(new BasicGraphEdge(first, second, "test")))
             .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    /**
+     * Graph filtering and traversal queries.
+     * @since 0.10.0
+     */
+    @Nested
+    final class Queries {
+        @Test
+        void shouldFilterNodesByType() {
+            final CoordinateNode first = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+            );
+            final CoordinateNode second = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+            );
+            final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+                Set.of(first, second), Set.of()
+            );
+            final Set<CoordinateNode> coordinates = graph.nodesOfType(CoordinateNode.class);
+            Assertions.assertThat(coordinates).hasSize(2);
+            Assertions.assertThat(coordinates).contains(first, second);
+        }
+
+        @Test
+        void shouldFilterEdgesByType() {
+            final CoordinateNode first = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+            );
+            final CoordinateNode second = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+            );
+            final BasicGraphEdge edge = new BasicGraphEdge(
+                first, second, InMemoryDecisionGraphTest.RELATION
+            );
+            final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+                Set.of(first, second), Set.of(edge)
+            );
+            final Set<BasicGraphEdge> links = graph.edgesOfType(BasicGraphEdge.class);
+            Assertions.assertThat(links).hasSize(1);
+            Assertions.assertThat(links).contains(edge);
+        }
+
+        @Test
+        void shouldFindEdgesFromNode() {
+            final CoordinateNode first = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+            );
+            final CoordinateNode second = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+            );
+            final BasicGraphEdge edge = new BasicGraphEdge(
+                first, second, InMemoryDecisionGraphTest.RELATION
+            );
+            final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+                Set.of(first, second), Set.of(edge)
+            );
+            final Set<GraphEdge> fromfirst = graph.edgesFrom(first);
+            Assertions.assertThat(fromfirst).hasSize(1);
+            Assertions.assertThat(fromfirst).contains(edge);
+            final Set<GraphEdge> fromsecond = graph.edgesFrom(second);
+            Assertions.assertThat(fromsecond).isEmpty();
+        }
+
+        @Test
+        void shouldFindEdgesToNode() {
+            final CoordinateNode first = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.FIRST)
+            );
+            final CoordinateNode second = new CoordinateNode(
+                Coordinate.from(InMemoryDecisionGraphTest.SECOND)
+            );
+            final BasicGraphEdge edge = new BasicGraphEdge(
+                first, second, InMemoryDecisionGraphTest.RELATION
+            );
+            final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(
+                Set.of(first, second), Set.of(edge)
+            );
+            final Set<GraphEdge> tofirst = graph.edgesTo(first);
+            Assertions.assertThat(tofirst).isEmpty();
+            final Set<GraphEdge> tosecond = graph.edgesTo(second);
+            Assertions.assertThat(tosecond).hasSize(1);
+            Assertions.assertThat(tosecond).contains(edge);
+        }
     }
 }

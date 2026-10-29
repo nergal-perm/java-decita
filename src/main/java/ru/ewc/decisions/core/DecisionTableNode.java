@@ -27,16 +27,16 @@ package ru.ewc.decisions.core;
 import java.util.Objects;
 
 /**
- * I am a concrete node in the DecisionGraph that represents a DecisionTable.
- * I am immutable and provide a unique identifier based on the table's name.
+ * I am a concrete node in the DecisionGraph that represents an immutable table description.
+ * I am immutable and provide a unique identifier based on an explicit table identifier.
  *
  * @since 0.9.2
  */
 public final class DecisionTableNode implements GraphNode {
     /**
-     * The decision table this node represents.
+     * The immutable table description this node represents.
      */
-    private final DecisionTable table;
+    private final TableDescription table;
 
     /**
      * The unique identifier for this table.
@@ -46,17 +46,19 @@ public final class DecisionTableNode implements GraphNode {
     /**
      * Constructor.
      *
-     * @param table The decision table this node represents.
+     * @param table The immutable table description this node represents.
      * @param identifier A unique identifier for this table.
      */
-    public DecisionTableNode(final DecisionTable table, final String identifier) {
+    public DecisionTableNode(final TableDescription table, final String identifier) {
         this.table = Objects.requireNonNull(table, "DecisionTable cannot be null");
         this.identifier = Objects.requireNonNull(identifier, "Identifier cannot be null");
     }
 
+    // GraphNode defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return "table:" + this.identifier;
+        return String.format("table:%s", this.identifier);
     }
 
     @Override
@@ -65,20 +67,18 @@ public final class DecisionTableNode implements GraphNode {
     }
 
     @Override
-    public Object component() {
+    public TableDescription component() {
         return this.table;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof DecisionTableNode) {
+            final DecisionTableNode other = (DecisionTableNode) obj;
+            equal = Objects.equals(this.identifier, other.identifier);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final DecisionTableNode that = (DecisionTableNode) obj;
-        return Objects.equals(this.identifier, that.identifier);
+        return equal;
     }
 
     @Override
@@ -88,6 +88,15 @@ public final class DecisionTableNode implements GraphNode {
 
     @Override
     public String toString() {
-        return "DecisionTableNode{" + "identifier='" + this.identifier + '\'' + '}';
+        return String.format("DecisionTableNode{identifier='%s'}", this.identifier);
+    }
+
+    /**
+     * Describes this table with canonical rule references.
+     * @param description Canonical rule definitions
+     * @return A table node retaining the same identifier
+     */
+    DecisionTableNode withDescription(final TableDescription description) {
+        return new DecisionTableNode(description, this.identifier);
     }
 }

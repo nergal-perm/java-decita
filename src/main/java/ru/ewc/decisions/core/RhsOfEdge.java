@@ -49,7 +49,12 @@ public final class RhsOfEdge implements GraphEdge {
      * @param target The target node that has the source as its right-hand side.
      */
     public RhsOfEdge(final GraphNode source, final GraphNode target) {
-        this.edge = new BasicGraphEdge(source, target, RELATIONSHIP_TYPE);
+        this.edge = new BasicGraphEdge(source, target, RhsOfEdge.RELATIONSHIP_TYPE);
+    }
+
+    @Override
+    public GraphEdge withEndpoints(final GraphNode source, final GraphNode target) {
+        return new RhsOfEdge(source, target);
     }
 
     @Override
@@ -67,6 +72,8 @@ public final class RhsOfEdge implements GraphEdge {
         return this.edge.relationshipType();
     }
 
+    // GraphEdge defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
         return this.edge.id();
@@ -74,7 +81,12 @@ public final class RhsOfEdge implements GraphEdge {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.edge.equals(obj);
+        boolean equal = false;
+        if (obj instanceof RhsOfEdge) {
+            final RhsOfEdge other = (RhsOfEdge) obj;
+            equal = this.edge.equals(other.edge);
+        }
+        return equal;
     }
 
     @Override

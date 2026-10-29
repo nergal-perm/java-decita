@@ -26,13 +26,23 @@ package ru.ewc.decisions.core;
 
 /**
  * I am an edge in the DecisionGraph.
- * I represent relationships between decision table components like 
+ * I represent relationships between decision table components like
  * "part_of", "lhs_of", "rhs_of", and "operator_of".
  * I am immutable and connect two nodes with a specific relationship type.
  *
  * @since 0.9.2
  */
 public interface GraphEdge {
+    /**
+     * Reconnects a relationship to canonical graph nodes.
+     * @param source Canonical source
+     * @param target Canonical target
+     * @return The relationship with canonical endpoints
+     */
+    default GraphEdge withEndpoints(final GraphNode source, final GraphNode target) {
+        return new BasicGraphEdge(source, target, this.relationshipType());
+    }
+
     /**
      * Returns the source node of this edge.
      *
@@ -61,5 +71,8 @@ public interface GraphEdge {
      *
      * @return A unique string identifier for this edge.
      */
+    // The graph API retains its identifier accessor name.
+    // @checkstyle MethodNameCheck (2 lines)
+    @SuppressWarnings("PMD.ShortMethodName")
     String id();
 }

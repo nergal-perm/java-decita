@@ -48,9 +48,16 @@ public final class RuleFragmentNode implements GraphNode {
         this.fragment = Objects.requireNonNull(fragment, "RuleFragment cannot be null");
     }
 
+    // GraphNode defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return "fragment:" + this.fragment.type() + ":" + this.fragment.left() + ":" + this.fragment.right();
+        return String.format(
+            "fragment:%d:%s:%d:%s:%d:%s",
+            this.fragment.type().length(), this.fragment.type(),
+            this.fragment.left().length(), this.fragment.left(),
+            this.fragment.right().length(), this.fragment.right()
+        );
     }
 
     @Override
@@ -65,14 +72,12 @@ public final class RuleFragmentNode implements GraphNode {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof RuleFragmentNode) {
+            final RuleFragmentNode other = (RuleFragmentNode) obj;
+            equal = Objects.equals(this.fragment, other.fragment);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final RuleFragmentNode that = (RuleFragmentNode) obj;
-        return Objects.equals(this.fragment, that.fragment);
+        return equal;
     }
 
     @Override
@@ -82,6 +87,6 @@ public final class RuleFragmentNode implements GraphNode {
 
     @Override
     public String toString() {
-        return "RuleFragmentNode{" + "fragment=" + this.fragment + '}';
+        return String.format("RuleFragmentNode{fragment=%s}", this.fragment);
     }
 }

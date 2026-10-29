@@ -39,7 +39,7 @@ public final class DecisionGraphBuilder {
     /**
      * The set of nodes being built.
      */
-    private final Set<GraphNode> nodes;
+    private final GraphNodes nodes;
 
     /**
      * The set of edges being built.
@@ -50,7 +50,7 @@ public final class DecisionGraphBuilder {
      * Constructor.
      */
     public DecisionGraphBuilder() {
-        this.nodes = new HashSet<>();
+        this.nodes = new GraphNodes();
         this.edges = new HashSet<>();
     }
 
@@ -61,7 +61,7 @@ public final class DecisionGraphBuilder {
      * @return This builder for method chaining.
      */
     public DecisionGraphBuilder addNode(final GraphNode node) {
-        this.nodes.add(Objects.requireNonNull(node, "Node cannot be null"));
+        this.nodes.canonical(Objects.requireNonNull(node, "Node cannot be null"));
         return this;
     }
 
@@ -74,9 +74,11 @@ public final class DecisionGraphBuilder {
      */
     public DecisionGraphBuilder addEdge(final GraphEdge edge) {
         Objects.requireNonNull(edge, "Edge cannot be null");
-        this.edges.add(edge);
-        this.nodes.add(edge.source());
-        this.nodes.add(edge.target());
+        this.edges.add(
+            edge.withEndpoints(
+                this.nodes.canonical(edge.source()), this.nodes.canonical(edge.target())
+            )
+        );
         return this;
     }
 
@@ -87,7 +89,9 @@ public final class DecisionGraphBuilder {
      * @param target The target node that contains the source.
      * @return This builder for method chaining.
      */
-    public DecisionGraphBuilder addPartOfRelationship(final GraphNode source, final GraphNode target) {
+    public DecisionGraphBuilder addPartOfRelationship(
+        final GraphNode source, final GraphNode target
+    ) {
         return this.addEdge(new PartOfEdge(source, target));
     }
 
@@ -98,7 +102,9 @@ public final class DecisionGraphBuilder {
      * @param target The target node that has the source as its left-hand side.
      * @return This builder for method chaining.
      */
-    public DecisionGraphBuilder addLhsOfRelationship(final GraphNode source, final GraphNode target) {
+    public DecisionGraphBuilder addLhsOfRelationship(
+        final GraphNode source, final GraphNode target
+    ) {
         return this.addEdge(new LhsOfEdge(source, target));
     }
 
@@ -109,7 +115,9 @@ public final class DecisionGraphBuilder {
      * @param target The target node that has the source as its right-hand side.
      * @return This builder for method chaining.
      */
-    public DecisionGraphBuilder addRhsOfRelationship(final GraphNode source, final GraphNode target) {
+    public DecisionGraphBuilder addRhsOfRelationship(
+        final GraphNode source, final GraphNode target
+    ) {
         return this.addEdge(new RhsOfEdge(source, target));
     }
 
@@ -120,7 +128,9 @@ public final class DecisionGraphBuilder {
      * @param target The target node that has the source as its operator.
      * @return This builder for method chaining.
      */
-    public DecisionGraphBuilder addOperatorOfRelationship(final GraphNode source, final GraphNode target) {
+    public DecisionGraphBuilder addOperatorOfRelationship(
+        final GraphNode source, final GraphNode target
+    ) {
         return this.addEdge(new OperatorOfEdge(source, target));
     }
 
@@ -130,7 +140,7 @@ public final class DecisionGraphBuilder {
      * @return A new immutable DecisionGraph instance.
      */
     public DecisionGraph build() {
-        return new InMemoryDecisionGraph(Set.copyOf(this.nodes), Set.copyOf(this.edges));
+        return new InMemoryDecisionGraph(this.nodes.snapshot(), Set.copyOf(this.edges));
     }
 
     /**

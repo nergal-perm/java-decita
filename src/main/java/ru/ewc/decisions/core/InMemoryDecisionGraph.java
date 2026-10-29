@@ -39,12 +39,12 @@ public final class InMemoryDecisionGraph implements DecisionGraph {
     /**
      * The immutable set of all nodes in this graph.
      */
-    private final Set<GraphNode> nodes;
+    private final Set<GraphNode> vertices;
 
     /**
      * The immutable set of all edges in this graph.
      */
-    private final Set<GraphEdge> edges;
+    private final Set<GraphEdge> links;
 
     /**
      * Constructor.
@@ -53,47 +53,49 @@ public final class InMemoryDecisionGraph implements DecisionGraph {
      * @param edges The edges that connect the nodes.
      */
     public InMemoryDecisionGraph(final Set<GraphNode> nodes, final Set<GraphEdge> edges) {
-        this.nodes = Objects.requireNonNull(nodes, "Nodes cannot be null");
-        this.edges = Objects.requireNonNull(edges, "Edges cannot be null");
+        this.vertices = Set.copyOf(Objects.requireNonNull(nodes, "Nodes cannot be null"));
+        this.links = new GraphStructure(
+            this.vertices, Set.copyOf(Objects.requireNonNull(edges, "Edges cannot be null"))
+        ).validated();
     }
 
     @Override
     public Set<GraphNode> nodes() {
-        return Set.copyOf(this.nodes);
+        return Set.copyOf(this.vertices);
     }
 
     @Override
     public Set<GraphEdge> edges() {
-        return Set.copyOf(this.edges);
+        return Set.copyOf(this.links);
     }
 
     @Override
-    public <T extends GraphNode> Set<T> nodesOfType(final Class<T> nodeType) {
-        return this.nodes.stream()
-            .filter(nodeType::isInstance)
-            .map(nodeType::cast)
-            .collect(Collectors.toSet());
+    public <T extends GraphNode> Set<T> nodesOfType(final Class<T> kind) {
+        return this.vertices.stream()
+            .filter(kind::isInstance)
+            .map(kind::cast)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
-    public <T extends GraphEdge> Set<T> edgesOfType(final Class<T> edgeType) {
-        return this.edges.stream()
-            .filter(edgeType::isInstance)
-            .map(edgeType::cast)
-            .collect(Collectors.toSet());
+    public <T extends GraphEdge> Set<T> edgesOfType(final Class<T> kind) {
+        return this.links.stream()
+            .filter(kind::isInstance)
+            .map(kind::cast)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Set<GraphEdge> edgesFrom(final GraphNode node) {
-        return this.edges.stream()
+        return this.links.stream()
             .filter(edge -> edge.source().equals(node))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Set<GraphEdge> edgesTo(final GraphNode node) {
-        return this.edges.stream()
+        return this.links.stream()
             .filter(edge -> edge.target().equals(node))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toUnmodifiableSet());
     }
 }

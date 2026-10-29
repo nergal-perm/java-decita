@@ -36,76 +36,81 @@ public final class BasicGraphEdge implements GraphEdge {
     /**
      * The source node of this edge.
      */
-    private final GraphNode source;
+    private final GraphNode origin;
 
     /**
      * The target node of this edge.
      */
-    private final GraphNode target;
+    private final GraphNode destination;
 
     /**
      * The type of relationship this edge represents.
      */
-    private final String relationshipType;
+    private final String relationship;
 
     /**
      * Constructor.
      *
      * @param source The source node of this edge.
      * @param target The target node of this edge.
-     * @param relationshipType The type of relationship this edge represents.
+     * @param relationship The type of relationship this edge represents.
      */
-    public BasicGraphEdge(final GraphNode source, final GraphNode target, final String relationshipType) {
-        this.source = Objects.requireNonNull(source, "Source node cannot be null");
-        this.target = Objects.requireNonNull(target, "Target node cannot be null");
-        this.relationshipType = Objects.requireNonNull(relationshipType, "Relationship type cannot be null");
+    public BasicGraphEdge(
+        final GraphNode source, final GraphNode target, final String relationship
+    ) {
+        this.origin = Objects.requireNonNull(source, "Source node cannot be null");
+        this.destination = Objects.requireNonNull(target, "Target node cannot be null");
+        this.relationship = Objects.requireNonNull(
+            relationship, "Relationship type cannot be null"
+        );
     }
 
     @Override
     public GraphNode source() {
-        return this.source;
+        return this.origin;
     }
 
     @Override
     public GraphNode target() {
-        return this.target;
+        return this.destination;
     }
 
     @Override
     public String relationshipType() {
-        return this.relationshipType;
+        return this.relationship;
     }
 
+    // GraphEdge defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return String.format("%s--%s-->%s", this.source.id(), this.relationshipType, this.target.id());
+        return String.format(
+            "%s--%s-->%s", this.origin.id(), this.relationship, this.destination.id()
+        );
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof BasicGraphEdge) {
+            final BasicGraphEdge other = (BasicGraphEdge) obj;
+            equal = Objects.equals(this.origin, other.origin)
+                && Objects.equals(this.destination, other.destination)
+                && Objects.equals(this.relationship, other.relationship);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final BasicGraphEdge that = (BasicGraphEdge) obj;
-        return Objects.equals(this.source, that.source) &&
-            Objects.equals(this.target, that.target) &&
-            Objects.equals(this.relationshipType, that.relationshipType);
+        return equal;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.source, this.target, this.relationshipType);
+        return Objects.hash(this.origin, this.destination, this.relationship);
     }
 
     @Override
     public String toString() {
-        return "BasicGraphEdge{" +
-            "source=" + this.source.id() +
-            ", target=" + this.target.id() +
-            ", relationshipType='" + this.relationshipType + '\'' +
-            '}';
+        return String.format(
+            "BasicGraphEdge{source=%s, target=%s, relationshipType='%s'}",
+            this.origin.id(), this.destination.id(), this.relationship
+        );
     }
 }

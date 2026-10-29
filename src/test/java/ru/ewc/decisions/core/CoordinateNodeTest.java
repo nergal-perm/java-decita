@@ -24,8 +24,16 @@
 
 package ru.ewc.decisions.core;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.ewc.decisions.api.ComputationContext;
+import ru.ewc.decisions.api.DecisionTables;
+import ru.ewc.decisions.api.InMemoryLocator;
+import ru.ewc.state.State;
 
 /**
  * Tests for {@link CoordinateNode}.
@@ -33,12 +41,33 @@ import org.junit.jupiter.api.Test;
  * @since 0.9.2
  */
 final class CoordinateNodeTest {
+    /**
+     * A shared coordinate description.
+     */
+    private static final String VALUE = "test::value";
+
+    @Test
+    void retainsSourceDescriptionAfterOriginalCoordinateIsEvaluated() {
+        final Coordinate coordinate = Coordinate.from("customer::age");
+        final CoordinateNode node = new CoordinateNode(coordinate);
+        final Set<GraphNode> index = new HashSet<>(Set.of(node));
+        final ComputationContext context = new ComputationContext(
+            new State(
+                List.of(new InMemoryLocator("customer", Map.of("age", 21)))
+            ),
+            DecisionTables.using(List::of)
+        );
+        coordinate.locateIn(context);
+        Assertions.assertThat(node.component()).isEqualTo("customer::age");
+        Assertions.assertThat(node.id()).isEqualTo("coordinate:customer::age");
+        Assertions.assertThat(index).contains(node);
+    }
+
     @Test
     void shouldCreateNodeWithCoordinate() {
-        final Coordinate coordinate = Coordinate.from("test::value");
+        final Coordinate coordinate = Coordinate.from(CoordinateNodeTest.VALUE);
         final CoordinateNode node = new CoordinateNode(coordinate);
-        
-        Assertions.assertThat(node.component()).isEqualTo(coordinate);
+        Assertions.assertThat(node.component()).isEqualTo(coordinate.asString());
         Assertions.assertThat(node.type()).isEqualTo("coordinate");
         Assertions.assertThat(node.id()).isEqualTo("coordinate:test::value");
     }
@@ -52,22 +81,20 @@ final class CoordinateNodeTest {
 
     @Test
     void shouldBeEqualWhenCoordinatesAreEqual() {
-        final Coordinate coordinate1 = Coordinate.from("test::value");
-        final Coordinate coordinate2 = Coordinate.from("test::value");
-        final CoordinateNode node1 = new CoordinateNode(coordinate1);
-        final CoordinateNode node2 = new CoordinateNode(coordinate2);
-        
-        Assertions.assertThat(node1).isEqualTo(node2);
-        Assertions.assertThat(node1.hashCode()).isEqualTo(node2.hashCode());
+        final Coordinate first = Coordinate.from(CoordinateNodeTest.VALUE);
+        final Coordinate second = Coordinate.from(CoordinateNodeTest.VALUE);
+        final CoordinateNode firstnode = new CoordinateNode(first);
+        final CoordinateNode secondnode = new CoordinateNode(second);
+        Assertions.assertThat(firstnode).isEqualTo(secondnode);
+        Assertions.assertThat(firstnode.hashCode()).isEqualTo(secondnode.hashCode());
     }
 
     @Test
     void shouldNotBeEqualWhenCoordinatesAreDifferent() {
-        final Coordinate coordinate1 = Coordinate.from("test::value1");
-        final Coordinate coordinate2 = Coordinate.from("test::value2");
-        final CoordinateNode node1 = new CoordinateNode(coordinate1);
-        final CoordinateNode node2 = new CoordinateNode(coordinate2);
-        
-        Assertions.assertThat(node1).isNotEqualTo(node2);
+        final Coordinate first = Coordinate.from("test::value1");
+        final Coordinate second = Coordinate.from("test::value2");
+        final CoordinateNode firstnode = new CoordinateNode(first);
+        final CoordinateNode secondnode = new CoordinateNode(second);
+        Assertions.assertThat(firstnode).isNotEqualTo(secondnode);
     }
 }

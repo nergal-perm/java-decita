@@ -34,22 +34,26 @@ import java.util.Objects;
  */
 public final class CoordinateNode implements GraphNode {
     /**
-     * The coordinate this node represents.
+     * The coordinate description this node snapshots.
      */
-    private final Coordinate coordinate;
+    private final String coordinate;
 
     /**
      * Constructor.
      *
-     * @param coordinate The coordinate this node represents.
+     * @param coordinate The coordinate description this node snapshots.
      */
     public CoordinateNode(final Coordinate coordinate) {
-        this.coordinate = Objects.requireNonNull(coordinate, "Coordinate cannot be null");
+        this.coordinate = Objects.requireNonNull(
+            coordinate, "Coordinate cannot be null"
+        ).asString();
     }
 
+    // GraphNode defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
-        return "coordinate:" + this.coordinate.asString();
+        return String.format("coordinate:%s", this.coordinate);
     }
 
     @Override
@@ -58,20 +62,18 @@ public final class CoordinateNode implements GraphNode {
     }
 
     @Override
-    public Object component() {
+    public String component() {
         return this.coordinate;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        boolean equal = false;
+        if (obj instanceof CoordinateNode) {
+            final CoordinateNode other = (CoordinateNode) obj;
+            equal = Objects.equals(this.coordinate, other.coordinate);
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final CoordinateNode that = (CoordinateNode) obj;
-        return Objects.equals(this.coordinate, that.coordinate);
+        return equal;
     }
 
     @Override
@@ -81,6 +83,6 @@ public final class CoordinateNode implements GraphNode {
 
     @Override
     public String toString() {
-        return "CoordinateNode{" + "coordinate=" + this.coordinate.asString() + '}';
+        return String.format("CoordinateNode{coordinate=%s}", this.coordinate);
     }
 }

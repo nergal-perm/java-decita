@@ -23,8 +23,26 @@ in the commit message.
 
 ## Fetching data from a complex object
 
-- [x] Test creating an empty `ComplexObjectValueProvider`.
+- [ ] Test creating an empty `ComplexObjectValueProvider`.
 - Test fetching a non-existing data fragment from a `ComplexObjectValueProvider` by its string identifier.
 - Test creating a `ComplexObjectValueProvider` with a single String data fragment inside.
 - Test fetching an existing data fragment from a `CompexObjectValueProvider` by its string identifier. The result should be the ConstantValueProvider of the correct type.
 - Test creating a `ComplexObjectValueProvider` with multiple data fragments of different types (say, Boolean, Double, String and LocalDate) inside.
+
+## Immutable graph representation — issue #168, ADR-0003/0004/0005
+
+Implementation details and scope: [continuation plan](doc/decision-graph-continuation.md).
+
+- [x] Snapshot constructor node/edge collections and nested rule/fragment lists.
+- [x] Return unmodifiable collections from every graph query.
+- [x] Keep source descriptions and node/edge identity unchanged by legacy evaluation.
+- [x] Reuse one canonical node instance in edges and nested table rule references.
+- [x] Reject conflicting definitions, duplicate identifiers, dangling references, and cycles.
+- [x] Distinguish fragment identifiers when source fields contain separators.
+- [x] Deduplicate all four relationship kinds and preserve snapshots after builder reuse.
+- [x] Reuse descriptions in two independent contexts, in both orders and on separate threads.
+- [x] Resolve dynamic coordinate descriptions separately in each context.
+
+The unchecked complex-provider item above was corrected to match the sources: that provider
+and its tests have not been implemented. This graph work does not implement the future graph
+evaluator, session cache, or CSV connector; those need their own incremental tests.

@@ -24,13 +24,12 @@
 
 package ru.ewc.decisions.core;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.ewc.decisions.api.RuleFragment;
-import ru.ewc.decisions.conditions.EqualsCondition;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Integration tests for DecisionGraph showing various node types and relationships.
@@ -40,104 +39,68 @@ import java.util.Set;
 final class DecisionGraphIntegrationTest {
     @Test
     void shouldCreateComplexGraph() {
-        // Create some coordinates
-        final Coordinate coord1 = Coordinate.from("customer::age");
-        final Coordinate coord2 = Coordinate.from("21");
-        final CoordinateNode coordNode1 = new CoordinateNode(coord1);
-        final CoordinateNode coordNode2 = new CoordinateNode(coord2);
-        
-        // Create a condition
-        final EqualsCondition condition = new EqualsCondition(coord1, coord2);
-        final ConditionNode conditionNode = new ConditionNode(condition, "age_check");
-        
-        // Create a rule fragment
+        final Coordinate first = Coordinate.from("customer::age");
+        final Coordinate second = Coordinate.from("21");
+        final CoordinateNode firstnode = new CoordinateNode(first);
+        final CoordinateNode secondnode = new CoordinateNode(second);
+        final RuleFragment condition = new RuleFragment(
+            "CND", first.asString(), second.asString()
+        );
+        final ConditionNode check = new ConditionNode(condition, "age_check");
         final RuleFragment fragment = new RuleFragment("CND", "customer::age", "21");
-        final RuleFragmentNode fragmentNode = new RuleFragmentNode(fragment);
-        
-        // Create a rule
-        final Rule rule = Rule.elseRule("test_rule");
-        final RuleNode ruleNode = new RuleNode(rule, "test_rule");
-        
-        // Create a decision table
-        final DecisionTable table = new DecisionTable(List.of(rule), rule, "test_table");
-        final DecisionTableNode tableNode = new DecisionTableNode(table, "test_table");
-        
-        // Create edges showing relationships
-        final LhsOfEdge lhsEdge = new LhsOfEdge(coordNode1, conditionNode);
-        final RhsOfEdge rhsEdge = new RhsOfEdge(coordNode2, conditionNode);
-        final PartOfEdge partOfEdge1 = new PartOfEdge(fragmentNode, ruleNode);
-        final PartOfEdge partOfEdge2 = new PartOfEdge(ruleNode, tableNode);
-        
-        // Create the graph
-        final Set<GraphNode> nodes = Set.of(coordNode1, coordNode2, conditionNode, fragmentNode, ruleNode, tableNode);
-        final Set<GraphEdge> edges = Set.of(lhsEdge, rhsEdge, partOfEdge1, partOfEdge2);
+        final RuleFragmentNode piece = new RuleFragmentNode(fragment);
+        final RuleNode rule = new RuleNode(
+            List.of(new RuleFragment("OUT", "outcome", "undefined")), "test_rule"
+        );
+        final TableDescription table = new TableDescription(List.of(rule), rule);
+        final DecisionTableNode tablenode = new DecisionTableNode(table, "test_table");
+        final LhsOfEdge lhs = new LhsOfEdge(firstnode, check);
+        final RhsOfEdge rhs = new RhsOfEdge(secondnode, check);
+        final PartOfEdge rulepart = new PartOfEdge(piece, rule);
+        final PartOfEdge tablepart = new PartOfEdge(rule, tablenode);
+        final Set<GraphNode> nodes = Set.of(
+            firstnode, secondnode, check, piece, rule, tablenode
+        );
+        final Set<GraphEdge> edges = Set.of(lhs, rhs, rulepart, tablepart);
         final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(nodes, edges);
-        
-        // Test node filtering
-        final Set<CoordinateNode> coordinateNodes = graph.nodesOfType(CoordinateNode.class);
-        Assertions.assertThat(coordinateNodes).hasSize(2);
-        
-        final Set<ConditionNode> conditionNodes = graph.nodesOfType(ConditionNode.class);
-        Assertions.assertThat(conditionNodes).hasSize(1);
-        
-        final Set<RuleFragmentNode> fragmentNodes = graph.nodesOfType(RuleFragmentNode.class);
-        Assertions.assertThat(fragmentNodes).hasSize(1);
-        
-        final Set<RuleNode> ruleNodes = graph.nodesOfType(RuleNode.class);
-        Assertions.assertThat(ruleNodes).hasSize(1);
-        
-        final Set<DecisionTableNode> tableNodes = graph.nodesOfType(DecisionTableNode.class);
-        Assertions.assertThat(tableNodes).hasSize(1);
-        
-        // Test edge filtering
-        final Set<LhsOfEdge> lhsEdges = graph.edgesOfType(LhsOfEdge.class);
-        Assertions.assertThat(lhsEdges).hasSize(1);
-        
-        final Set<RhsOfEdge> rhsEdges = graph.edgesOfType(RhsOfEdge.class);
-        Assertions.assertThat(rhsEdges).hasSize(1);
-        
-        final Set<PartOfEdge> partOfEdges = graph.edgesOfType(PartOfEdge.class);
-        Assertions.assertThat(partOfEdges).hasSize(2);
-        
-        // Test relationship traversal
-        final Set<GraphEdge> edgesFromCoord1 = graph.edgesFrom(coordNode1);
-        Assertions.assertThat(edgesFromCoord1).hasSize(1);
-        Assertions.assertThat(edgesFromCoord1.iterator().next().relationshipType()).isEqualTo("lhs_of");
-        
-        final Set<GraphEdge> edgesToCondition = graph.edgesTo(conditionNode);
-        Assertions.assertThat(edgesToCondition).hasSize(2);
-        
-        final Set<GraphEdge> edgesFromRule = graph.edgesFrom(ruleNode);
-        Assertions.assertThat(edgesFromRule).hasSize(1);
-        Assertions.assertThat(edgesFromRule.iterator().next().relationshipType()).isEqualTo("part_of");
-        
-        // Test that the graph is complete
+        Assertions.assertThat(graph.nodesOfType(CoordinateNode.class)).hasSize(2);
+        Assertions.assertThat(graph.nodesOfType(ConditionNode.class)).hasSize(1);
+        Assertions.assertThat(graph.nodesOfType(RuleFragmentNode.class)).hasSize(1);
+        Assertions.assertThat(graph.nodesOfType(RuleNode.class)).hasSize(1);
+        Assertions.assertThat(graph.nodesOfType(DecisionTableNode.class)).hasSize(1);
+        Assertions.assertThat(graph.edgesOfType(LhsOfEdge.class)).hasSize(1);
+        Assertions.assertThat(graph.edgesOfType(RhsOfEdge.class)).hasSize(1);
+        Assertions.assertThat(graph.edgesOfType(PartOfEdge.class)).hasSize(2);
+        final Set<GraphEdge> fromfirst = graph.edgesFrom(firstnode);
+        Assertions.assertThat(fromfirst).hasSize(1);
+        Assertions.assertThat(fromfirst.iterator().next().relationshipType()).isEqualTo("lhs_of");
+        final Set<GraphEdge> tocheck = graph.edgesTo(check);
+        Assertions.assertThat(tocheck).hasSize(2);
+        final Set<GraphEdge> fromrule = graph.edgesFrom(rule);
+        Assertions.assertThat(fromrule).hasSize(1);
+        Assertions.assertThat(fromrule.iterator().next().relationshipType()).isEqualTo("part_of");
         Assertions.assertThat(graph.nodes()).hasSize(6);
         Assertions.assertThat(graph.edges()).hasSize(4);
     }
 
     @Test
     void shouldCreateGraphWithSpecificRelationshipTypes() {
-        final CoordinateNode coord1 = new CoordinateNode(Coordinate.from("test::value1"));
-        final CoordinateNode coord2 = new CoordinateNode(Coordinate.from("test::value2"));
-        final ConditionNode condition = new ConditionNode(new EqualsCondition((Coordinate) coord1.component(), (Coordinate) coord2.component()), "test_condition");
-        
-        final PartOfEdge partOfEdge = new PartOfEdge(coord1, condition);
-        final LhsOfEdge lhsEdge = new LhsOfEdge(coord1, condition);
-        final RhsOfEdge rhsEdge = new RhsOfEdge(coord2, condition);
-        
-        final Set<GraphNode> nodes = Set.of(coord1, coord2, condition);
-        final Set<GraphEdge> edges = Set.of(partOfEdge, lhsEdge, rhsEdge);
+        final CoordinateNode first = new CoordinateNode(Coordinate.from("test::value1"));
+        final CoordinateNode second = new CoordinateNode(Coordinate.from("test::value2"));
+        final ConditionNode condition = new ConditionNode(
+            new RuleFragment("CND", first.component(), second.component()), "test_condition"
+        );
+        final PartOfEdge part = new PartOfEdge(first, condition);
+        final LhsOfEdge lhs = new LhsOfEdge(first, condition);
+        final RhsOfEdge rhs = new RhsOfEdge(second, condition);
+        final Set<GraphNode> nodes = Set.of(first, second, condition);
+        final Set<GraphEdge> edges = Set.of(part, lhs, rhs);
         final InMemoryDecisionGraph graph = new InMemoryDecisionGraph(nodes, edges);
-        
-        // Verify relationship types
-        final Set<GraphEdge> allEdges = graph.edges();
-        Assertions.assertThat(allEdges).hasSize(3);
-        
-        final Set<String> relationshipTypes = allEdges.stream()
+        final Set<GraphEdge> all = graph.edges();
+        Assertions.assertThat(all).hasSize(3);
+        final Set<String> relations = all.stream()
             .map(GraphEdge::relationshipType)
-            .collect(java.util.stream.Collectors.toSet());
-        
-        Assertions.assertThat(relationshipTypes).containsExactlyInAnyOrder("part_of", "lhs_of", "rhs_of");
+            .collect(Collectors.toSet());
+        Assertions.assertThat(relations).containsExactlyInAnyOrder("part_of", "lhs_of", "rhs_of");
     }
 }

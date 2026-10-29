@@ -52,20 +52,20 @@ public interface DecisionGraph {
     /**
      * Returns all nodes of a specific type.
      *
-     * @param nodeType The class of nodes to return.
+     * @param kind The class of nodes to return.
      * @param <T> The type of nodes to return.
      * @return An immutable set of nodes of the specified type.
      */
-    <T extends GraphNode> Set<T> nodesOfType(Class<T> nodeType);
+    <T extends GraphNode> Set<T> nodesOfType(Class<T> kind);
 
     /**
      * Returns all edges of a specific type.
      *
-     * @param edgeType The class of edges to return.
+     * @param kind The class of edges to return.
      * @param <T> The type of edges to return.
      * @return An immutable set of edges of the specified type.
      */
-    <T extends GraphEdge> Set<T> edgesOfType(Class<T> edgeType);
+    <T extends GraphEdge> Set<T> edgesOfType(Class<T> kind);
 
     /**
      * Returns all edges that have the specified node as their source.

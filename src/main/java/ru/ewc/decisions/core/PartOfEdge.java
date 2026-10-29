@@ -49,7 +49,12 @@ public final class PartOfEdge implements GraphEdge {
      * @param target The target node that contains the source.
      */
     public PartOfEdge(final GraphNode source, final GraphNode target) {
-        this.edge = new BasicGraphEdge(source, target, RELATIONSHIP_TYPE);
+        this.edge = new BasicGraphEdge(source, target, PartOfEdge.RELATIONSHIP_TYPE);
+    }
+
+    @Override
+    public GraphEdge withEndpoints(final GraphNode source, final GraphNode target) {
+        return new PartOfEdge(source, target);
     }
 
     @Override
@@ -67,6 +72,8 @@ public final class PartOfEdge implements GraphEdge {
         return this.edge.relationshipType();
     }
 
+    // GraphEdge defines the identifier accessor name.
+    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public String id() {
         return this.edge.id();
@@ -74,7 +81,12 @@ public final class PartOfEdge implements GraphEdge {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.edge.equals(obj);
+        boolean equal = false;
+        if (obj instanceof PartOfEdge) {
+            final PartOfEdge other = (PartOfEdge) obj;
+            equal = this.edge.equals(other.edge);
+        }
+        return equal;
     }
 
     @Override

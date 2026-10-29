@@ -26,7 +26,7 @@ package ru.ewc.decisions.core;
 
 /**
  * I am a node in the DecisionGraph.
- * I represent components of decision tables like Coordinates, Conditions, Rules, and DecisionTables.
+ * I represent immutable coordinate, condition, rule, and table descriptions.
  * I am immutable and provide a unique identifier for my position in the graph.
  *
  * @since 0.9.2
@@ -34,10 +34,13 @@ package ru.ewc.decisions.core;
 public interface GraphNode {
     /**
      * Returns a unique identifier for this node.
-     * This identifier is used for equality and hashing.
+     * This identifier locates the node in the graph.
      *
      * @return A unique string identifier for this node.
      */
+    // The graph API retains its identifier accessor name.
+    // @checkstyle MethodNameCheck (2 lines)
+    @SuppressWarnings("PMD.ShortMethodName")
     String id();
 
     /**
@@ -50,7 +53,7 @@ public interface GraphNode {
 
     /**
      * Returns the underlying component that this node represents.
-     * This could be a Coordinate, Condition, Rule, or DecisionTable.
+     * This is a coordinate string, rule fragment, fragment list, or table description.
      *
      * @return The underlying component.
      */
